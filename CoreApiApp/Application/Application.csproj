@@ -77,4 +77,8 @@
       <Folder Include="Features\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Shared.Domain.Cloud.Entities" Version="1.0.8" />
+    </ItemGroup>
+
 </Project>
