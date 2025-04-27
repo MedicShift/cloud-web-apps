@@ -1,1 +1,9 @@
-@import './assets/styles/app-styles.css'
+@import './assets/styles/app-styles.css';
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Optional: makes sure padding and borders are included in width/height */
+}

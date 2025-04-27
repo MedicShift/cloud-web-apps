@@ -11,5 +11,5 @@ export const routes: Routes = [
       { path: RouteNames.MainDashboard, component: MainDashboardComponent },
     ],
   },
-  { path: '**', redirectTo: '' },
+  // { path: '**', redirectTo: '' },
 ];
