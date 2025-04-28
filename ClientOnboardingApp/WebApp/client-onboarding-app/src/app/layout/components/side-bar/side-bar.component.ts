@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router } from '@angular/router';
 
 @Component({
   selector: 'app-side-bar',
@@ -8,4 +8,10 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './side-bar.component.css'
 })
 export class SideBarComponent {
+
+  constructor(private router: Router) {} 
+  
+  navigateTo(path: string) {
+    this.router.navigate([path]);
+  }
 }
