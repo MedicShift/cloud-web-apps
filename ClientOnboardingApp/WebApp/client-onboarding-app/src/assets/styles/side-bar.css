@@ -1,3 +1,9 @@
+.layout {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+
 .sidebar {
   width: 255px;
   height: 100vh;
@@ -5,7 +11,7 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid #e5e7eb;
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
@@ -80,4 +86,11 @@
 .logged-in-user {
   color: black;
   font-weight: 600;
+}
+
+.main-content {
+  flex-grow: 1; /* Main content will take up the rest of the space */
+  padding: 20px;
+  overflow-y: auto; /* Scroll if content is too long */
+  background-color: #ffffff; 
 }
