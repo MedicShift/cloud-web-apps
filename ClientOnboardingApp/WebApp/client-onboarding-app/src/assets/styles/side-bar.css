@@ -15,8 +15,6 @@
   text-align: center;
   padding: 8px 24px;
   height: 66px;
-  border-bottom: solid #e5e7eb;
-  border-bottom-width: 1px;
 }
 
 .brand-blue {
@@ -28,20 +26,22 @@
   color: black;
 }
 
+.sidebar-navigation{
+  padding-top: 8px;
+}
+
 .menu-section {
   flex-direction: row;
   padding: 8px;
+  border-top: solid #e5e7eb;
+  border-top-width: 1px;
+  padding: 16px 8px;
 }
 
 .menu-title {
   font-size: 12px;
   color: #6b7280;
   padding-left: 10px;
-}
-
-.menu-list {
-  padding: 8px;
-  
 }
 
 .menu-item {
