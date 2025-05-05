@@ -78,7 +78,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Shared.Domain.Cloud.Entities" Version="1.0.8" />
+      <PackageReference Include="Shared.Domain.Cloud.Entities" Version="1.0.9" />
     </ItemGroup>
 
 </Project>
