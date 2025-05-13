@@ -1,12 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using CoreApiApp.Entities;
+using CoreApiApp.Common.Constants;
+using CoreApiApp.Data;
+using CoreApiApp.Data.Entities;
 using CoreApiApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Shared.Infra.CoreStore.Abstractions;
 
 namespace CoreApiApp.Services;
 
@@ -22,32 +23,32 @@ public class AuthService : IAuthService
         _config = config;
     }
 
-    public async Task<User?> RegisterAsync(UserLoginModel request)
-    {
-        if (await _coreDbContext.Users.AnyAsync(u => u.Email == request.Email))
-        {
-            return null;
-        }
-
-        var user = new User();
-        var hashedPassword = new PasswordHasher<User>()
-            .HashPassword(user, request.Password);
-        
-        user.Email = request.Email;
-        user.PasswordHash = hashedPassword;
-        // _coreDbContext.Users.Add(user);
-        return user;
-    }
+    // public async Task<User?> RegisterAsync(UserLoginModel request)
+    // {
+    //     if (await _coreDbContext.Users.AnyAsync(u => u.Email == request.Email))
+    //     {
+    //         return null;
+    //     }
+    //
+    //     var hashedPassword = new PasswordHasher<User>()
+    //         .HashPassword(user, request.Password);
+    //     
+    //     user.Email = request.Email;
+    //     user.PasswordHash = hashedPassword;
+    //     // _coreDbContext.Users.Add(user);
+    //     return user;
+    // }
 
     public async Task<string> LoginAsync(UserLoginModel request)
     {
-        var user = await _coreDbContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+        var user = await _coreDbContext.Staff.FirstOrDefaultAsync(u => u.EmailId == request.Email);
+        var users = new Staff();
         if (user == null)
         {
             return null;
         }
         
-        if (new PasswordHasher<Shared.Domain.Cloud.Entities.Core.User>().VerifyHashedPassword(user, user.PasswordHash, request.Password)
+        if (new PasswordHasher<Staff>().VerifyHashedPassword(user, user.PasswordHash, request.Password)
             == PasswordVerificationResult.Failed)
         {
             return null;
@@ -56,12 +57,11 @@ public class AuthService : IAuthService
         return  CreateToken(user);
     }
     
-    private string CreateToken(Shared.Domain.Cloud.Entities.Core.User user)
+    private string CreateToken(Staff staff)
     {
-        var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.Email)
-        };
+        var claims = new List<Claim>();
+        claims.Add(new Claim(ClaimTypes.Name, staff.EmailId));
+        claims.Add(new Claim(ClaimTypeConstants.StaffGuid, staff.Guid.ToString()));
         
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config.GetValue<string>("AppSettings:TokenKey")));
