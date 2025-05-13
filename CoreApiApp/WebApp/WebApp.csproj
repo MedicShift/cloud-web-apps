@@ -5,16 +5,26 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>CoreApiApp</RootNamespace>
+        <EnableDefaultStaticWebAssets>false</EnableDefaultStaticWebAssets>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" Version="12.5.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.4" />
-      <PackageReference Include="Shared.Domain.Cloud.Entities" Version="1.0.9" />
-      <PackageReference Include="Shared.Infra.CoreStore" Version="1.0.16" />
-      <PackageReference Include="Shared.Infra.CoreStore.Abstractions" Version="1.0.16" />
-      <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
+        <PackageReference Include="MediatR" Version="12.5.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="9.0.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Migrations\" />
+        <Folder Include="Models\DTOs\Requests\" />
+        <Folder Include="Models\DTOs\Responses\" />
+        <Folder Include="wwwroot\" />
     </ItemGroup>
 
 </Project>
