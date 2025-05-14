@@ -31,10 +31,9 @@ public class HospitalConfiguration : IEntityTypeConfiguration<Hospital>
             .HasColumnType("varchar(256)")
             .IsRequired();
         
-
         builder.HasMany(h => h.Staffs)
             .WithOne(s => s.Hospital)
-            .HasForeignKey(u => u.HospitalId)
+            .HasForeignKey(s => s.HospitalId)
             .IsRequired();
 
         builder.Property(h => h.CreatedAt)

@@ -31,6 +31,11 @@ public class StaffConfiguration : IEntityTypeConfiguration<Staff>
             .HasColumnType("NVARCHAR(max)")
             .IsRequired();
         
+        builder.HasOne(s => s.Department)
+            .WithMany(d => d.Id)
+            .HasForeignKey(s => s.DepartmentId)
+            .IsRequired();
+        
         builder.Property(s => s.IsAdmin)
             .HasDefaultValue(false);
         

@@ -9,6 +9,8 @@ public class Staff
     public string EmailId { get; set; }
     public string PasswordHash { get; set; }
     public int HospitalId { get; set; }
+    public int DepartmentId { get; set; }
+    public Department Department { get; set; } = null!;
     public Hospital Hospital { get; set; } = null!;
     public bool IsAdmin { get; set; }
     public int RoleId { get; set; }
