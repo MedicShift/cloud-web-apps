@@ -1,8 +1,7 @@
+using CoreApiApp.Data;
 using CoreApiApp.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Shared.Infra.CoreStore.Abstractions;
-using Shared.Infra.CoreStore.DbContexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,10 +13,10 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoreApi", Version = "v1" });
 });
 
-builder.Services.AddDbContext<CoreDbContext>(options =>
+
+builder.Services.AddDbContext<ICoreDbContext, CoreDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CoreDataStore")));
 
-builder.Services.AddScoped<ICoreDbContext, CoreDbContext>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddAuthorization();
 
@@ -39,7 +38,6 @@ else
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthentication();
