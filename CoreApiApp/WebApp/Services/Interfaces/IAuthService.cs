@@ -1,6 +1,6 @@
 using CoreApiApp.Models;
 
-namespace CoreApiApp.Services;
+namespace CoreApiApp.Services.Interfaces;
 
 public interface IAuthService
 {

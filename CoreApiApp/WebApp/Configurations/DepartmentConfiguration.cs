@@ -2,7 +2,7 @@ using CoreApiApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CoreApiApp.Data.Configurations;
+namespace CoreApiApp.Configurations;
 
 public class DeparmentConfiguration : IEntityTypeConfiguration<Department>
 {
@@ -22,7 +22,7 @@ public class DeparmentConfiguration : IEntityTypeConfiguration<Department>
         builder.HasMany(d => d.Staffs)
             .WithOne(s => s.Department)
             .HasForeignKey(s => s.DepartmentId)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(d => d.CreatedAt)
             .HasDefaultValueSql("GETUTCDATE()")
