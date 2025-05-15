@@ -5,6 +5,7 @@ using CoreApiApp.Common.Constants;
 using CoreApiApp.Data;
 using CoreApiApp.Data.Entities;
 using CoreApiApp.Models;
+using CoreApiApp.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -41,7 +42,10 @@ public class AuthService : IAuthService
 
     public async Task<string> LoginAsync(UserLoginModel request)
     {
-        var user = await _coreDbContext.Staff.FirstOrDefaultAsync(u => u.EmailId == request.Email);
+        var user = await _coreDbContext.Staff
+            .Include(s => s.Hospital)
+            .FirstOrDefaultAsync(u => u.EmailId == request.Email);
+        
         var users = new Staff();
         if (user == null)
         {
@@ -62,6 +66,7 @@ public class AuthService : IAuthService
         var claims = new List<Claim>();
         claims.Add(new Claim(ClaimTypes.Name, staff.EmailId));
         claims.Add(new Claim(ClaimTypeConstants.StaffGuid, staff.Guid.ToString()));
+        claims.Add(new Claim(ClaimTypeConstants.HospitalGuid, staff.Hospital.Guid.ToString()));
         
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config.GetValue<string>("AppSettings:TokenKey")));

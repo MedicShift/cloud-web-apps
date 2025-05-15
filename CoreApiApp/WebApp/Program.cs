@@ -1,5 +1,8 @@
 using CoreApiApp.Data;
+using CoreApiApp.Data.Repositories;
+using CoreApiApp.Data.Repositories.Interfaces;
 using CoreApiApp.Services;
+using CoreApiApp.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -15,9 +18,14 @@ builder.Services.AddSwaggerGen(c =>
 
 
 builder.Services.AddDbContext<ICoreDbContext, CoreDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CoreDataStore")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("CoreDataStore"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure()
+        )
+    );
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IHospitalRepository, HospitalRepository>();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

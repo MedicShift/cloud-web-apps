@@ -1,5 +1,6 @@
 using CoreApiApp.Models;
 using CoreApiApp.Services;
+using CoreApiApp.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +19,12 @@ namespace CoreApiApp.Controllers
                 return Unauthorized("Invalid email or password");
             }
 
-            return Ok(token);
+            var jwtToken = new
+            {
+                accessToken = token
+            };
+
+            return Ok(jwtToken);
         }
-        
-        
     }
 }
