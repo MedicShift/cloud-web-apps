@@ -9,6 +9,7 @@ public class CoreDbContext : DbContext, ICoreDbContext, IDataProtectionKeyContex
     
     public DbSet<Hospital> Hospital { get; set; }
     public DbSet<Staff> Staff { get; set; }
+    public DbSet<Department> Department { get; set; }
 
     public DbSet<DataProtectionKey> DataProtectionKeys { get; }
 
