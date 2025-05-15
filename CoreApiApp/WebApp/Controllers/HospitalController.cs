@@ -1,10 +1,8 @@
 using CoreApiApp.Data.Entities;
-using CoreApiApp.Data.Repositories;
 using CoreApiApp.Data.Repositories.Interfaces;
 using CoreApiApp.Models.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Formatting = System.Xml.Formatting;
 
 namespace CoreApiApp.Controllers
 {

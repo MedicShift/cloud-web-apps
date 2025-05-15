@@ -26,6 +26,7 @@ builder.Services.AddDbContext<ICoreDbContext, CoreDbContext>(options =>
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IHospitalRepository, HospitalRepository>();
+builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

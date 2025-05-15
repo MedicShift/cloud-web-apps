@@ -5,6 +5,7 @@ using CoreApiApp.Common.Constants;
 using CoreApiApp.Data;
 using CoreApiApp.Data.Entities;
 using CoreApiApp.Models;
+using CoreApiApp.Models.Requests;
 using CoreApiApp.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,23 +25,34 @@ public class AuthService : IAuthService
         _config = config;
     }
 
-    // public async Task<User?> RegisterAsync(UserLoginModel request)
-    // {
-    //     if (await _coreDbContext.Users.AnyAsync(u => u.Email == request.Email))
-    //     {
-    //         return null;
-    //     }
-    //
-    //     var hashedPassword = new PasswordHasher<User>()
-    //         .HashPassword(user, request.Password);
-    //     
-    //     user.Email = request.Email;
-    //     user.PasswordHash = hashedPassword;
-    //     // _coreDbContext.Users.Add(user);
-    //     return user;
-    // }
+    public async Task<bool> RegisterStaffAsync(CreateStaffRequest request)
+    {
+        if (await _coreDbContext.Staff.AnyAsync(s => s.EmailId == request.EmailId))
+        {
+            return false;
+        }
+        
+        var hospital = _coreDbContext.Hospital.FirstOrDefault(h => h.Guid == request.HospitalId);
+        var department = _coreDbContext.Department.FirstOrDefault(d => d.Guid == request.DepartmentId);
 
-    public async Task<string> LoginAsync(UserLoginModel request)
+        var staff = new Staff();
+        var hashedPassword = new PasswordHasher<Staff>()
+            .HashPassword(staff, request.Password);
+
+        staff.EmailId = request.EmailId;
+        staff.FirstName = request.FirstName;
+        staff.LastName = request.LastName;
+        staff.HospitalId = hospital.Id;
+        staff.DepartmentId = department?.Id;
+        staff.RoleId = request.Role;
+        staff.PasswordHash = hashedPassword;
+        
+        await _coreDbContext.Staff.AddAsync(staff);
+        var result = await _coreDbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<string> LoginAsync(StaffLoginModel request)
     {
         var user = await _coreDbContext.Staff
             .Include(s => s.Hospital)
