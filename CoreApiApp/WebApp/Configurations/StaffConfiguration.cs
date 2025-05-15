@@ -2,7 +2,7 @@ using CoreApiApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CoreApiApp.Data.Configurations;
+namespace CoreApiApp.Configurations;
 
 public class StaffConfiguration : IEntityTypeConfiguration<Staff>
 {
@@ -29,11 +29,6 @@ public class StaffConfiguration : IEntityTypeConfiguration<Staff>
 
         builder.Property(s => s.PasswordHash)
             .HasColumnType("NVARCHAR(max)")
-            .IsRequired();
-        
-        builder.HasOne(s => s.Department)
-            .WithMany(d => d.Id)
-            .HasForeignKey(s => s.DepartmentId)
             .IsRequired();
         
         builder.Property(s => s.IsAdmin)

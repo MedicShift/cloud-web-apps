@@ -2,7 +2,7 @@ using CoreApiApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CoreApiApp.Data.Configurations;
+namespace CoreApiApp.Configurations;
 
 public class HospitalConfiguration : IEntityTypeConfiguration<Hospital>
 {

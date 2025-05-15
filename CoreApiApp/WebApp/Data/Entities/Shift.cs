@@ -1,8 +1,8 @@
 namespace CoreApiApp.Data.Entities;
 
-public class ShiftDetail
+public class Shift
 {
-    public int ShiftId { get; set; }
+    public int Id { get; set; }
     public Guid Guid { get; set; }
     public string StartTime { get; set; }
     public string EndTime { get; set; }

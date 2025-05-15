@@ -5,6 +5,8 @@ using CoreApiApp.Common.Constants;
 using CoreApiApp.Data;
 using CoreApiApp.Data.Entities;
 using CoreApiApp.Models;
+using CoreApiApp.Models.Requests;
+using CoreApiApp.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -23,25 +25,39 @@ public class AuthService : IAuthService
         _config = config;
     }
 
-    // public async Task<User?> RegisterAsync(UserLoginModel request)
-    // {
-    //     if (await _coreDbContext.Users.AnyAsync(u => u.Email == request.Email))
-    //     {
-    //         return null;
-    //     }
-    //
-    //     var hashedPassword = new PasswordHasher<User>()
-    //         .HashPassword(user, request.Password);
-    //     
-    //     user.Email = request.Email;
-    //     user.PasswordHash = hashedPassword;
-    //     // _coreDbContext.Users.Add(user);
-    //     return user;
-    // }
-
-    public async Task<string> LoginAsync(UserLoginModel request)
+    public async Task<bool> RegisterStaffAsync(CreateStaffRequest request)
     {
-        var user = await _coreDbContext.Staff.FirstOrDefaultAsync(u => u.EmailId == request.Email);
+        if (await _coreDbContext.Staff.AnyAsync(s => s.EmailId == request.EmailId))
+        {
+            return false;
+        }
+        
+        var hospital = _coreDbContext.Hospital.FirstOrDefault(h => h.Guid == request.HospitalId);
+        var department = _coreDbContext.Department.FirstOrDefault(d => d.Guid == request.DepartmentId);
+
+        var staff = new Staff();
+        var hashedPassword = new PasswordHasher<Staff>()
+            .HashPassword(staff, request.Password);
+
+        staff.EmailId = request.EmailId;
+        staff.FirstName = request.FirstName;
+        staff.LastName = request.LastName;
+        staff.HospitalId = hospital.Id;
+        staff.DepartmentId = department?.Id;
+        staff.RoleId = request.Role;
+        staff.PasswordHash = hashedPassword;
+        
+        await _coreDbContext.Staff.AddAsync(staff);
+        var result = await _coreDbContext.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<string> LoginAsync(StaffLoginModel request)
+    {
+        var user = await _coreDbContext.Staff
+            .Include(s => s.Hospital)
+            .FirstOrDefaultAsync(u => u.EmailId == request.Email);
+        
         var users = new Staff();
         if (user == null)
         {
@@ -62,6 +78,7 @@ public class AuthService : IAuthService
         var claims = new List<Claim>();
         claims.Add(new Claim(ClaimTypes.Name, staff.EmailId));
         claims.Add(new Claim(ClaimTypeConstants.StaffGuid, staff.Guid.ToString()));
+        claims.Add(new Claim(ClaimTypeConstants.HospitalGuid, staff.Hospital.Guid.ToString()));
         
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config.GetValue<string>("AppSettings:TokenKey")));
