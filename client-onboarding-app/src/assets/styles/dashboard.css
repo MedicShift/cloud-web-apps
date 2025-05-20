@@ -179,3 +179,48 @@
 .primary-button:hover {
   background-color: #e0f2fe;
 }
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 450;
+  background-color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.action-button:hover {
+  background-color: #e0f2fe; /* Light blue shade */
+}
+
+.primary-action {
+  background-color: #ffffff;
+  color: #0e0d0d;
+  border: 1px solid #e0e0e0; /* Add this line */
+}
+
+.primary-action:hover {
+  background-color: #e0f2fe;
+}
+
+.action-button img {
+  width: 20px;
+  height: 20px;
+}
+
+.hospital_card_content {
+  margin-top: 0; /* Add this if needed */
+  gap: 8px; /* Already present, adjust as needed */
+}
+
