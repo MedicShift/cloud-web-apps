@@ -10,6 +10,6 @@ public class CreateStaffRequest
     public string Password { get; set; }
     public Guid HospitalId { get; set; }
     public Guid? DepartmentId { get; set; }
-    public int Role { get; set; }
+    public Role Role { get; set; }
     
 }

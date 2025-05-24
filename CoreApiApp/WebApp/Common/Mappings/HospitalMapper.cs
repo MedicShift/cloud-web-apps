@@ -22,7 +22,10 @@ public static class HospitalMapper
                 State = address.State,
                 Pincode = address.Pincode
             },
-            ContactInfo = hospital.ContactInfo
+            ContactInfo = hospital.ContactInfo,
+            SetupStatus = hospital.SetupStatus,
+            PlanStatus = hospital.PlanStatus,
+            PlanExpiresOn = hospital.PlanExpiresOn
         };
     }
     
