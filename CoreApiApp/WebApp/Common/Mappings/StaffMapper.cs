@@ -16,7 +16,7 @@ public class StaffMapper
             Name = staff.FirstName + " " + staff.LastName,
             Email = staff.EmailId,
             DepartmentName = staff.Department?.Name,
-            Role = staff.RoleId
+            Role = staff.Role
         };
     }
     

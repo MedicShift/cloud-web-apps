@@ -8,6 +8,6 @@ public class StaffResponse
     public string Name { get; set; }
     public string Email { get; set; }
     public string? DepartmentName { get; set; } = null;
-    public int Role { get; set; }
+    public Role Role { get; set; }
     
 }

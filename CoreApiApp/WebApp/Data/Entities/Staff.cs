@@ -1,3 +1,5 @@
+using CoreApiApp.Common.Enums;
+
 namespace CoreApiApp.Data.Entities;
 
 public class Staff
@@ -12,8 +14,7 @@ public class Staff
     public int? DepartmentId { get; set; }
     public Department? Department { get; set; } = null;
     public Hospital Hospital { get; set; }
-    public bool IsAdmin { get; set; }
-    public int RoleId { get; set; }
+    public Role Role { get; set; }
     public string CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public DateTime? DeletedAt { get; set; }
