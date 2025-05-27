@@ -1,9 +1,14 @@
+using CoreApiApp.Common.Enums;
 using CoreApiApp.Common.Exceptions;
 using CoreApiApp.Common.Mappings;
 using CoreApiApp.Data.Entities;
 using CoreApiApp.Data.Repositories.Interfaces;
+using CoreApiApp.Models.Requests;
 using CoreApiApp.Models.Responses;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace CoreApiApp.Data.Repositories;
 
@@ -11,20 +16,28 @@ public class StaffRepository : IStaffRepository
 {
     
     private readonly ICoreDbContext _context;
+    private readonly SieveProcessor _sieveProcessor;
 
-    public StaffRepository(ICoreDbContext context)
+    public StaffRepository(ICoreDbContext context, SieveProcessor sieveProcessor)
     {
         _context = context;
+        _sieveProcessor = sieveProcessor;
     }
     
-    public async Task<List<StaffResponse>> GetAllHospitalStaffsAsync(Guid hospitaGuid)
+    
+    public async Task<List<StaffResponse>> GetAllHospitalStaffsAsync(SieveModel sieveModel, Guid hospitaGuid)
     {
-        var staffs = await _context.Staff
+        var query =  _context.Staff
             .Include(s => s.Hospital)
             .Include(s => s.Department)
-            .Where(s => s.Hospital.Guid == hospitaGuid)
+            .Where(s => s.Role != Role.Admin)
+            .Where(s => s.Hospital.Guid == hospitaGuid);
+        
+        var staffs = _sieveProcessor.Apply(sieveModel, query);
+
+        var response = await staffs.Select(s => StaffMapper.ToResponse(s))
             .ToListAsync();
-        var response = StaffMapper.ToResponseList(staffs);
+        
         if (staffs == null)
         {
             throw new NotFoundException("Staffs not found.");
@@ -32,8 +45,31 @@ public class StaffRepository : IStaffRepository
         return response;
     }
 
-    public Task<bool> CreateHospitalStaffAsync(Staff staff)
+    public async Task<bool> CreateHospitalStaffAsync(CreateStaffRequest request)
     {
-        throw new NotImplementedException();
+        if (await _context.Staff.AnyAsync(s => s.EmailId == request.EmailId))
+        {
+            return false;
+        }
+        
+        var hospital = _context.Hospital.FirstOrDefault(h => h.Guid == request.HospitalId);
+        var department = _context.Department.FirstOrDefault(d => d.Guid == request.DepartmentId);
+        var password = "Medshift@123";
+        
+        var staff = new Staff();
+        var hashedPassword = new PasswordHasher<Staff>()
+            .HashPassword(staff, password);
+
+        staff.EmailId = request.EmailId;
+        staff.FirstName = request.FirstName;
+        staff.LastName = request.LastName;
+        staff.HospitalId = hospital.Id;
+        staff.DepartmentId = department?.Id;
+        staff.Role = request.Role;
+        staff.PasswordHash = hashedPassword;
+        
+        await _context.Staff.AddAsync(staff);
+        var result = await _context.SaveChangesAsync();
+        return result > 0;
     }
 }
