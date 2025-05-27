@@ -20,24 +20,30 @@ namespace CoreApiApp.Controllers
                 return Unauthorized("Invalid email or password");
             }
 
-            var jwtToken = new
+            Response.Cookies.Append("accessToken", token, new CookieOptions
             {
-                accessToken = token
-            };
+                HttpOnly = true,
+                Secure = true, // only over HTTPS
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTimeOffset.UtcNow.AddHours(1)
+            });
 
-            return Ok(jwtToken);
+            return Ok(new { message = "Login successful" });
         }
         
-        [HttpPost("Register")]
-        public async Task<ActionResult<string>> Register(CreateStaffRequest request)
+        [HttpPost("Logout")]
+        public IActionResult Logout()
         {
-            var response = await authService.RegisterStaffAsync(request);
-            if (!response)
+            Response.Cookies.Append("accessToken", "", new CookieOptions
             {
-                return Conflict(new { message = "User already exists" });
-            }
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTimeOffset.UtcNow.AddDays(-1)
+            });
 
-            return Ok(new { success = true, message = "User registered successfully." });
+            return Ok(new { message = "Logged out successfully" });
         }
+        
     }
 }
