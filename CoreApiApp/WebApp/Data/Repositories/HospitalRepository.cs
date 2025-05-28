@@ -43,5 +43,16 @@ public class HospitalRepository : IHospitalRepository
         var result = await _context.SaveChangesAsync();
         return result > 0;
     }
-    
+
+    public async Task<List<DepartmentResponse>> GetDepartmentsAsync()
+    {
+       var departments =  await _context.Department.ToListAsync();
+       var response = DeparmentMapper.ToResponseList(departments);
+       
+       if (departments == null)
+       {
+           throw new NotFoundException("Departments not found.");
+       }
+       return response;
+    }
 }

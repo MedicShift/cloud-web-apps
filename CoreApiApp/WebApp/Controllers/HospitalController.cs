@@ -38,5 +38,11 @@ namespace CoreApiApp.Controllers
             
             return Ok(await _hospitalRepository.CreateHospitalAsync(hospital));
         }
+        
+        [HttpGet("Departments")]
+        public async Task<IActionResult> GetDepartmentsAsync()
+        {
+            return Ok(await _hospitalRepository.GetDepartmentsAsync());
+        }
     }
 }
