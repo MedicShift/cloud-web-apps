@@ -7,6 +7,6 @@ namespace CoreApiApp.Data.Repositories.Interfaces;
 
 public interface IStaffRepository
 {
-    Task<List<StaffResponse>> GetAllHospitalStaffsAsync(SieveModel sieveModel, Guid hospitalId);          
+    Task<StaffResponse> GetAllHospitalStaffsAsync(SieveModel sieveModel, Guid hospitalId);          
     Task<bool> CreateHospitalStaffAsync(CreateStaffRequest staff);
 }

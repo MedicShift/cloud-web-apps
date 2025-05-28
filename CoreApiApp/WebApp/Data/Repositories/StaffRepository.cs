@@ -25,19 +25,24 @@ public class StaffRepository : IStaffRepository
     }
     
     
-    public async Task<List<StaffResponse>> GetAllHospitalStaffsAsync(SieveModel sieveModel, Guid hospitaGuid)
+    public async Task<StaffResponse> GetAllHospitalStaffsAsync(SieveModel sieveModel, Guid hospitaGuid)
     {
         var query =  _context.Staff
             .Include(s => s.Hospital)
             .Include(s => s.Department)
             .Where(s => s.Role != Role.Admin)
-            .Where(s => s.Hospital.Guid == hospitaGuid);
+            .Where(s => s.Hospital.Guid == hospitaGuid).AsNoTracking();
         
-        var staffs = _sieveProcessor.Apply(sieveModel, query);
-
-        var response = await staffs.Select(s => StaffMapper.ToResponse(s))
-            .ToListAsync();
+        var filteredStaffs = _sieveProcessor.Apply(sieveModel, query, applyFiltering: true);
+        var count =  filteredStaffs.Count();
         
+        var staffs = _sieveProcessor.Apply(sieveModel, filteredStaffs, applyPagination: true, applySorting: true);
+        
+        var response = new StaffResponse()
+        {
+            Staffs = staffs.Select(s => StaffMapper.ToResponse(s)),
+            TotalCount = count
+        };
         if (staffs == null)
         {
             throw new NotFoundException("Staffs not found.");
