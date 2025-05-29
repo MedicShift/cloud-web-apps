@@ -31,11 +31,9 @@ public class StaffConfiguration : IEntityTypeConfiguration<Staff>
             .HasColumnType("NVARCHAR(max)")
             .IsRequired();
         
-        builder.Property(s => s.IsAdmin)
-            .HasDefaultValue(false);
-        
-        builder.Property(s => s.RoleId)
-            .HasColumnType("TINYINT"); 
+        builder.Property(s => s.Role)
+            .HasColumnType("TINYINT")
+            .IsRequired();
         
         builder.Property(s => s.CreatedAt)
             .HasDefaultValueSql("GETUTCDATE()")

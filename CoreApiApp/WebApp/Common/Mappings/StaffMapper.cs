@@ -7,20 +7,21 @@ namespace CoreApiApp.Common.Mappings;
 
 public class StaffMapper
 {
-    public static StaffResponse ToResponse(Staff staff)
+    public static StaffViewModel ToResponse(Staff staff)
     {
         
-        return new StaffResponse()
+        return new StaffViewModel()
         {
             Guid = staff.Guid,
-            Name = staff.FirstName + " " + staff.LastName,
+            FirstName = staff.FirstName,
+            LastName = staff.LastName,
             Email = staff.EmailId,
             DepartmentName = staff.Department?.Name,
-            Role = staff.RoleId
+            Role = staff.Role.ToString()
         };
     }
     
-    public static List<StaffResponse> ToResponseList(List<Staff> staffs)
+    public static List<StaffViewModel> ToResponseList(List<Staff> staffs)
     {
         return staffs.Select(s => ToResponse(s)).ToList();
     }

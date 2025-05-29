@@ -1,12 +1,14 @@
 using CoreApiApp.Data.Entities;
 using CoreApiApp.Data.Repositories.Interfaces;
 using CoreApiApp.Models.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace CoreApiApp.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class HospitalController : ControllerBase
     {
@@ -35,6 +37,12 @@ namespace CoreApiApp.Controllers
             };
             
             return Ok(await _hospitalRepository.CreateHospitalAsync(hospital));
+        }
+        
+        [HttpGet("Departments")]
+        public async Task<IActionResult> GetDepartmentsAsync()
+        {
+            return Ok(await _hospitalRepository.GetDepartmentsAsync());
         }
     }
 }

@@ -1,3 +1,4 @@
+using CoreApiApp.Common.Enums;
 using CoreApiApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -29,6 +30,19 @@ public class HospitalConfiguration : IEntityTypeConfiguration<Hospital>
         
         builder.Property(h => h.ContactInfo)
             .HasColumnType("varchar(256)")
+            .IsRequired();
+        
+        builder.Property(h => h.SetupStatus)
+            .HasColumnType("tinyint")      
+            .HasDefaultValue(SetupStatus.NotStarted);  
+        
+        builder.Property(h => h.PlanStatus)
+            .HasColumnType("tinyint")      
+            .HasDefaultValue(PlanStatus.Trial);  
+        
+        builder.Property(h => h.PlanExpiresOn)
+            .HasColumnType("datetime")
+            .HasDefaultValueSql("DATEADD(day, 30, GETDATE())")
             .IsRequired();
         
         builder.HasMany(h => h.Staffs)

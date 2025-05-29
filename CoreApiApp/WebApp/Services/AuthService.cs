@@ -24,34 +24,7 @@ public class AuthService : IAuthService
         _coreDbContext = coreDbContext;
         _config = config;
     }
-
-    public async Task<bool> RegisterStaffAsync(CreateStaffRequest request)
-    {
-        if (await _coreDbContext.Staff.AnyAsync(s => s.EmailId == request.EmailId))
-        {
-            return false;
-        }
-        
-        var hospital = _coreDbContext.Hospital.FirstOrDefault(h => h.Guid == request.HospitalId);
-        var department = _coreDbContext.Department.FirstOrDefault(d => d.Guid == request.DepartmentId);
-
-        var staff = new Staff();
-        var hashedPassword = new PasswordHasher<Staff>()
-            .HashPassword(staff, request.Password);
-
-        staff.EmailId = request.EmailId;
-        staff.FirstName = request.FirstName;
-        staff.LastName = request.LastName;
-        staff.HospitalId = hospital.Id;
-        staff.DepartmentId = department?.Id;
-        staff.RoleId = request.Role;
-        staff.PasswordHash = hashedPassword;
-        
-        await _coreDbContext.Staff.AddAsync(staff);
-        var result = await _coreDbContext.SaveChangesAsync();
-        return result > 0;
-    }
-
+    
     public async Task<string> LoginAsync(StaffLoginModel request)
     {
         var user = await _coreDbContext.Staff
