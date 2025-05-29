@@ -33,10 +33,10 @@ public class StaffRepository : IStaffRepository
             .Where(s => s.Role != Role.Admin)
             .Where(s => s.Hospital.Guid == hospitaGuid).AsNoTracking();
         
-        var filteredStaffs = _sieveProcessor.Apply(sieveModel, query, applyFiltering: true);
+        var filteredStaffs = _sieveProcessor.Apply(sieveModel, query, applyPagination: false);
         var count =  filteredStaffs.Count();
         
-        var staffs = _sieveProcessor.Apply(sieveModel, filteredStaffs, applyPagination: true, applySorting: true);
+        var staffs = _sieveProcessor.Apply(sieveModel, filteredStaffs, applyPagination: true);
         
         var response = new StaffResponse()
         {
@@ -76,5 +76,40 @@ public class StaffRepository : IStaffRepository
         await _context.Staff.AddAsync(staff);
         var result = await _context.SaveChangesAsync();
         return result > 0;
+    }
+
+    public async Task<bool> UpdateHospitalStaffAsync(UpdateStaffRequest request)
+    {
+        var staff = _context.Staff.FirstOrDefault(s => s.Guid == request.StaffGuid);
+        
+        if (staff == null)
+        {
+            return await Task.FromResult(false);
+        }
+        
+        var department = _context.Department.FirstOrDefault(d => d.Guid == request.DepartmentId);
+        
+        staff.FirstName = request.FirstName;
+        staff.LastName = request.LastName;
+        staff.EmailId = request.EmailId;
+        staff.DepartmentId = department?.Id;
+        staff.Role = request.Role;
+        
+        var result = await _context.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> DeleteHospitalStaffAsync(Guid staffGuid)
+    {
+        var staff = _context.Staff.FirstOrDefault(s => s.Guid == staffGuid);
+        if (staff != null)
+        {
+            _context.Staff.Remove(staff);
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
+
+        }
+        
+        return await Task.FromResult(false);
     }
 }

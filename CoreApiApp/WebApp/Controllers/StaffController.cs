@@ -19,7 +19,7 @@ public class StaffController : ControllerBase
     }
     
     [HttpGet("All")]
-    public async Task<IActionResult> GetAllStaff(string filters, string sorts, int page, int pageSize)
+    public async Task<IActionResult> GetAllStaff(string sorts, int page, int pageSize, string filters = "")
     {
         var seiveModel = new SieveModel
         {
@@ -51,5 +51,30 @@ public class StaffController : ControllerBase
         }
 
         return Ok(new { success = true, message = "User added successfully." });
+    }
+    
+    [HttpPut]
+    public async Task<ActionResult<string>> UpdateStaff(UpdateStaffRequest request)
+    {
+        request.StaffGuid = Guid.Parse(User.FindFirst("staff_guid")?.Value);
+        var response = await _staffRepository.UpdateHospitalStaffAsync(request);
+        
+        if (!response)
+        {
+            return Conflict(new { message = "Failed to update staff" });
+        }
+        return Ok(new { success = true, message = "Staff updated successfully" });
+    }
+
+    [HttpDelete]
+    public async Task<ActionResult<string>> DeleteStaff(Guid staffGuid)
+    {
+        var response = await _staffRepository.DeleteHospitalStaffAsync(staffGuid);
+        
+        if (!response)
+        {
+            return Conflict(new { message = "Failed to delete staff" });
+        }
+        return Ok(new { success = true, message = "Staff deleted successfully" });
     }
 }

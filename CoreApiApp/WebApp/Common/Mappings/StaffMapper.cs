@@ -13,7 +13,8 @@ public class StaffMapper
         return new StaffViewModel()
         {
             Guid = staff.Guid,
-            Name = staff.FirstName + " " + staff.LastName,
+            FirstName = staff.FirstName,
+            LastName = staff.LastName,
             Email = staff.EmailId,
             DepartmentName = staff.Department?.Name,
             Role = staff.Role.ToString()
