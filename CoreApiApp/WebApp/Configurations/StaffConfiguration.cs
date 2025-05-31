@@ -31,8 +31,8 @@ public class StaffConfiguration : IEntityTypeConfiguration<Staff>
             .HasColumnType("NVARCHAR(max)")
             .IsRequired();
         
-        builder.Property(s => s.Role)
-            .HasColumnType("TINYINT")
+        builder.Property(s => s.IsAdmin)
+            .HasColumnType("BIT")
             .IsRequired();
         
         builder.Property(s => s.CreatedAt)

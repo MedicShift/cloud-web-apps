@@ -1,4 +1,3 @@
-using CoreApiApp.Common.Enums;
 using Sieve.Attributes;
 
 namespace CoreApiApp.Data.Entities;
@@ -21,8 +20,10 @@ public class Staff
     public Department? Department { get; set; } = null;
     public Hospital Hospital { get; set; }
     
-    [Sieve(CanFilter = true, CanSort = true)]
-    public Role Role { get; set; }
+    public Designation Designation { get; set; }
+    
+    public int DesignationId { get; set; }
+    public bool IsAdmin { get; set; }
     public string CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public DateTime? DeletedAt { get; set; }

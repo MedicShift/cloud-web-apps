@@ -4,28 +4,28 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CoreApiApp.Configurations;
 
-public class DeparmentConfiguration : IEntityTypeConfiguration<Department>
+public class DesignationConfiguration : IEntityTypeConfiguration<Designation>
 {
-    public void Configure(EntityTypeBuilder<Department> builder)
+    public void Configure(EntityTypeBuilder<Designation> builder)
     {
-        builder.ToTable("Department");
+        builder.ToTable("Designation");
 
         builder.HasKey(d => d.Id);
         
         builder.Property(d => d.Guid)
             .HasDefaultValueSql("NEWID()");
 
-        builder.Property(d => d.Name)
+        builder.Property(d => d.Title)
             .HasColumnType("NVARCHAR(256)")
             .IsRequired();
         
         builder.HasMany(d => d.Staffs)
-            .WithOne(s => s.Department)
-            .HasForeignKey(s => s.DepartmentId)
-            .IsRequired(false);
+            .WithOne(s => s.Designation)
+            .HasForeignKey(s => s.DesignationId)
+            .IsRequired(true);
         
         builder.HasOne(d => d.Hospital)             
-            .WithMany(h => h.Departments)        
+            .WithMany(h => h.Designations)        
             .HasForeignKey(d => d.HospitalId)    
             .OnDelete(DeleteBehavior.Restrict);
 

@@ -4,6 +4,7 @@ using CoreApiApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoreApiApp.Migrations
 {
     [DbContext(typeof(CoreDbContext))]
-    partial class CoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250531094614_AddDesignationTable")]
+    partial class AddDesignationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,9 +44,6 @@ namespace CoreApiApp.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<int>("HospitalId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("NVARCHAR(256)");
@@ -55,8 +55,6 @@ namespace CoreApiApp.Migrations
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("HospitalId");
 
                     b.ToTable("Department", (string)null);
                 });
@@ -80,9 +78,6 @@ namespace CoreApiApp.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<int>("HospitalId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("NVARCHAR(256)");
@@ -94,8 +89,6 @@ namespace CoreApiApp.Migrations
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("HospitalId");
 
                     b.ToTable("Designation", (string)null);
                 });
@@ -252,28 +245,6 @@ namespace CoreApiApp.Migrations
                     b.ToTable("DataProtectionKeys");
                 });
 
-            modelBuilder.Entity("CoreApiApp.Data.Entities.Department", b =>
-                {
-                    b.HasOne("CoreApiApp.Data.Entities.Hospital", "Hospital")
-                        .WithMany("Departments")
-                        .HasForeignKey("HospitalId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Hospital");
-                });
-
-            modelBuilder.Entity("CoreApiApp.Data.Entities.Designation", b =>
-                {
-                    b.HasOne("CoreApiApp.Data.Entities.Hospital", "Hospital")
-                        .WithMany("Designations")
-                        .HasForeignKey("HospitalId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Hospital");
-                });
-
             modelBuilder.Entity("CoreApiApp.Data.Entities.Staff", b =>
                 {
                     b.HasOne("CoreApiApp.Data.Entities.Department", "Department")
@@ -311,10 +282,6 @@ namespace CoreApiApp.Migrations
 
             modelBuilder.Entity("CoreApiApp.Data.Entities.Hospital", b =>
                 {
-                    b.Navigation("Departments");
-
-                    b.Navigation("Designations");
-
                     b.Navigation("Staffs");
                 });
 #pragma warning restore 612, 618

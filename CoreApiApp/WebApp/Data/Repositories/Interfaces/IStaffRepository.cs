@@ -11,4 +11,6 @@ public interface IStaffRepository
     Task<bool> CreateHospitalStaffAsync(CreateStaffRequest staff);
     Task<bool> UpdateHospitalStaffAsync(UpdateStaffRequest staff);
     Task<bool> DeleteHospitalStaffAsync(Guid staff);
+    Task<List<DesignationResponse>> GetStaffDesignationsAsync(Guid hospitalGuid);
+
 }

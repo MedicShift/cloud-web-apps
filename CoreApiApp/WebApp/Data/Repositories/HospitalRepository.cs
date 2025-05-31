@@ -44,15 +44,19 @@ public class HospitalRepository : IHospitalRepository
         return result > 0;
     }
 
-    public async Task<List<DepartmentResponse>> GetDepartmentsAsync()
-    {
-       var departments =  await _context.Department.ToListAsync();
-       var response = DeparmentMapper.ToResponseList(departments);
+ 
+    public async Task<List<DepartmentResponse>> GetHospitalDepartmentsAsync(Guid hospitalGuid)
+    { 
+        var hospital = _context.Hospital.FirstOrDefault(h => h.Guid == hospitalGuid);
+        var departments = await _context.Department.Where(d => d.HospitalId == hospital.Id).ToListAsync();
+        
+        var response = DeparmentMapper.ToResponseList(departments);
        
-       if (departments == null)
-       {
-           throw new NotFoundException("Departments not found.");
-       }
+           if (departments == null)
+           {
+               throw new NotFoundException("Departments not found.");
+           }
+           
        return response;
     }
 }
