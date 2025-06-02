@@ -61,4 +61,4 @@ jobs:
         with:
           app-name: 'CoreApiApp'
           slot-name: 'Production'
-          package: ./publish
+          package: ./.net-app
