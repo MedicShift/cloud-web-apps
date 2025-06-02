@@ -11,6 +11,8 @@ public class CoreDbContext : DbContext, ICoreDbContext, IDataProtectionKeyContex
     public DbSet<Staff> Staff { get; set; }
     public DbSet<Department> Department { get; set; }
     public DbSet<Designation> Designation { get; set; }
+    public DbSet<Shift> Shift { get; set; }
+    public DbSet<Schedule> Schedule { get; set; }
 
     public DbSet<DataProtectionKey> DataProtectionKeys { get; }
 

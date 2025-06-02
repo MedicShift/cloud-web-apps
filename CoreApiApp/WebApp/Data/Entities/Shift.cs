@@ -8,4 +8,6 @@ public class Shift
     public string EndTime { get; set; }
     public string CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public ICollection<Schedule> Schedules { get; set; }
+
 }
