@@ -57,6 +57,55 @@ public class HospitalRepository : IHospitalRepository
                throw new NotFoundException("Departments not found.");
            }
            
-       return response;
+           return response;
+    }
+    
+    public async Task<bool> CreateHospitalDepartmentAsync(string departmentName, Guid hospitalGuid)
+    {
+        var hospital = _context.Hospital.FirstOrDefault(h => h.Guid == hospitalGuid);
+        if (hospital == null)
+        {
+            return false;
+        }
+
+        var department = new Department
+        {
+            Name = departmentName,
+            HospitalId = hospital.Id,
+        };
+        
+        await _context.Department.AddAsync(department);
+
+        var result = await _context.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> UpdateHospitalDepartmentAsync(string departmentName, Guid departmentGuid)
+    {
+        var department = await _context.Department.FirstOrDefaultAsync(d => d.Guid == departmentGuid);
+
+        if (department == null)
+        {
+            return await Task.FromResult(false);
+        }
+        
+        department.Name = departmentName;
+        var result = await _context.SaveChangesAsync();
+        return result > 0;
+    }
+    
+    public async Task<bool> DeleteHospitalDepartmentAsync(Guid staffGuid)
+    {
+        var department = _context.Department.FirstOrDefault(d => d.Guid == staffGuid);
+        
+        if (department != null)
+        {
+            _context.Department.Remove(department);
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
+
+        }
+        
+        return await Task.FromResult(false);
     }
 }
