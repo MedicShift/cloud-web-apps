@@ -8,6 +8,8 @@ public class Schedule
     public int StaffId { get; set; }
     public Shift Shift { get; set; }
     public int ShiftId { get; set; }
+    public Department Department { get; set; }
+    public int DepartmentId { get; set; }
     public string ScheduledDate { get; set; }
     public string CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

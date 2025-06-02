@@ -24,6 +24,11 @@ public class ScheduleConfiguration
             .WithMany(sh => sh.Schedules)
             .HasForeignKey(sc => sc.ShiftId)
             .IsRequired(true);
+        
+        builder.HasOne(sc => sc.Department)
+            .WithMany(d => d.Schedules)
+            .HasForeignKey(sc => sc.DepartmentId)
+            .IsRequired(true);
 
         builder.Property(sc => sc.ScheduledDate)
             .HasColumnType("NVARCHAR(256)")
