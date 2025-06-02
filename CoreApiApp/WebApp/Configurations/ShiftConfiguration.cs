@@ -15,6 +15,10 @@ public class ShiftConfiguration
         builder.Property(s=> s.Guid)
             .HasDefaultValueSql("NEWID()");
 
+        builder.Property(s => s.ShiftType)
+            .HasColumnType("NVARCHAR(256)")
+            .IsRequired();
+        
         builder.Property(s=> s.StartTime)
             .HasColumnType("NVARCHAR(256)")
             .IsRequired();
@@ -22,7 +26,12 @@ public class ShiftConfiguration
         builder.Property(s=> s.EndTime)
             .HasColumnType("NVARCHAR(256)")
             .IsRequired();
-
+        
+        builder.HasOne(s => s.Hospital)             
+            .WithMany(h => h.Shifts)        
+            .HasForeignKey(d => d.HospitalId)    
+            .OnDelete(DeleteBehavior.Restrict);
+        
         builder.Property(s=> s.CreatedAt)
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired();

@@ -226,6 +226,13 @@ namespace CoreApiApp.Migrations
                     b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("HospitalId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ShiftType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("StartTime")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -234,6 +241,8 @@ namespace CoreApiApp.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HospitalId");
 
                     b.ToTable("Shift");
                 });
@@ -374,6 +383,17 @@ namespace CoreApiApp.Migrations
                     b.Navigation("Staff");
                 });
 
+            modelBuilder.Entity("CoreApiApp.Data.Entities.Shift", b =>
+                {
+                    b.HasOne("CoreApiApp.Data.Entities.Hospital", "Hospital")
+                        .WithMany("Shifts")
+                        .HasForeignKey("HospitalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hospital");
+                });
+
             modelBuilder.Entity("CoreApiApp.Data.Entities.Staff", b =>
                 {
                     b.HasOne("CoreApiApp.Data.Entities.Department", "Department")
@@ -416,6 +436,8 @@ namespace CoreApiApp.Migrations
                     b.Navigation("Departments");
 
                     b.Navigation("Designations");
+
+                    b.Navigation("Shifts");
 
                     b.Navigation("Staffs");
                 });
