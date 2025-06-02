@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using CoreApiApp.Data.Repositories.Interfaces;
+using CoreApiApp.Models;
 using CoreApiApp.Models.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +9,7 @@ using Sieve.Models;
 namespace CoreApiApp.Controllers;
 
 [ApiController]
-// [Authorize]
+[Authorize]
 [Route("api/[controller]")]
 public class StaffController : ControllerBase
 {
@@ -16,6 +18,21 @@ public class StaffController : ControllerBase
     public StaffController(IStaffRepository staffRepository)
     {
         _staffRepository = staffRepository;
+    }
+    
+    [HttpGet("Me")]
+    public async Task<IActionResult> GetStaffProfile()
+    {
+        var staffProfile = new StaffProfile()
+        {
+            StaffGuid = User.FindFirst("staff_guid").Value,
+            HospitalGuid = User.FindFirst("hospital_guid").Value,
+            FirstName = User.FindFirst("first_name").Value,
+            LastName = User.FindFirst("last_name").Value,
+            EmailId = User.FindFirst(ClaimTypes.Email)?.Value,
+            Designation = User.FindFirst("designation").Value
+        };
+        return Ok(staffProfile);
     }
     
     [HttpGet("All")]
