@@ -11,7 +11,7 @@ public class Schedule
     public Department Department { get; set; }
     public int DepartmentId { get; set; }
     public string ScheduledDate { get; set; }
-    public string CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     
 }

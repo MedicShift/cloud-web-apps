@@ -24,7 +24,7 @@ public class Staff
     
     public int DesignationId { get; set; }
     public bool IsAdmin { get; set; }
-    public string CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public DateTime? DeletedAt { get; set; }
     public ICollection<Schedule> Schedules { get; set; }

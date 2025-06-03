@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CoreApiApp.Configurations;
 
-public class ShiftConfiguration
+public class ShiftConfiguration : IEntityTypeConfiguration<Shift>
 {
     public void Configure(EntityTypeBuilder<Shift> builder)
     {
@@ -13,6 +13,7 @@ public class ShiftConfiguration
         builder.HasKey(s => s.Id);
         
         builder.Property(s=> s.Guid)
+            .HasColumnType("UNIQUEIDENTIFIER")
             .HasDefaultValueSql("NEWID()");
 
         builder.Property(s => s.ShiftType)
@@ -33,10 +34,12 @@ public class ShiftConfiguration
             .OnDelete(DeleteBehavior.Restrict);
         
         builder.Property(s=> s.CreatedAt)
+            .HasColumnType("DATETIME2") 
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired();
 
         builder.Property(s=> s.UpdatedAt)
+            .HasColumnType("DATETIME2") 
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired()
             .IsConcurrencyToken();

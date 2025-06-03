@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CoreApiApp.Configurations;
 
-public class DeparmentConfiguration : IEntityTypeConfiguration<Department>
+public class DepartmentConfiguration : IEntityTypeConfiguration<Department>
 {
     public void Configure(EntityTypeBuilder<Department> builder)
     {
@@ -30,10 +30,12 @@ public class DeparmentConfiguration : IEntityTypeConfiguration<Department>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(d => d.CreatedAt)
+            .HasColumnType("datetime2")
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired();
 
         builder.Property(d => d.UpdatedAt)
+            .HasColumnType("datetime2")
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired()
             .IsConcurrencyToken();

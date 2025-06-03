@@ -36,15 +36,18 @@ public class StaffConfiguration : IEntityTypeConfiguration<Staff>
             .IsRequired();
         
         builder.Property(s => s.CreatedAt)
+            .HasColumnType("datetime2")
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired();
         
         builder.Property(s => s.UpdatedAt)
+            .HasColumnType("datetime2")
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired()
             .IsConcurrencyToken();
         
         builder.Property(s => s.DeletedAt)
+            .HasColumnType("datetime2")
             .IsRequired(false)
             .IsConcurrencyToken();
             

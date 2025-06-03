@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CoreApiApp.Configurations;
 
-public class ScheduleConfiguration
+public class ScheduleConfiguration : IEntityTypeConfiguration<Schedule>
 {
     public void Configure(EntityTypeBuilder<Schedule> builder)
     {
@@ -31,14 +31,16 @@ public class ScheduleConfiguration
             .IsRequired(true);
 
         builder.Property(sc => sc.ScheduledDate)
-            .HasColumnType("NVARCHAR(256)")
+            .HasColumnType("NVARCHAR(255)")
             .IsRequired();
         
         builder.Property(sc => sc.CreatedAt)
+            .HasColumnType("datetime2")
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired();
         
         builder.Property(sc=> sc.UpdatedAt)
+            .HasColumnType("datetime2")
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired()
             .IsConcurrencyToken();

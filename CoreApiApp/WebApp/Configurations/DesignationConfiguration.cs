@@ -30,10 +30,12 @@ public class DesignationConfiguration : IEntityTypeConfiguration<Designation>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(d => d.CreatedAt)
+            .HasColumnType("datetime2")
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired();
 
         builder.Property(d => d.UpdatedAt)
+            .HasColumnType("datetime2")
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired()
             .IsConcurrencyToken();
