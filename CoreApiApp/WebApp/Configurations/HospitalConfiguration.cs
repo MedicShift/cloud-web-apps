@@ -21,7 +21,7 @@ public class HospitalConfiguration : IEntityTypeConfiguration<Hospital>
             .IsRequired();
         
         builder.Property(h => h.EmailId)
-            .HasColumnType("varchar(256)")
+            .HasColumnType("NVARCHAR(256)")
             .IsRequired();
         
         builder.Property(h => h.Address)
@@ -42,7 +42,7 @@ public class HospitalConfiguration : IEntityTypeConfiguration<Hospital>
         
         builder.Property(h => h.PlanExpiresOn)
             .HasColumnType("datetime")
-            .HasDefaultValueSql("DATEADD(day, 30, GETDATE())")
+            .HasDefaultValueSql("DATEADD(day, 30, GETUTCDATE())")
             .IsRequired();
         
         builder.HasMany(h => h.Staffs)
@@ -51,15 +51,18 @@ public class HospitalConfiguration : IEntityTypeConfiguration<Hospital>
             .IsRequired();
 
         builder.Property(h => h.CreatedAt)
+            .HasColumnType("datetime2")
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired();
 
         builder.Property(h => h.UpdatedAt)
+            .HasColumnType("datetime2")
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired()
             .IsConcurrencyToken();
         
         builder.Property(h => h.DeletedAt)
+            .HasColumnType("datetime2")
             .IsRequired(false)
             .IsConcurrencyToken();
 
