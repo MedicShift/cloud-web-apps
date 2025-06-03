@@ -75,6 +75,8 @@ builder.Services.AddDbContext<ICoreDbContext, CoreDbContext>(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IHospitalRepository, HospitalRepository>();
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
 builder.Services.AddScoped<SieveProcessor>();
 builder.Services.AddScoped<ISieveCustomFilterMethods, SieveCustomFilter>();
 builder.Services.AddAuthorization();

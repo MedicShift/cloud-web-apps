@@ -13,8 +13,12 @@ public class Hospital
     public SetupStatus SetupStatus {get;set;}
     public PlanStatus PlanStatus {get;set;}
     public DateTime PlanExpiresOn { get; set; }
-    public string CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public DateTime? DeletedAt { get; set; }
     public ICollection<Staff> Staffs { get; set; } = null!;
+    public ICollection<Department> Departments { get; set; }
+    public ICollection<Designation> Designations { get; set; }
+    public ICollection<Shift> Shifts { get; set; }
+
 }

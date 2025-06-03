@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using CoreApiApp.Data.Repositories.Interfaces;
+using CoreApiApp.Models;
 using CoreApiApp.Models.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +18,21 @@ public class StaffController : ControllerBase
     public StaffController(IStaffRepository staffRepository)
     {
         _staffRepository = staffRepository;
+    }
+    
+    [HttpGet("Me")]
+    public async Task<IActionResult> GetStaffProfile()
+    {
+        var staffProfile = new StaffProfile()
+        {
+            StaffGuid = User.FindFirst("staff_guid").Value,
+            HospitalGuid = User.FindFirst("hospital_guid").Value,
+            FirstName = User.FindFirst("first_name").Value,
+            LastName = User.FindFirst("last_name").Value,
+            EmailId = User.FindFirst(ClaimTypes.Email)?.Value,
+            Designation = User.FindFirst("designation").Value
+        };
+        return Ok(staffProfile);
     }
     
     [HttpGet("All")]
@@ -44,6 +61,7 @@ public class StaffController : ControllerBase
     public async Task<ActionResult<string>> CreateStaff(CreateStaffRequest request)
     {
         request.HospitalId = Guid.Parse(User.FindFirst("hospital_guid")?.Value);
+            
         var response = await _staffRepository.CreateHospitalStaffAsync(request);
         if (!response)
         {
@@ -57,6 +75,8 @@ public class StaffController : ControllerBase
     public async Task<ActionResult<string>> UpdateStaff(UpdateStaffRequest request)
     {
         request.StaffGuid = Guid.Parse(User.FindFirst("staff_guid")?.Value);
+        request.HospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value);
+        
         var response = await _staffRepository.UpdateHospitalStaffAsync(request);
         
         if (!response)
@@ -76,5 +96,13 @@ public class StaffController : ControllerBase
             return Conflict(new { message = "Failed to delete staff" });
         }
         return Ok(new { success = true, message = "Staff deleted successfully" });
+    }
+    
+            
+    [HttpGet("Designations")]
+    public async Task<IActionResult> GetDesignationsAsync()
+    {
+        var hospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value);
+        return Ok(await _staffRepository.GetStaffDesignationsAsync(hospitalGuid));
     }
 }

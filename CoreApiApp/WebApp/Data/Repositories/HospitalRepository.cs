@@ -44,15 +44,68 @@ public class HospitalRepository : IHospitalRepository
         return result > 0;
     }
 
-    public async Task<List<DepartmentResponse>> GetDepartmentsAsync()
-    {
-       var departments =  await _context.Department.ToListAsync();
-       var response = DeparmentMapper.ToResponseList(departments);
+ 
+    public async Task<List<DepartmentResponse>> GetHospitalDepartmentsAsync(Guid hospitalGuid)
+    { 
+        var hospital = _context.Hospital.FirstOrDefault(h => h.Guid == hospitalGuid);
+        var departments = await _context.Department.Where(d => d.HospitalId == hospital.Id).ToListAsync();
+        
+        var response = DeparmentMapper.ToResponseList(departments);
        
-       if (departments == null)
-       {
-           throw new NotFoundException("Departments not found.");
-       }
-       return response;
+           if (departments == null)
+           {
+               throw new NotFoundException("Departments not found.");
+           }
+           
+           return response;
+    }
+    
+    public async Task<bool> CreateHospitalDepartmentAsync(string departmentName, Guid hospitalGuid)
+    {
+        var hospital = _context.Hospital.FirstOrDefault(h => h.Guid == hospitalGuid);
+        if (hospital == null)
+        {
+            return false;
+        }
+
+        var department = new Department
+        {
+            Name = departmentName,
+            HospitalId = hospital.Id,
+        };
+        
+        await _context.Department.AddAsync(department);
+
+        var result = await _context.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> UpdateHospitalDepartmentAsync(string departmentName, Guid departmentGuid)
+    {
+        var department = await _context.Department.FirstOrDefaultAsync(d => d.Guid == departmentGuid);
+
+        if (department == null)
+        {
+            return await Task.FromResult(false);
+        }
+        
+        department.Name = departmentName;
+        var result = await _context.SaveChangesAsync();
+        return result > 0;
+    }
+    
+    public async Task<bool> DeleteHospitalDepartmentAsync(Guid staffGuid)
+    {
+        var department = _context.Department.FirstOrDefault(d => d.Guid == staffGuid);
+        
+        if (department != null)
+        {
+            _context.Department.Remove(department);
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
+
+        }
+        
+        return await Task.FromResult(false);
     }
 }

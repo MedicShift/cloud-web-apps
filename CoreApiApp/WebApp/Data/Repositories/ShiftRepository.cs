@@ -1,0 +1,88 @@
+using CoreApiApp.Common.Exceptions;
+using CoreApiApp.Common.Mappings;
+using CoreApiApp.Data.Entities;
+using CoreApiApp.Data.Repositories.Interfaces;
+using CoreApiApp.Models.Requests;
+using CoreApiApp.Models.Responses;
+using Microsoft.EntityFrameworkCore;
+
+namespace CoreApiApp.Data.Repositories;
+
+public class ShiftRepository : IShiftRepository
+{
+    private readonly ICoreDbContext _context;
+
+    public ShiftRepository(ICoreDbContext context)
+    {
+        _context = context;
+    }
+    public async Task<List<ShiftResponse>> GetAllHospitalShiftsAsync(Guid hospitalGuid)
+    {
+        var hospital = _context.Hospital.FirstOrDefault(h => h.Guid == hospitalGuid);
+
+        var shifts = _context.Shift.Where(sh => sh.HospitalId == hospital.Id)
+            .AsNoTracking()
+            .ToList();
+
+        if (shifts == null)
+        {
+            throw new NotFoundException("Shifts not found.");        
+        }
+        var response = ShiftMapper.ToResponseList(shifts);
+
+        return response;
+    }
+
+    public async Task<bool> CreateHospitalShiftAsync(CreateShiftRequest request, Guid hospitalGuid)
+    {
+        var hospital = _context.Hospital.FirstOrDefault(h => h.Guid == hospitalGuid);
+        if (hospital == null)
+        {
+            return false;
+        }
+
+        var shift = new Shift()
+        {
+            ShiftType = request.ShiftType,
+            StartTime = request.StartTime,
+            EndTime = request.EndTime,
+            HospitalId = hospital.Id,
+        };
+        await _context.Shift.AddAsync(shift);
+
+        var result = await _context.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> UpdateHospitalShiftAsync(UpdateShiftRequest request)
+    {
+        var shift = await _context.Shift.FirstOrDefaultAsync(d => d.Guid == request.ShiftGuid);
+
+        if (shift == null)
+        {
+            return await Task.FromResult(false);
+        }
+        
+        shift.ShiftType = request.ShiftType;
+        shift.StartTime = request.StartTime;
+        shift.EndTime = request.EndTime;
+        
+        var result = await _context.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> DeleteHospitalShiftAsync(Guid shiftGuid)
+    {
+        var shift = _context.Shift.FirstOrDefault(d => d.Guid == shiftGuid);
+        
+        if (shift != null)
+        {
+            _context.Shift.Remove(shift);
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
+
+        }
+        
+        return await Task.FromResult(false);
+    }
+}

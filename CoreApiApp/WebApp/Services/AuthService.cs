@@ -29,6 +29,8 @@ public class AuthService : IAuthService
     {
         var user = await _coreDbContext.Staff
             .Include(s => s.Hospital)
+            .Include(s => s.Designation)
+            .Include(s => s.Department)
             .FirstOrDefaultAsync(u => u.EmailId == request.Email);
         
         var users = new Staff();
@@ -49,9 +51,12 @@ public class AuthService : IAuthService
     private string CreateToken(Staff staff)
     {
         var claims = new List<Claim>();
-        claims.Add(new Claim(ClaimTypes.Name, staff.EmailId));
+        claims.Add(new Claim(ClaimTypes.Email, staff.EmailId));
         claims.Add(new Claim(ClaimTypeConstants.StaffGuid, staff.Guid.ToString()));
         claims.Add(new Claim(ClaimTypeConstants.HospitalGuid, staff.Hospital.Guid.ToString()));
+        claims.Add(new Claim(ClaimTypeConstants.FirstName, staff.FirstName));
+        claims.Add(new Claim(ClaimTypeConstants.LastName, staff.LastName));
+        claims.Add(new Claim(ClaimTypeConstants.Designation, staff.Designation.Title));
         
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config.GetValue<string>("AppSettings:TokenKey")));

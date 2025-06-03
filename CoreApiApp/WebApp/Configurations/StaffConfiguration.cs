@@ -31,20 +31,23 @@ public class StaffConfiguration : IEntityTypeConfiguration<Staff>
             .HasColumnType("NVARCHAR(max)")
             .IsRequired();
         
-        builder.Property(s => s.Role)
-            .HasColumnType("TINYINT")
+        builder.Property(s => s.IsAdmin)
+            .HasColumnType("BIT")
             .IsRequired();
         
         builder.Property(s => s.CreatedAt)
+            .HasColumnType("datetime2")
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired();
         
         builder.Property(s => s.UpdatedAt)
+            .HasColumnType("datetime2")
             .HasDefaultValueSql("GETUTCDATE()")
             .IsRequired()
             .IsConcurrencyToken();
         
         builder.Property(s => s.DeletedAt)
+            .HasColumnType("datetime2")
             .IsRequired(false)
             .IsConcurrencyToken();
             
