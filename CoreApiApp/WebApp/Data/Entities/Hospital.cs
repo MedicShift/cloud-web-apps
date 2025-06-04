@@ -18,7 +18,6 @@ public class Hospital
     public DateTime? DeletedAt { get; set; }
     public ICollection<Staff> Staffs { get; set; } = null!;
     public ICollection<Department> Departments { get; set; }
-    public ICollection<Designation> Designations { get; set; }
     public ICollection<Shift> Shifts { get; set; }
 
 }

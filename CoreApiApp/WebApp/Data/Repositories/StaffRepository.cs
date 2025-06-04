@@ -71,7 +71,6 @@ public class StaffRepository : IStaffRepository
             designation = new Designation
             {
                 Title = request.Designation,
-                HospitalId = hospital.Id
             };
             await _context.Designation.AddAsync(designation);
             await _context.SaveChangesAsync();
@@ -114,7 +113,6 @@ public class StaffRepository : IStaffRepository
             designation = new Designation
             {
                 Title = request.Designation,
-                HospitalId = hospital.Id
             };
             await _context.Designation.AddAsync(designation);
             await _context.SaveChangesAsync();
@@ -146,8 +144,7 @@ public class StaffRepository : IStaffRepository
     
     public async Task<List<DesignationResponse>> GetStaffDesignationsAsync(Guid hospitalGuid)
     { 
-        var hospital = _context.Hospital.FirstOrDefault(h => h.Guid == hospitalGuid);
-        var designations = await _context.Designation.Where(d => d.HospitalId == hospital.Id).ToListAsync();
+        var designations = await _context.Designation.ToListAsync();
         
         var response = DesignationMapper.ToResponseList(designations);
        
