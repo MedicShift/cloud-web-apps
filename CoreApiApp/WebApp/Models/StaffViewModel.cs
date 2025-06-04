@@ -1,4 +1,4 @@
-namespace CoreApiApp.Models.Responses;
+namespace CoreApiApp.Models;
 
 public class StaffViewModel
 {

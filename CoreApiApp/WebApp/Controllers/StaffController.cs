@@ -105,4 +105,87 @@ public class StaffController : ControllerBase
         var hospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value);
         return Ok(await _staffRepository.GetStaffDesignationsAsync(hospitalGuid));
     }
+    
+    [HttpGet("Schedule")]
+    public async Task<IActionResult> GetAllSchedules(string sorts, int page, int pageSize, string filters = "")
+    {
+        var seiveModel = new SieveModel
+        {
+            Filters = filters,
+            Sorts = sorts,
+            Page = page,
+            PageSize = pageSize
+        };
+            
+        var hospitalGuid = User.FindFirst("hospital_guid")?.Value;
+        if (hospitalGuid != null)
+        {
+            return Ok(await _staffRepository.GetSchedulesAsync(seiveModel, Guid.Parse(hospitalGuid)));
+        }
+        
+        return NotFound();
+    }
+
+    [HttpPost("Schedule")]
+    public async Task<ActionResult<string>> CreateSchedule(CreateScheduleRequest request)
+    {
+        if (request.StaffGuid == Guid.Empty)
+        {
+            return BadRequest("Please select a staff member.");
+        }
+
+        if (request.ShiftGuid == Guid.Empty){
+            return BadRequest("Please select a shift.");
+        }
+
+        if (request.DepartmentGuid == Guid.Empty)
+        {
+            return BadRequest("Please select a department.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.ScheduleDate))
+        {
+            return BadRequest("Please provide the schedule date.");
+            
+        }
+
+        if (!DateTime.TryParse(request.ScheduleDate, out _))
+        {
+            return BadRequest("Please enter a valid schedule date.");
+        }
+        
+        var response = await _staffRepository.CreateScheduleAsync(request);
+        
+        if (!response)
+        {
+            return Conflict(new { message = "Failed to create schedule" });
+        }
+
+        return Ok(new { success = true, message = "Created new schedule." });
+    }
+    
+    [HttpPut("Schedule")]
+    public async Task<ActionResult<string>> UpdateSchedule(UpdateScheduleRequest request)
+    {
+        
+        var response = await _staffRepository.UpdateScheduleAsync(request);
+        
+        if (!response)
+        {
+            return Conflict(new { message = "Failed to update schedule" });
+        }
+        return Ok(new { success = true, message = "Schedule updated successfully" });
+    }
+
+    [HttpDelete("Schedule")]
+    public async Task<ActionResult<string>> DeleteSchedule(Guid scheduleGuid)
+    {
+        var response = await _staffRepository.DeleteScheduleAsync(scheduleGuid);
+        
+        if (!response)
+        {
+            return Conflict(new { message = "Failed to delete schedule" });
+        }
+        return Ok(new { success = true, message = "Schedule deleted successfully" });
+    }
 }

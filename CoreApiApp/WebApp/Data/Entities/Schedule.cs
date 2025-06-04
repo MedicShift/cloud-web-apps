@@ -1,3 +1,5 @@
+using Sieve.Attributes;
+
 namespace CoreApiApp.Data.Entities;
 
 public class Schedule
