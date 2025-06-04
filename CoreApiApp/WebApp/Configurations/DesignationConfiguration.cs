@@ -23,11 +23,6 @@ public class DesignationConfiguration : IEntityTypeConfiguration<Designation>
             .WithOne(s => s.Designation)
             .HasForeignKey(s => s.DesignationId)
             .IsRequired(true);
-        
-        builder.HasOne(d => d.Hospital)             
-            .WithMany(h => h.Designations)        
-            .HasForeignKey(d => d.HospitalId)    
-            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(d => d.CreatedAt)
             .HasColumnType("datetime2")

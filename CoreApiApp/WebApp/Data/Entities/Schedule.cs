@@ -1,3 +1,5 @@
+using Sieve.Attributes;
+
 namespace CoreApiApp.Data.Entities;
 
 public class Schedule
@@ -10,6 +12,7 @@ public class Schedule
     public int ShiftId { get; set; }
     public Department Department { get; set; }
     public int DepartmentId { get; set; }
+    [Sieve(CanFilter = true, CanSort = true)]
     public string ScheduledDate { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

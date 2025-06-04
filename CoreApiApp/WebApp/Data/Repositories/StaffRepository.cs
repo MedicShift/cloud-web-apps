@@ -34,19 +34,19 @@ public class StaffRepository : IStaffRepository
             .Where(s => s.IsAdmin == false)
             .Where(s => s.Hospital.Guid == hospitaGuid).AsNoTracking();
         
-        var filteredStaffs = _sieveProcessor.Apply(sieveModel, query, applyPagination: false);
-        var count =  filteredStaffs.Count();
+        var filteredQuery  = _sieveProcessor.Apply(sieveModel, query, applyPagination: false);
+        var count =  await filteredQuery.CountAsync();
         
-        var staffs = _sieveProcessor.Apply(sieveModel, filteredStaffs, applyPagination: true);
+        var pagedQuery  = _sieveProcessor.Apply(sieveModel, filteredQuery , applyPagination: true);
         
-        if (staffs == null)
+        if (pagedQuery  == null)
         {
             return new StaffResponse();
         }
         
         var response = new StaffResponse()
         {
-            Staffs = staffs.Select(s => StaffMapper.ToResponse(s)),
+            Staffs = await pagedQuery.Select(s => StaffMapper.ToResponse(s)).ToListAsync(),
             TotalCount = count
         };
         
@@ -71,7 +71,6 @@ public class StaffRepository : IStaffRepository
             designation = new Designation
             {
                 Title = request.Designation,
-                HospitalId = hospital.Id
             };
             await _context.Designation.AddAsync(designation);
             await _context.SaveChangesAsync();
@@ -114,7 +113,6 @@ public class StaffRepository : IStaffRepository
             designation = new Designation
             {
                 Title = request.Designation,
-                HospitalId = hospital.Id
             };
             await _context.Designation.AddAsync(designation);
             await _context.SaveChangesAsync();
@@ -146,8 +144,7 @@ public class StaffRepository : IStaffRepository
     
     public async Task<List<DesignationResponse>> GetStaffDesignationsAsync(Guid hospitalGuid)
     { 
-        var hospital = _context.Hospital.FirstOrDefault(h => h.Guid == hospitalGuid);
-        var designations = await _context.Designation.Where(d => d.HospitalId == hospital.Id).ToListAsync();
+        var designations = await _context.Designation.ToListAsync();
         
         var response = DesignationMapper.ToResponseList(designations);
        
@@ -157,5 +154,95 @@ public class StaffRepository : IStaffRepository
         }
            
         return response;
+    }
+    
+    public async Task<ScheduleResponse> GetSchedulesAsync(SieveModel sieveModel, Guid hospitalGuid)
+    {
+        
+        var query =  _context.Schedule
+            .Include(s => s.Staff)
+            .Include(s => s.Shift)
+            .Include(s => s.Department)
+                .ThenInclude(d => d.Hospital)
+            .Where(s => s.Department.Hospital.Guid == hospitalGuid)
+            .AsNoTracking();
+        
+        var filteredQuery  = _sieveProcessor.Apply(sieveModel, query, applyPagination: false);
+        var count = await filteredQuery.CountAsync();
+        
+        var pagedQuery  = _sieveProcessor.Apply(sieveModel, filteredQuery , applyPagination: true);
+        
+        if (pagedQuery == null)
+        {
+            return new ScheduleResponse();
+        }
+        
+        var response = new ScheduleResponse()
+        {
+            Schedules = await pagedQuery.Select(s => ScheduleMapper.ToResponse(s)).ToListAsync(),
+            TotalCount = count
+        };
+        
+        return response;
+    }
+    
+    public async Task<bool> CreateScheduleAsync(CreateScheduleRequest request)
+    {
+
+        var staff = _context.Staff.FirstOrDefault(s => s.Guid == request.StaffGuid);
+        var shift = _context.Shift.FirstOrDefault(s => s.Guid == request.ShiftGuid);
+        var department = _context.Department.FirstOrDefault(d => d.Guid == request.DepartmentGuid);
+
+        if (staff == null || shift == null || department == null)
+        {
+            return await Task.FromResult(false);
+        }
+
+        var schedule = new Schedule()
+        {
+            StaffId = staff.Id,
+            ShiftId = shift.Id,
+            DepartmentId = department.Id,
+            ScheduledDate = request.ScheduleDate
+        };
+        
+        await _context.Schedule.AddAsync(schedule);
+        var result = await _context.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> UpdateScheduleAsync(UpdateScheduleRequest request)
+    {
+        var schedule = await _context.Schedule.FirstOrDefaultAsync(s => s.Guid == request.ScheduleGuid);
+        var staff = _context.Staff.FirstOrDefault(s => s.Guid == request.StaffGuid);
+        var shift = _context.Shift.FirstOrDefault(s => s.Guid == request.ShiftGuid);
+        var department = _context.Department.FirstOrDefault(d => d.Guid == request.DepartmentGuid);
+        
+        if (schedule == null || staff == null || shift == null || department == null)
+        {
+            return await Task.FromResult(false);
+        }
+
+        schedule.StaffId = staff.Id;
+        schedule.ShiftId = shift.Id;
+        schedule.DepartmentId = department.Id;
+        schedule.ScheduledDate = request.ScheduleDate;
+        
+        var result = await _context.SaveChangesAsync();
+        return result > 0;
+    }
+    
+    public async Task<bool> DeleteScheduleAsync(Guid scheduleGuid)
+    {
+        var schedule = _context.Schedule.FirstOrDefault(s => s.Guid == scheduleGuid);
+        if (schedule != null)
+        {
+            _context.Schedule.Remove(schedule);
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
+
+        }
+        
+        return await Task.FromResult(false);
     }
 }

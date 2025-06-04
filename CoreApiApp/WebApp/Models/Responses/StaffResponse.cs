@@ -4,7 +4,7 @@ namespace CoreApiApp.Models.Responses;
 
 public class StaffResponse
 {
-    public IQueryable<StaffViewModel> Staffs { get; set; }
+    public List<StaffViewModel> Staffs { get; set; }
     public int TotalCount { get; set; }
     
 }
