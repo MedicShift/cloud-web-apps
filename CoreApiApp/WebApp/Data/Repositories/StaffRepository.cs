@@ -106,7 +106,6 @@ public class StaffRepository : IStaffRepository
 
         var designation = await _context.Designation.FirstOrDefaultAsync(d => d.Title.ToLower() == normalizedTitle);
         var department = await _context.Department.FirstOrDefaultAsync(d => d.Guid == request.DepartmentId);
-        var hospital = _context.Hospital.FirstOrDefault(h => h.Guid == request.HospitalGuid);
         
         if (designation == null)
         {

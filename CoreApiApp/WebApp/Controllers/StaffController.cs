@@ -74,9 +74,6 @@ public class StaffController : ControllerBase
     [HttpPut]
     public async Task<ActionResult<string>> UpdateStaff(UpdateStaffRequest request)
     {
-        request.StaffGuid = Guid.Parse(User.FindFirst("staff_guid")?.Value);
-        request.HospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value);
-        
         var response = await _staffRepository.UpdateHospitalStaffAsync(request);
         
         if (!response)
