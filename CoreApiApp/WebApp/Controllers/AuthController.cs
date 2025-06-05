@@ -24,7 +24,7 @@ namespace CoreApiApp.Controllers
             {
                 HttpOnly = true,
                 Secure = true, // only over HTTPS
-                SameSite = SameSiteMode.Lax,
+                SameSite = SameSiteMode.None,
                 Expires = DateTimeOffset.UtcNow.AddHours(1)
             });
 
@@ -38,7 +38,7 @@ namespace CoreApiApp.Controllers
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Lax,
+                SameSite = SameSiteMode.None,
                 Expires = DateTimeOffset.UtcNow.AddDays(-1)
             });
 
