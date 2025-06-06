@@ -157,6 +157,122 @@ namespace CoreApiApp.Migrations
                     b.ToTable("Hospital", (string)null);
                 });
 
+            modelBuilder.Entity("CoreApiApp.Data.Entities.LeaveRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("EndDate")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR(256)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR(256)");
+
+                    b.Property<int>("RequestId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReviewedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StartDate")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR(256)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequestId")
+                        .IsUnique();
+
+                    b.HasIndex("ReviewedBy");
+
+                    b.ToTable("LeaveRequest");
+                });
+
+            modelBuilder.Entity("CoreApiApp.Data.Entities.Request", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("Guid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<int>("RequestedBy")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TINYINT")
+                        .HasDefaultValue((byte)0);
+
+                    b.Property<int>("TypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequestedBy");
+
+                    b.HasIndex("TypeId");
+
+                    b.ToTable("Request");
+                });
+
+            modelBuilder.Entity("CoreApiApp.Data.Entities.RequestType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR(512)");
+
+                    b.Property<Guid>("Guid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR(256)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RequestType", (string)null);
+                });
+
             modelBuilder.Entity("CoreApiApp.Data.Entities.Schedule", b =>
                 {
                     b.Property<int>("Id")
@@ -348,6 +464,44 @@ namespace CoreApiApp.Migrations
                     b.Navigation("Hospital");
                 });
 
+            modelBuilder.Entity("CoreApiApp.Data.Entities.LeaveRequest", b =>
+                {
+                    b.HasOne("CoreApiApp.Data.Entities.Request", "Request")
+                        .WithOne("LeaveRequest")
+                        .HasForeignKey("CoreApiApp.Data.Entities.LeaveRequest", "RequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CoreApiApp.Data.Entities.Staff", "Staff")
+                        .WithMany("LeaveRequests")
+                        .HasForeignKey("ReviewedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Request");
+
+                    b.Navigation("Staff");
+                });
+
+            modelBuilder.Entity("CoreApiApp.Data.Entities.Request", b =>
+                {
+                    b.HasOne("CoreApiApp.Data.Entities.Staff", "Staff")
+                        .WithMany("Requests")
+                        .HasForeignKey("RequestedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CoreApiApp.Data.Entities.RequestType", "RequestType")
+                        .WithMany("Requests")
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RequestType");
+
+                    b.Navigation("Staff");
+                });
+
             modelBuilder.Entity("CoreApiApp.Data.Entities.Schedule", b =>
                 {
                     b.HasOne("CoreApiApp.Data.Entities.Department", "Department")
@@ -432,6 +586,17 @@ namespace CoreApiApp.Migrations
                     b.Navigation("Staffs");
                 });
 
+            modelBuilder.Entity("CoreApiApp.Data.Entities.Request", b =>
+                {
+                    b.Navigation("LeaveRequest")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CoreApiApp.Data.Entities.RequestType", b =>
+                {
+                    b.Navigation("Requests");
+                });
+
             modelBuilder.Entity("CoreApiApp.Data.Entities.Shift", b =>
                 {
                     b.Navigation("Schedules");
@@ -439,6 +604,10 @@ namespace CoreApiApp.Migrations
 
             modelBuilder.Entity("CoreApiApp.Data.Entities.Staff", b =>
                 {
+                    b.Navigation("LeaveRequests");
+
+                    b.Navigation("Requests");
+
                     b.Navigation("Schedules");
                 });
 #pragma warning restore 612, 618
