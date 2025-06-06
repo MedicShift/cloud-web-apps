@@ -19,14 +19,15 @@ public class ShiftRepository : IShiftRepository
     public async Task<List<ShiftResponse>> GetAllHospitalShiftsAsync(Guid hospitalGuid)
     {
         var hospital = _context.Hospital.FirstOrDefault(h => h.Guid == hospitalGuid);
+        if (hospital == null) throw new NotFoundException("Hospital not found.");
 
-        var shifts = _context.Shift.Where(sh => sh.HospitalId == hospital.Id)
+        var shifts = await _context.Shift.Where(sh => sh.HospitalId == hospital.Id)
             .AsNoTracking()
-            .ToList();
+            .ToListAsync();
 
-        if (shifts == null)
+        if (!shifts.Any())
         {
-            throw new NotFoundException("Shifts not found.");        
+            throw new NotFoundException("Shifts not found.");
         }
         var response = ShiftMapper.ToResponseList(shifts);
 
@@ -35,10 +36,13 @@ public class ShiftRepository : IShiftRepository
 
     public async Task<bool> CreateHospitalShiftAsync(CreateShiftRequest request, Guid hospitalGuid)
     {
-        var hospital = _context.Hospital.FirstOrDefault(h => h.Guid == hospitalGuid);
-        if (hospital == null)
+        var hospital = await _context.Hospital.FirstOrDefaultAsync(h => h.Guid == hospitalGuid);
+        if (hospital == null) throw new NotFoundException("Hospital not found.");
+        
+        var exists = await _context.Shift.AnyAsync(s => s.ShiftType == request.ShiftType && s.HospitalId == hospital.Id);
+        if (exists)
         {
-            return false;
+            throw new ConflictException("A shift type with the same name already exists.");
         }
 
         var shift = new Shift()
@@ -60,7 +64,16 @@ public class ShiftRepository : IShiftRepository
 
         if (shift == null)
         {
-            return await Task.FromResult(false);
+            return false;
+        }
+        
+        var exists = await _context.Shift.AnyAsync(s =>
+            s.ShiftType == request.ShiftType &&
+            s.HospitalId == shift.HospitalId &&
+            s.Guid != request.ShiftGuid);        
+        if (exists)
+        {
+            throw new ConflictException("A shift type with the same name already exists.");
         }
         
         shift.ShiftType = request.ShiftType;
@@ -73,7 +86,7 @@ public class ShiftRepository : IShiftRepository
 
     public async Task<bool> DeleteHospitalShiftAsync(Guid shiftGuid)
     {
-        var shift = _context.Shift.FirstOrDefault(d => d.Guid == shiftGuid);
+        var shift = await _context.Shift.FirstOrDefaultAsync(d => d.Guid == shiftGuid);
         
         if (shift != null)
         {
@@ -83,6 +96,6 @@ public class ShiftRepository : IShiftRepository
 
         }
         
-        return await Task.FromResult(false);
+        return false;
     }
 }
