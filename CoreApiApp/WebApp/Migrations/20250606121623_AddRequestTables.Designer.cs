@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoreApiApp.Migrations
 {
     [DbContext(typeof(CoreDbContext))]
-    [Migration("20250606095245_AddRequestTables")]
+    [Migration("20250606121623_AddRequestTables")]
     partial class AddRequestTables
     {
         /// <inheritdoc />
@@ -261,7 +261,7 @@ namespace CoreApiApp.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("NVARCHAR(256)");
 
