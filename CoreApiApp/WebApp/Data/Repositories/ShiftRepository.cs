@@ -60,7 +60,7 @@ public class ShiftRepository : IShiftRepository
 
     public async Task<bool> UpdateHospitalShiftAsync(UpdateShiftRequest request)
     {
-        var shift = await _context.Shift.FirstOrDefaultAsync(d => d.Guid == request.ShiftGuid);
+        var shift = await _context.Shift.FirstOrDefaultAsync(d => d.Guid == request.ShiftId);
 
         if (shift == null)
         {
@@ -70,7 +70,7 @@ public class ShiftRepository : IShiftRepository
         var exists = await _context.Shift.AnyAsync(s =>
             s.ShiftType == request.ShiftType &&
             s.HospitalId == shift.HospitalId &&
-            s.Guid != request.ShiftGuid);        
+            s.Guid != request.ShiftId);        
         if (exists)
         {
             throw new ConflictException("A shift type with the same name already exists.");

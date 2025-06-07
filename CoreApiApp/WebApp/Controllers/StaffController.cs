@@ -21,18 +21,18 @@ public class StaffController : ControllerBase
     }
     
     [HttpGet("Me")]
-    public async Task<IActionResult> GetStaffProfile()
+    public Task<IActionResult> GetStaffProfile()
     {
         var staffProfile = new StaffProfile()
         {
-            StaffGuid = User.FindFirst("staff_guid").Value,
-            HospitalGuid = User.FindFirst("hospital_guid").Value,
-            FirstName = User.FindFirst("first_name").Value,
-            LastName = User.FindFirst("last_name").Value,
+            StaffGuid = User.FindFirst("staff_guid")!.Value,
+            HospitalGuid = User.FindFirst("hospital_guid")!.Value,
+            FirstName = User.FindFirst("first_name")!.Value,
+            LastName = User.FindFirst("last_name")!.Value,
             EmailId = User.FindFirst(ClaimTypes.Email)?.Value,
-            Designation = User.FindFirst("designation").Value
+            Designation = User.FindFirst("designation")!.Value
         };
-        return Ok(staffProfile);
+        return Task.FromResult<IActionResult>(Ok(staffProfile));
     }
     
     [HttpGet("All")]
@@ -60,7 +60,7 @@ public class StaffController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<string>> CreateStaff(CreateStaffRequest request)
     {
-        request.HospitalId = Guid.Parse(User.FindFirst("hospital_guid")?.Value);
+        request.HospitalId = Guid.Parse(User.FindFirst("hospital_guid")?.Value!);
             
         var response = await _staffRepository.CreateHospitalStaffAsync(request);
         if (!response)
@@ -84,9 +84,9 @@ public class StaffController : ControllerBase
     }
 
     [HttpDelete]
-    public async Task<ActionResult<string>> DeleteStaff(Guid staffGuid)
+    public async Task<ActionResult<string>> DeleteStaff(Guid StaffId)
     {
-        var response = await _staffRepository.DeleteHospitalStaffAsync(staffGuid);
+        var response = await _staffRepository.DeleteHospitalStaffAsync(StaffId);
         
         if (!response)
         {
@@ -99,7 +99,7 @@ public class StaffController : ControllerBase
     [HttpGet("Designations")]
     public async Task<IActionResult> GetDesignationsAsync()
     {
-        var hospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value);
+        var hospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value!);
         return Ok(await _staffRepository.GetStaffDesignationsAsync(hospitalGuid));
     }
     
@@ -126,12 +126,12 @@ public class StaffController : ControllerBase
     [HttpPost("Schedule")]
     public async Task<ActionResult<string>> CreateSchedule(CreateScheduleRequest request)
     {
-        if (request.StaffGuid == Guid.Empty)
+        if (request.StaffId == Guid.Empty)
         {
             return BadRequest("Please select a staff member.");
         }
 
-        if (request.ShiftGuid == Guid.Empty){
+        if (request.ShiftId == Guid.Empty){
             return BadRequest("Please select a shift.");
         }
 

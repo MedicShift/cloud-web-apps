@@ -15,9 +15,10 @@ public static class HospitalMapper
         {
             Guid = hospital.Guid,
             Name = hospital.Name,
+            EmailId = hospital.EmailId,
             Address = new Address()
             {
-                Street = address.Street,
+                Street = address!.Street,
                 City = address.City,
                 State = address.State,
                 Pincode = address.Pincode
@@ -25,7 +26,7 @@ public static class HospitalMapper
             ContactInfo = hospital.ContactInfo,
             SetupStatus = hospital.SetupStatus,
             PlanStatus = hospital.PlanStatus,
-            PlanExpiresOn = hospital.PlanExpiresOn
+            PlanExpiresOn = hospital.PlanExpiresOn,
         };
     }
     

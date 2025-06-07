@@ -100,9 +100,9 @@ public class HospitalRepository : IHospitalRepository
         return result > 0;
     }
     
-    public async Task<bool> DeleteHospitalDepartmentAsync(Guid staffGuid)
+    public async Task<bool> DeleteHospitalDepartmentAsync(Guid StaffId)
     {
-        var department = _context.Department.FirstOrDefault(d => d.Guid == staffGuid);
+        var department = _context.Department.FirstOrDefault(d => d.Guid == StaffId);
         
         if (department != null)
         {

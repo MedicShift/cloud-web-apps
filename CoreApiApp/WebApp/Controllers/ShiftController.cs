@@ -21,14 +21,14 @@ public class ShiftController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetShiftsAsync()
     {
-        var hospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value);
+        var hospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value!);
         return Ok(await _shiftRepository.GetAllHospitalShiftsAsync(hospitalGuid));
     }
         
     [HttpPost]
     public async Task<ActionResult<bool>> CreateDepartmentAsync(CreateShiftRequest request)
     {
-        var hospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value);
+        var hospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value!);
         return Ok(await _shiftRepository.CreateHospitalShiftAsync(request, hospitalGuid));
     }
     

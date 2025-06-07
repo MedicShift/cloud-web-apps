@@ -26,7 +26,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:TokenKey"]);
+var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:TokenKey"]!);
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -75,7 +75,7 @@ builder.Services.AddDbContext<ICoreDbContext, CoreDbContext>(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IHospitalRepository, HospitalRepository>();
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
-builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+builder.Services.AddScoped<IRequestRepository, RequestRepository>();
 builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
 builder.Services.AddScoped<SieveProcessor>();
 builder.Services.AddScoped<ISieveCustomFilterMethods, SieveCustomFilter>();

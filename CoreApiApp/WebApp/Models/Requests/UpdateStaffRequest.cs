@@ -4,8 +4,7 @@ namespace CoreApiApp.Models.Requests;
 
 public class UpdateStaffRequest
 {
-    public Guid StaffGuid { get; set; }
-    public Guid HospitalGuid { get; set; }
+    public Guid StaffId { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string EmailId { get; set; }

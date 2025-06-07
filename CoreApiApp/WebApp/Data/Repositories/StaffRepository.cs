@@ -100,7 +100,7 @@ public class StaffRepository : IStaffRepository
 
     public async Task<bool> UpdateHospitalStaffAsync(UpdateStaffRequest request)
     {
-        var staff = await _context.Staff.FirstOrDefaultAsync(s => s.Guid == request.StaffGuid);
+        var staff = await _context.Staff.FirstOrDefaultAsync(s => s.Guid == request.StaffId);
         
         if (staff == null)
         {
@@ -111,7 +111,7 @@ public class StaffRepository : IStaffRepository
         var designation = await _context.Designation.FirstOrDefaultAsync(d => d.Title.ToLower() == normalizedTitle);
         var department = await _context.Department.FirstOrDefaultAsync(d => d.Guid == request.DepartmentId);
         
-        if (await _context.Staff.AnyAsync(s => s.EmailId == request.EmailId && s.Guid != request.StaffGuid))
+        if (await _context.Staff.AnyAsync(s => s.EmailId == request.EmailId && s.Guid != request.StaffId))
         {
             throw new ConflictException("A user with the email already exists.");
         }
@@ -134,9 +134,9 @@ public class StaffRepository : IStaffRepository
         return result > 0;
     }
 
-    public async Task<bool> DeleteHospitalStaffAsync(Guid staffGuid)
+    public async Task<bool> DeleteHospitalStaffAsync(Guid StaffId)
     {
-        var staff = await _context.Staff.FirstOrDefaultAsync(s => s.Guid == staffGuid);
+        var staff = await _context.Staff.FirstOrDefaultAsync(s => s.Guid == StaffId);
         if (staff != null)
         {
             _context.Staff.Remove(staff);
@@ -195,8 +195,8 @@ public class StaffRepository : IStaffRepository
     public async Task<bool> CreateScheduleAsync(CreateScheduleRequest request)
     {
 
-        var staff = await _context.Staff.FirstOrDefaultAsync(s => s.Guid == request.StaffGuid);
-        var shift = await _context.Shift.FirstOrDefaultAsync(s => s.Guid == request.ShiftGuid);
+        var staff = await _context.Staff.FirstOrDefaultAsync(s => s.Guid == request.StaffId);
+        var shift = await _context.Shift.FirstOrDefaultAsync(s => s.Guid == request.ShiftId);
         var department = await _context.Department.FirstOrDefaultAsync(d => d.Guid == request.DepartmentGuid);
 
         if (staff == null || shift == null || department == null)
@@ -219,9 +219,9 @@ public class StaffRepository : IStaffRepository
 
     public async Task<bool> UpdateScheduleAsync(UpdateScheduleRequest request)
     {
-        var schedule = await _context.Schedule.FirstOrDefaultAsync(s => s.Guid == request.ScheduleGuid);
-        var staff = await _context.Staff.FirstOrDefaultAsync(s => s.Guid == request.StaffGuid);
-        var shift = await _context.Shift.FirstOrDefaultAsync(s => s.Guid == request.ShiftGuid);
+        var schedule = await _context.Schedule.FirstOrDefaultAsync(s => s.Guid == request.ScheduleId);
+        var staff = await _context.Staff.FirstOrDefaultAsync(s => s.Guid == request.StaffId);
+        var shift = await _context.Shift.FirstOrDefaultAsync(s => s.Guid == request.ShiftId);
         var department = await _context.Department.FirstOrDefaultAsync(d => d.Guid == request.DepartmentGuid);
         
         if (schedule == null || staff == null || shift == null || department == null)
