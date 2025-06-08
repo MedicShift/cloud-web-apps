@@ -6,10 +6,10 @@ namespace CoreApiApp.Common.Mappings;
 
 public class ScheduleMapper
 {
-    public static ScheduleViewModel ToResponse(Schedule schedule)
+    public static ScheduleResponse ToResponse(Schedule schedule)
     {
 
-        return new ScheduleViewModel()
+        return new ScheduleResponse()
         {
             Guid = schedule.Guid,
             StaffName = schedule.Staff.FirstName + " " + schedule.Staff.LastName,
@@ -19,7 +19,7 @@ public class ScheduleMapper
         };
     }
     
-    public static List<ScheduleViewModel> ToResponseList(List<Schedule> schedules)
+    public static List<ScheduleResponse> ToResponseList(List<Schedule> schedules)
     {
         return schedules.Select(s => ToResponse(s)).ToList();
     }

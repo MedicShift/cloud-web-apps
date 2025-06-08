@@ -18,7 +18,7 @@ public class ShiftController : ControllerBase
         _shiftRepository = shiftRepository;
     }
     
-    [HttpGet]
+    [HttpGet("All")]
     public async Task<IActionResult> GetShiftsAsync()
     {
         var hospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value!);

@@ -103,26 +103,12 @@ public class StaffController : ControllerBase
         return Ok(await _staffRepository.GetStaffDesignationsAsync(hospitalGuid));
     }
     
-    [HttpGet("Schedule")]
-    public async Task<IActionResult> GetAllSchedules(string sorts, int page, int pageSize, string filters = "")
+    [HttpGet("{staffId}/Schedule")]
+    public async Task<IActionResult> GetStaffScheduleAsync(Guid staffId, string startDate, string endDate)
     {
-        var seiveModel = new SieveModel
-        {
-            Filters = filters,
-            Sorts = sorts,
-            Page = page,
-            PageSize = pageSize
-        };
-            
-        var hospitalGuid = User.FindFirst("hospital_guid")?.Value;
-        if (hospitalGuid != null)
-        {
-            return Ok(await _staffRepository.GetSchedulesAsync(seiveModel, Guid.Parse(hospitalGuid)));
-        }
-        
-        return NotFound();
+        return Ok(await _staffRepository.GetStaffScheduleAsync(staffId, startDate, endDate));
     }
-
+    
     [HttpPost("Schedule")]
     public async Task<ActionResult<string>> CreateSchedule(CreateScheduleRequest request)
     {

@@ -150,7 +150,7 @@ public class StaffRepository : IStaffRepository
     
     public async Task<List<DesignationResponse>> GetStaffDesignationsAsync(Guid hospitalGuid)
     { 
-        var designations = await _context.Designation.ToListAsync();
+        var designations = await _context.Designation.AsNoTracking().ToListAsync();
         
        
         if (!designations.Any())
@@ -163,32 +163,25 @@ public class StaffRepository : IStaffRepository
         return response;
     }
     
-    public async Task<ScheduleResponse> GetSchedulesAsync(SieveModel sieveModel, Guid hospitalGuid)
+    
+    public async Task<List<ScheduleResponse>> GetStaffScheduleAsync(Guid staffId, string startDate, string endDate)
     {
         
-        var query =  _context.Schedule
+        var schedules =  await _context.Schedule
             .Include(s => s.Staff)
             .Include(s => s.Shift)
             .Include(s => s.Department)
-                .ThenInclude(d => d.Hospital)
-            .Where(s => s.Department.Hospital.Guid == hospitalGuid)
-            .AsNoTracking();
-        
-        var filteredQuery  = _sieveProcessor.Apply(sieveModel, query, applyPagination: false);
-        var count = await filteredQuery.CountAsync();
-        if (count == 0)
+            .Where(s => 
+                    s.Staff.Guid == staffId && 
+                    s.ScheduledDate.CompareTo(startDate)  >= 0 &&
+                    s.ScheduledDate.CompareTo(endDate) <= 0)
+            .AsNoTracking().ToListAsync();
+
+        if (!schedules.Any())
         {
-            return new ScheduleResponse() { Schedules = new List<ScheduleViewModel>(), TotalCount = 0 };
+            return new List<ScheduleResponse>();
         }
-        
-        var pagedQuery  = _sieveProcessor.Apply(sieveModel, filteredQuery , applyPagination: true);
-        
-        var response = new ScheduleResponse()
-        {
-            Schedules = await pagedQuery.Select(s => ScheduleMapper.ToResponse(s)).ToListAsync(),
-            TotalCount = count
-        };
-        
+        var response = ScheduleMapper.ToResponseList(schedules);
         return response;
     }
     
