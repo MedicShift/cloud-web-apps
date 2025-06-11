@@ -15,7 +15,7 @@ public class RequestTypeConfiguration : IEntityTypeConfiguration<RequestType>
         builder.Property(rt=> rt.Guid)
             .HasDefaultValueSql("NEWID()");
         
-        builder.Property(rt => rt.Name)
+        builder.Property(rt => rt.Type)
             .HasColumnType("NVARCHAR(256)")
             .IsRequired();
 
