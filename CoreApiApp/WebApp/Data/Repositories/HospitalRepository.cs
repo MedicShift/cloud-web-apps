@@ -28,7 +28,7 @@ public class HospitalRepository : IHospitalRepository
     
     public async Task<List<HospitalResponse>> GetAllHospitalAsync()
     {
-        var hospitals = await _context.Hospital.ToListAsync();
+        var hospitals = await _context.Hospital.AsNoTracking().ToListAsync();
         var response = HospitalMapper.ToResponseList(hospitals);
         if (!hospitals.Any())
         {
@@ -47,7 +47,7 @@ public class HospitalRepository : IHospitalRepository
  
     public async Task<List<DepartmentResponse>> GetHospitalDepartmentsAsync(Guid hospitalGuid)
     { 
-        var hospital = await _context.Hospital.FirstOrDefaultAsync(h => h.Guid == hospitalGuid);
+        var hospital = await _context.Hospital.AsNoTracking().FirstOrDefaultAsync(h => h.Guid == hospitalGuid);
         
         if (hospital == null)
         {
