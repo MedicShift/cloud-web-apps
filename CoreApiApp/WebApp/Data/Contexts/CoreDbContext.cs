@@ -16,6 +16,9 @@ public class CoreDbContext : DbContext, ICoreDbContext, IDataProtectionKeyContex
     public DbSet<RequestType> RequestType { get; set; }
     public DbSet<Request> Request { get; set; }
     public DbSet<LeaveRequest> LeaveRequest { get; set; }
+    
+    public DbSet<StaffRole> StaffRole { get; set; }
+    
     public new DbSet<T> Set<T>() where T : class => base.Set<T>();
 
     public DbSet<DataProtectionKey> DataProtectionKeys { get; }

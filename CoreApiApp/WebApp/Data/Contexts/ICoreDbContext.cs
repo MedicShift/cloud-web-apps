@@ -14,6 +14,7 @@ public interface ICoreDbContext
     DbSet<RequestType> RequestType { get; set; }
     DbSet<Request> Request { get; set; }
     DbSet<LeaveRequest> LeaveRequest { get; set; }
+    DbSet<StaffRole> StaffRole { get; set; }
     
     DbSet<T> Set<T>() where T : class;
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

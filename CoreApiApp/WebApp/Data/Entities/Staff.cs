@@ -31,5 +31,6 @@ public class Staff
     public ICollection<Schedule> Schedules { get; set; }
     public ICollection<Request> Requests { get; set; }
     public ICollection<LeaveRequest> LeaveRequests { get; set; }
+    public ICollection<StaffRole> StaffRoles { get; set; }
 
 }
