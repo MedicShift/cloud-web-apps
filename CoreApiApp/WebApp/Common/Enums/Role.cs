@@ -2,8 +2,9 @@ namespace CoreApiApp.Common.Enums;
 
 public enum Role : byte
 {
-    Admin = 1,
-    Doctor = 2,
-    Nurse = 3,
-    Receptionist = 4,
+    SuperAdmin = 1,
+    HospitalAdmin = 2,
+    DepartmentHead = 3,
+    Scheduler = 4,
+    Staff = 5
 }

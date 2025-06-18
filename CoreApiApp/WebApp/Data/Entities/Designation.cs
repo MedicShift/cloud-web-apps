@@ -8,7 +8,7 @@ public class Designation
     public Guid Guid { get; set; }
     
     [Sieve(CanSort = true, CanFilter = true)]
-    public string Title { get; set; }
+    public required string Title { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public ICollection<Staff> Staffs { get; set; } = null!;

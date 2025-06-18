@@ -2,7 +2,7 @@ namespace CoreApiApp.Models.Requests;
 
 public class CreateShiftRequest
 {
-    public string ShiftType { get; set; }
-    public string StartTime { get; set; }
-    public string EndTime { get; set; }
+    public required string ShiftType { get; set; }
+    public required string StartTime { get; set; }
+    public required string EndTime { get; set; }
 }

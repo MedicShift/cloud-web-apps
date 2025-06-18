@@ -10,9 +10,9 @@ public interface IStaffRepository
     Task<StaffResponse> GetAllHospitalStaffsAsync(SieveModel sieveModel, Guid hospitalId);          
     Task<bool> CreateHospitalStaffAsync(CreateStaffRequest staff);
     Task<bool> UpdateHospitalStaffAsync(UpdateStaffRequest staff);
-    Task<bool> DeleteHospitalStaffAsync(Guid staffGuid);
+    Task<bool> DeleteHospitalStaffAsync(Guid StaffId);
     Task<List<DesignationResponse>> GetStaffDesignationsAsync(Guid hospitalGuid);
-    Task<ScheduleResponse> GetSchedulesAsync(SieveModel sieveModel, Guid hospitalGuid);
+    Task<List<ScheduleResponse>> GetStaffScheduleAsync(Guid staffId, string startDate, string endDate);
     Task<bool> CreateScheduleAsync(CreateScheduleRequest request);
     Task<bool> UpdateScheduleAsync(UpdateScheduleRequest request);
     Task<bool> DeleteScheduleAsync(Guid scheduleGuid);

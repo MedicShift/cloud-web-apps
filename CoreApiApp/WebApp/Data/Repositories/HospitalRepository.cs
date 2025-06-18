@@ -28,9 +28,9 @@ public class HospitalRepository : IHospitalRepository
     
     public async Task<List<HospitalResponse>> GetAllHospitalAsync()
     {
-        var hospitals = await _context.Hospital.ToListAsync();
+        var hospitals = await _context.Hospital.AsNoTracking().ToListAsync();
         var response = HospitalMapper.ToResponseList(hospitals);
-        if (hospitals == null)
+        if (!hospitals.Any())
         {
             throw new NotFoundException("Hospitals not found.");
         }
@@ -47,15 +47,21 @@ public class HospitalRepository : IHospitalRepository
  
     public async Task<List<DepartmentResponse>> GetHospitalDepartmentsAsync(Guid hospitalGuid)
     { 
-        var hospital = _context.Hospital.FirstOrDefault(h => h.Guid == hospitalGuid);
+        var hospital = await _context.Hospital.AsNoTracking().FirstOrDefaultAsync(h => h.Guid == hospitalGuid);
+        
+        if (hospital == null)
+        {
+            throw new NotFoundException("Hospital not found.");
+        }
+        
         var departments = await _context.Department.Where(d => d.HospitalId == hospital.Id).ToListAsync();
         
         var response = DeparmentMapper.ToResponseList(departments);
-       
-           if (departments == null)
-           {
-               throw new NotFoundException("Departments not found.");
-           }
+        
+        if (!departments.Any())
+        {
+            throw new NotFoundException("Departments not found.");
+        }
            
            return response;
     }
@@ -94,9 +100,9 @@ public class HospitalRepository : IHospitalRepository
         return result > 0;
     }
     
-    public async Task<bool> DeleteHospitalDepartmentAsync(Guid staffGuid)
+    public async Task<bool> DeleteHospitalDepartmentAsync(Guid StaffId)
     {
-        var department = _context.Department.FirstOrDefault(d => d.Guid == staffGuid);
+        var department = _context.Department.FirstOrDefault(d => d.Guid == StaffId);
         
         if (department != null)
         {

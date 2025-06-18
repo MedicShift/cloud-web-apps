@@ -3,9 +3,9 @@ namespace CoreApiApp.Models;
 public class StaffViewModel
 {
     public Guid Guid { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public required string Email { get; set; }
     public string? DepartmentName { get; set; } = null;
-    public string Designation { get; set; }
+    public required string Designation { get; set; }
 }

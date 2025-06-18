@@ -42,14 +42,14 @@ namespace CoreApiApp.Controllers
         [HttpGet("Departments")]
         public async Task<IActionResult> GetDepartmentsAsync()
         {
-            var hospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value);
+            var hospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value!);
             return Ok(await _hospitalRepository.GetHospitalDepartmentsAsync(hospitalGuid));
         }
         
         [HttpPost("Departments")]
         public async Task<ActionResult<bool>> CreateDepartmentAsync(string departmentName)
         {
-            var hospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value);
+            var hospitalGuid = Guid.Parse(User.FindFirst("hospital_guid")?.Value!);
             return Ok(await _hospitalRepository.CreateHospitalDepartmentAsync(departmentName, hospitalGuid));
         }
     }

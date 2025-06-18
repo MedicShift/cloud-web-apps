@@ -4,6 +4,7 @@ using CoreApiApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoreApiApp.Migrations
 {
     [DbContext(typeof(CoreDbContext))]
-    partial class CoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250606121623_AddRequestTables")]
+    partial class AddRequestTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -434,40 +437,6 @@ namespace CoreApiApp.Migrations
                     b.ToTable("Staff", (string)null);
                 });
 
-            modelBuilder.Entity("CoreApiApp.Data.Entities.StaffRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("AssignedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DATETIME2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<Guid>("Guid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<byte>("Role")
-                        .HasColumnType("tinyint");
-
-                    b.Property<int>("StaffId")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("TeamId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StaffId");
-
-                    b.ToTable("StaffRole", (string)null);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
                 {
                     b.Property<int>("Id")
@@ -599,17 +568,6 @@ namespace CoreApiApp.Migrations
                     b.Navigation("Hospital");
                 });
 
-            modelBuilder.Entity("CoreApiApp.Data.Entities.StaffRole", b =>
-                {
-                    b.HasOne("CoreApiApp.Data.Entities.Staff", "Staff")
-                        .WithMany("StaffRoles")
-                        .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Staff");
-                });
-
             modelBuilder.Entity("CoreApiApp.Data.Entities.Department", b =>
                 {
                     b.Navigation("Schedules");
@@ -654,8 +612,6 @@ namespace CoreApiApp.Migrations
                     b.Navigation("Requests");
 
                     b.Navigation("Schedules");
-
-                    b.Navigation("StaffRoles");
                 });
 #pragma warning restore 612, 618
         }

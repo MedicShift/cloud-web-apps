@@ -27,6 +27,10 @@ public class Staff
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public DateTime? DeletedAt { get; set; }
+    
     public ICollection<Schedule> Schedules { get; set; }
+    public ICollection<Request> Requests { get; set; }
+    public ICollection<LeaveRequest> LeaveRequests { get; set; }
+    public ICollection<StaffRole> StaffRoles { get; set; }
 
 }
