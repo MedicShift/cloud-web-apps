@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CoreApiApp.Common.Enums;
 using CoreApiApp.Data.Repositories.Interfaces;
 using CoreApiApp.Models;
 using CoreApiApp.Models.Requests;
@@ -13,7 +14,7 @@ namespace CoreApiApp.Controllers;
 [Route("api/[controller]")]
 public class StaffController : ControllerBase
 {
-    public IStaffRepository _staffRepository;
+    private readonly IStaffRepository _staffRepository;
     
     public StaffController(IStaffRepository staffRepository)
     {
@@ -25,12 +26,14 @@ public class StaffController : ControllerBase
     {
         var staffProfile = new StaffProfile()
         {
-            StaffGuid = User.FindFirst("staff_guid")!.Value,
-            HospitalGuid = User.FindFirst("hospital_guid")!.Value,
-            FirstName = User.FindFirst("first_name")!.Value,
-            LastName = User.FindFirst("last_name")!.Value,
-            EmailId = User.FindFirst(ClaimTypes.Email)?.Value,
-            Designation = User.FindFirst("designation")!.Value
+            StaffGuid = User.FindFirst("staff_guid").Value,
+            HospitalGuid = User.FindFirst("hospital_guid").Value,
+            FirstName = User.FindFirst("first_name").Value,
+            LastName = User.FindFirst("last_name").Value,
+            EmailId = User.FindFirst(ClaimTypes.Email).Value,
+            Designation = User.FindFirst("designation").Value,
+            Department = User.FindFirst("department")?.Value,
+            Roles = User.FindAll(ClaimTypes.Role ).Select(c => c.Value).ToList()
         };
         return Task.FromResult<IActionResult>(Ok(staffProfile));
     }
@@ -84,9 +87,9 @@ public class StaffController : ControllerBase
     }
 
     [HttpDelete]
-    public async Task<ActionResult<string>> DeleteStaff(Guid StaffId)
+    public async Task<ActionResult<string>> DeleteStaff(Guid staffId)
     {
-        var response = await _staffRepository.DeleteHospitalStaffAsync(StaffId);
+        var response = await _staffRepository.DeleteHospitalStaffAsync(staffId);
         
         if (!response)
         {
@@ -170,5 +173,30 @@ public class StaffController : ControllerBase
             return Conflict(new { message = "Failed to delete schedule" });
         }
         return Ok(new { success = true, message = "Schedule deleted successfully" });
+    }
+    
+    [HttpPost("StaffRole")]
+    public async Task<ActionResult<string>> AddStaffRole(Role role, Guid staffId)
+    {
+            
+        var response = await _staffRepository.AddStaffRoleAsync(role, staffId);
+        if (!response)
+        {
+            return Conflict(new { message = "Role already exists" });
+        }
+
+        return Ok(new { success = true, message = "Role added successfully." });
+    }
+    
+    [HttpDelete("StaffRole")]
+    public async Task<ActionResult<string>> DeleteStaffRole(Guid roleGuid)
+    {
+        var response = await _staffRepository.DeleteStaffRoleAsync(roleGuid);
+        
+        if (!response)
+        {
+            return Conflict(new { message = "Failed to delete  ole" });
+        }
+        return Ok(new { success = true, message = "Role deleted successfully" });
     }
 }

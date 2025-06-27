@@ -9,4 +9,5 @@ public class StaffProfile
     public required string? EmailId { get; set; }           
     public required string Designation { get; set; }           
     public string? Department { get; set; }
+    public List<string> Roles { get; set; }
 }

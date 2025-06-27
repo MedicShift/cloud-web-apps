@@ -28,11 +28,14 @@ public class StaffRepository : IStaffRepository
     
     public async Task<StaffResponse> GetAllHospitalStaffsAsync(SieveModel sieveModel, Guid hospitalGuid)
     {
-        var query =  _context.Staff
+        var query = _context.Staff
             .Include(s => s.Hospital)
             .Include(s => s.Department)
             .Include(s => s.Designation)
-            .Where(s => !s.IsAdmin && s.Hospital.Guid == hospitalGuid)
+            .Include(s => s.StaffRoles)
+            .Where(s =>
+                !s.StaffRoles.Any(r => r.Role == Role.SuperAdmin || r.Role == Role.HospitalAdmin) &&
+                s.Hospital.Guid == hospitalGuid)
             .AsNoTracking();
         
         var filteredQuery  = _sieveProcessor.Apply(sieveModel, query, applyPagination: false);
@@ -134,9 +137,9 @@ public class StaffRepository : IStaffRepository
         return result > 0;
     }
 
-    public async Task<bool> DeleteHospitalStaffAsync(Guid StaffId)
+    public async Task<bool> DeleteHospitalStaffAsync(Guid staffId)
     {
-        var staff = await _context.Staff.FirstOrDefaultAsync(s => s.Guid == StaffId);
+        var staff = await _context.Staff.FirstOrDefaultAsync(s => s.Guid == staffId);
         if (staff != null)
         {
             _context.Staff.Remove(staff);
@@ -237,6 +240,40 @@ public class StaffRepository : IStaffRepository
         if (schedule != null)
         {
             _context.Schedule.Remove(schedule);
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
+
+        }
+        
+        return false;
+    }
+    
+    public async Task<bool> AddStaffRoleAsync(Role role, Guid staffId)
+    {
+        var staff = await _context.Staff.FirstOrDefaultAsync(s => s.Guid == staffId);
+
+        if (staff == null )
+        {
+            return false;
+        }
+
+        var staffRole = new StaffRole()
+        {
+            StaffId = staff.Id,
+            Role = role
+        };
+        
+        await _context.StaffRole.AddAsync(staffRole);
+        var result = await _context.SaveChangesAsync();
+        return result > 0;
+    }
+
+    public async Task<bool> DeleteStaffRoleAsync(Guid roleGuid)
+    {
+        var staffRole = await _context.StaffRole.FirstOrDefaultAsync(s => s.Guid == roleGuid);
+        if (staffRole != null)
+        {
+            _context.StaffRole.Remove(staffRole);
             var result = await _context.SaveChangesAsync();
             return result > 0;
 

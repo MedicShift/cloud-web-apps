@@ -1,4 +1,4 @@
-using CoreApiApp.Data.Entities;
+using CoreApiApp.Common.Enums;
 using CoreApiApp.Models.Requests;
 using CoreApiApp.Models.Responses;
 using Sieve.Models;
@@ -16,6 +16,8 @@ public interface IStaffRepository
     Task<bool> CreateScheduleAsync(CreateScheduleRequest request);
     Task<bool> UpdateScheduleAsync(UpdateScheduleRequest request);
     Task<bool> DeleteScheduleAsync(Guid scheduleGuid);
+    Task<bool> AddStaffRoleAsync(Role role, Guid staffId);
+    Task<bool> DeleteStaffRoleAsync(Guid roleGuid);
 
 
 }
