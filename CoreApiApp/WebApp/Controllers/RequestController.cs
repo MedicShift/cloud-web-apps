@@ -103,13 +103,13 @@ public class RequestController : ControllerBase
             Reason = request.Reason
         };
         
-        return Ok(await _requestRepository.CreateRequestAsync<LeaveRequest>(leaveRequest, hospitalGuid));
+        return Ok(await _requestRepository.CreateRequestAsync(leaveRequest, hospitalGuid));
     }
      
     [HttpPut("Leave")]
     public async Task<ActionResult<string>> UpdateLeaveRequest(UpdateLeaveRequest request)
     {
-        var leaveRequest = new LeaveRequest()
+        var leaveRequest = new LeaveRequest
         {
             RequestGuid = request.RequestId,
             RequestTypeId = request.RequestTypeId,
