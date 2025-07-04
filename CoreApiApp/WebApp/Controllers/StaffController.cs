@@ -60,6 +60,7 @@ public class StaffController : ControllerBase
     // [HttpGet("{id}")]
     // public async Task<IActionResult> GetStaffById(Guid id) { /* ... */ }
 
+    [Authorize(Roles = "HospitalAdmin")]
     [HttpPost]
     public async Task<ActionResult<string>> CreateStaff(CreateStaffRequest request)
     {
@@ -74,6 +75,7 @@ public class StaffController : ControllerBase
         return Ok(new { success = true, message = "User added successfully." });
     }
     
+    [Authorize(Roles = "HospitalAdmin")]
     [HttpPut]
     public async Task<ActionResult<string>> UpdateStaff(UpdateStaffRequest request)
     {
@@ -86,6 +88,7 @@ public class StaffController : ControllerBase
         return Ok(new { success = true, message = "Staff updated successfully" });
     }
 
+    [Authorize(Roles = "HospitalAdmin")]
     [HttpDelete]
     public async Task<ActionResult<string>> DeleteStaff(Guid staffId)
     {
