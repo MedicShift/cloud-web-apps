@@ -23,7 +23,6 @@ public class Staff
     public Designation Designation { get; set; }
     
     public int DesignationId { get; set; }
-    public bool IsAdmin { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public DateTime? DeletedAt { get; set; }

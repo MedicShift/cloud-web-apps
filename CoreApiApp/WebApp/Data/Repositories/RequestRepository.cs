@@ -3,10 +3,7 @@ using CoreApiApp.Common.Exceptions;
 using CoreApiApp.Common.Mappings;
 using CoreApiApp.Data.Entities;
 using CoreApiApp.Data.Repositories.Interfaces;
-using CoreApiApp.Models;
-using CoreApiApp.Models.Requests;
 using CoreApiApp.Models.Responses;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoreApiApp.Data.Repositories;
@@ -29,7 +26,7 @@ public class RequestRepository : IRequestRepository
         
         if (!requests.Any())
         {
-            return null;
+            return new List<RequestSummaryResponse>();
         }
         var response = RequestMapper.ToResponseList(requests);
 
@@ -70,8 +67,8 @@ public class RequestRepository : IRequestRepository
         
         var request = new Request()
         {
-            TypeId = requestType!.Id,
-            RequestedBy = requester!.Id,
+            TypeId = requestType.Id,
+            RequestedBy = requester.Id,
             Status = (int) RequestStatus.Pending
         };
         
@@ -145,7 +142,7 @@ public class RequestRepository : IRequestRepository
 
         if (!requestTypes.Any())
         {
-            return null;
+            return new List<RequestTypesResponse>();
         }
         
         var response = RequestTypeMapper.ToResponseList(requestTypes);

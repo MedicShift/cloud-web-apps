@@ -31,10 +31,6 @@ public class StaffConfiguration : IEntityTypeConfiguration<Staff>
             .HasColumnType("NVARCHAR(max)")
             .IsRequired();
         
-        builder.Property(s => s.IsAdmin)
-            .HasColumnType("BIT")
-            .IsRequired();
-        
         builder.Property(s => s.CreatedAt)
             .HasColumnType("datetime2")
             .HasDefaultValueSql("GETUTCDATE()")

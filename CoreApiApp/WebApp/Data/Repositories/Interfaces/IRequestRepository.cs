@@ -1,6 +1,4 @@
 using CoreApiApp.Data.Entities;
-using CoreApiApp.Models;
-using CoreApiApp.Models.Requests;
 using CoreApiApp.Models.Responses;
 
 namespace CoreApiApp.Data.Repositories.Interfaces;

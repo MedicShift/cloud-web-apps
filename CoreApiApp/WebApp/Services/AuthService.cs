@@ -31,6 +31,7 @@ public class AuthService : IAuthService
             .Include(s => s.Hospital)
             .Include(s => s.Designation)
             .Include(s => s.Department)
+            .Include(s=>s.StaffRoles)
             .FirstOrDefaultAsync(u => u.EmailId == request.Email);
         
         var users = new Staff();
@@ -57,6 +58,12 @@ public class AuthService : IAuthService
         claims.Add(new Claim(ClaimTypeConstants.FirstName, staff.FirstName));
         claims.Add(new Claim(ClaimTypeConstants.LastName, staff.LastName));
         claims.Add(new Claim(ClaimTypeConstants.Designation, staff.Designation.Title));
+        claims.Add(new Claim(ClaimTypeConstants.Department, staff.Department?.Name ?? ""));
+        
+        foreach (var role in staff.StaffRoles.Select(sr => sr.Role.ToString()))
+        {
+            claims.Add(new Claim(ClaimTypeConstants.Roles, role));
+        }
         
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config.GetValue<string>("AppSettings:TokenKey")));
