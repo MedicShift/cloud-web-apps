@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace CoreApiApp.Controllers
 {
     [ApiController]
-    [Authorize]
+
     [Route("api/[controller]")]
     public class HospitalController : ControllerBase
     {
