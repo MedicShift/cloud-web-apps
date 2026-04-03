@@ -1,0 +1,107 @@
+# ------------------------------
+# Python
+# ------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ------------------------------
+# Virtual Environments
+# ------------------------------
+venv/
+env/
+ENV/
+.venv/
+
+# ------------------------------
+# Django
+# ------------------------------
+*.log
+*.pot
+*.pyc
+db.sqlite3
+db.sqlite3-journal
+
+# Django media/static (optional depending on setup)
+media/
+staticfiles/
+
+# ------------------------------
+# Environment Variables
+# ------------------------------
+.env
+.env.*
+*.env
+
+# ------------------------------
+# IDEs / Editors
+# ------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ------------------------------
+# OS files
+# ------------------------------
+.DS_Store
+Thumbs.db
+
+# ------------------------------
+# Testing / Coverage
+# ------------------------------
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+pytest_cache/
+
+# ------------------------------
+# Migrations (optional)
+# ------------------------------
+# Uncomment ONLY if you know what you're doing
+# **/migrations/
+# !**/migrations/__init__.py
+
+# ------------------------------
+# Static build tools
+# ------------------------------
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# ------------------------------
+# Security / Secrets
+# ------------------------------
+*.pem
+*.key
+*.crt
+
+# ------------------------------
+# Misc
+# ------------------------------
+*.sqlite3
+*.bak
+*.tmp
