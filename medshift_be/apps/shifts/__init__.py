@@ -1,0 +1,3 @@
+"""
+Shifts app initialization.
+"""
