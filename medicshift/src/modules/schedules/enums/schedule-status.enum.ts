@@ -1,0 +1,6 @@
+export enum ScheduleStatus {
+  DRAFT = 'DRAFT',
+  GENERATING = 'GENERATING',
+  PUBLISHED = 'PUBLISHED',
+  ARCHIVED = 'ARCHIVED',
+}

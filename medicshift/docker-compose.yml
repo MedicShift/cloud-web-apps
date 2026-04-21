@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=medicshift_user
+      - DB_PASSWORD=medicshift_password
+      - DB_NAME=medicshift_db
+      - JWT_SECRET=super_secret_jwt_key_change_me_in_prod
+      - JWT_EXPIRATION=1d
+      - NODE_ENV=development
+      - PORT=3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - medicshift-network
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=medicshift_user
+      - POSTGRES_PASSWORD=medicshift_password
+      - POSTGRES_DB=medicshift_db
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medicshift_user -d medicshift_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - medicshift-network
+
+volumes:
+  pg-data:
+
+networks:
+  medicshift-network:
+    driver: bridge
