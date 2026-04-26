@@ -4,11 +4,14 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(HttpExceptionFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -24,11 +27,29 @@ export class HttpExceptionFilter implements ExceptionFilter {
         ? exception.getResponse()
         : 'Internal server error';
 
+    // Structured error logging via Pino
+    this.logger.error(
+      {
+        statusCode: status,
+        path: request.url,
+        method: request.method,
+        message:
+          typeof message === 'object' && message['message']
+            ? message['message']
+            : message,
+        stack: exception instanceof Error ? exception.stack : undefined,
+      },
+      `HTTP Exception: ${status} ${request.method} ${request.url}`,
+    );
+
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message: typeof message === 'object' && message['message'] ? message['message'] : message,
+      message:
+        typeof message === 'object' && message['message']
+          ? message['message']
+          : message,
     });
   }
 }

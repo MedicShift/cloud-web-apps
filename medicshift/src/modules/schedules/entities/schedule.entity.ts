@@ -36,6 +36,6 @@ export class Schedule extends BaseEntity {
   @JoinColumn({ name: 'departmentId' })
   department: Department;
 
-  @OneToMany(() => ScheduleEntry, entry => entry.schedule)
+  @OneToMany(() => ScheduleEntry, (entry) => entry.schedule)
   entries: ScheduleEntry[];
 }

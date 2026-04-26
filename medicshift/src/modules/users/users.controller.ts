@@ -9,52 +9,70 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from './enums/user-role.enum';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { CreateUserCommand } from './commands/impl/create-user.command';
+import { UpdateUserCommand } from './commands/impl/update-user.command';
+import { DeleteUserCommand } from './commands/impl/delete-user.command';
+import { GetUserQuery } from './queries/impl/get-user.query';
+import { GetUsersQuery } from './queries/impl/get-users.query';
 
 @ApiTags('Users')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('users')
+@Controller({ path: 'users', version: '1' })
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Post()
   @ApiOperation({ summary: 'Create a new user' })
-  create(@Body() createUserDto: any) {
-    return this.usersService.create(createUserDto);
+  create(@Body() dto: CreateUserDto) {
+    return this.commandBus.execute(
+      new CreateUserCommand(
+        dto.email,
+        dto.password,
+        dto.firstName,
+        dto.lastName,
+        dto.role,
+        dto.hospitalId,
+      ),
+    );
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Get()
   @ApiOperation({ summary: 'Get all users (filter by hospital if manager)' })
   findAll(@Query('hospitalId') hospitalId?: string) {
-    return this.usersService.findAll(hospitalId);
+    return this.queryBus.execute(new GetUsersQuery(hospitalId));
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID' })
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+    return this.queryBus.execute(new GetUserQuery(id));
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a user' })
-  update(@Param('id') id: string, @Body() updateUserDto: any) {
-    return this.usersService.update(id, updateUserDto);
+  update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+    return this.commandBus.execute(new UpdateUserCommand(id, dto));
   }
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a user' })
   remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+    return this.commandBus.execute(new DeleteUserCommand(id));
   }
 }

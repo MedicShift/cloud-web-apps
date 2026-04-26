@@ -23,7 +23,9 @@ export class ScheduleEntry extends BaseEntity {
   @Column({ type: 'uuid' })
   shiftId: string;
 
-  @ManyToOne(() => Schedule, schedule => schedule.entries, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Schedule, (schedule) => schedule.entries, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'scheduleId' })
   schedule: Schedule;
 

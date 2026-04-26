@@ -14,11 +14,20 @@ services:
       - DB_PASSWORD=medicshift_password
       - DB_NAME=medicshift_db
       - JWT_SECRET=super_secret_jwt_key_change_me_in_prod
-      - JWT_EXPIRATION=1d
+      - JWT_EXPIRATION=15m
+      - REFRESH_TOKEN_SECRET=refresh_secret_change_me_in_prod
+      - REFRESH_TOKEN_EXPIRATION=7d
+      - PASSWORD_PEPPER=pepper_secret_change_me_in_prod
+      - LOCKOUT_THRESHOLD=5
+      - LOCKOUT_DURATION_MINUTES=15
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
       - NODE_ENV=development
       - PORT=3000
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - medicshift-network
@@ -41,8 +50,23 @@ services:
     networks:
       - medicshift-network
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - medicshift-network
+
 volumes:
   pg-data:
+  redis-data:
 
 networks:
   medicshift-network:

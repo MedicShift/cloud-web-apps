@@ -31,4 +31,15 @@ export class User extends BaseEntity {
   @ApiProperty()
   @Column({ type: 'uuid', nullable: true }) // nullable for initial admin
   hospitalId: string;
+
+  // --- Enterprise Security Fields ---
+
+  @Column({ type: 'varchar', nullable: true, select: false })
+  hashedRefreshToken?: string | null;
+
+  @Column({ type: 'int', default: 0 })
+  failedLoginAttempts: number;
+
+  @Column({ type: 'timestamp', nullable: true })
+  lockedUntil?: Date | null;
 }
