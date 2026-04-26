@@ -1,12 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsString,
-  MinLength,
-  IsEnum,
-  IsOptional,
-  IsUUID,
-} from 'class-validator';
+import { IsEmail, IsString, MinLength, IsEnum, IsOptional, IsUUID, IsBoolean } from 'class-validator';
 import { UserRole } from '../../users/enums/user-role.enum';
 
 export class RegisterDto {
@@ -27,7 +20,7 @@ export class RegisterDto {
   @IsString()
   lastName: string;
 
-  @ApiProperty({ enum: UserRole, default: UserRole.NURSE })
+  @ApiProperty({ enum: UserRole, default: UserRole.USER })
   @IsEnum(UserRole)
   @IsOptional()
   role?: UserRole;
@@ -35,5 +28,10 @@ export class RegisterDto {
   @ApiProperty({ required: false })
   @IsUUID()
   @IsOptional()
-  hospitalId?: string;
+  tenantId?: string;
+
+  @ApiProperty({ default: true, required: false })
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
 }

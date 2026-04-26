@@ -34,11 +34,11 @@ export class UserRepository {
       select: [
         'id',
         'email',
-        'password',
+        'passwordHash',
         'firstName',
         'lastName',
         'role',
-        'hospitalId',
+        'tenantId',
         'failedLoginAttempts',
         'lockedUntil',
         'hashedRefreshToken',

@@ -11,7 +11,4 @@ export class CreateDepartmentDto {
   @IsOptional()
   description?: string;
 
-  @ApiProperty()
-  @IsUUID()
-  hospitalId: string;
 }

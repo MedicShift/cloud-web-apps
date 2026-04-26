@@ -1,14 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { UseGuards, Controller, Post, Body, Get, Query, Param, Patch, Delete, Req } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateDepartmentDto } from './dtos/create-department.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -35,20 +25,21 @@ export class DepartmentsController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) { }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Post()
   @ApiOperation({ summary: 'Create a new department' })
-  create(@Body() dto: CreateDepartmentDto) {
-    return this.commandBus.execute(new CreateDepartmentCommand(dto));
+  create(@Body() dto: CreateDepartmentDto, @Req() req: any) {
+    return this.commandBus.execute(new CreateDepartmentCommand(dto, req.user.tenantId));
   }
 
-  @Get()
+  @Get('all')
   @ApiOperation({ summary: 'List all departments' })
-  @ApiQuery({ name: 'hospitalId', required: false, type: String })
-  findAll(@Query('hospitalId') hospitalId?: string) {
-    return this.queryBus.execute(new GetDepartmentsQuery(hospitalId));
+  @ApiQuery({ name: 'tenant', required: false, type: String })
+  findAll(@Req() req: any) {
+    console.log('req' , req)
+    return this.queryBus.execute(new GetDepartmentsQuery(req.user.tenantId));
   }
 
   @Get(':id')

@@ -1,36 +1,45 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { UserRole } from '../enums/user-role.enum';
-import { ApiProperty } from '@nestjs/swagger';
+import { Tenant } from 'src/modules/tenants/entities/tenant.entity';
+import { Department } from 'src/modules/departments/entities/department.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
-  @ApiProperty()
+
+  @Column({ type: 'uuid', nullable: true })
+  tenantId: string;
+
+  @Column({ type: 'uuid', nullable: true })
+  departmentId: string;
+
+  @Column()
+  firstName: string;
+
+  @Column()
+  lastName: string;
+
   @Column({ unique: true })
   email: string;
 
   @Column({ select: false }) // Don't return password by default
-  password?: string;
+  passwordHash?: string;
 
-  @ApiProperty()
-  @Column()
-  firstName: string;
-
-  @ApiProperty()
-  @Column()
-  lastName: string;
-
-  @ApiProperty({ enum: UserRole, default: UserRole.NURSE })
-  @Column({
-    type: 'enum',
-    enum: UserRole,
-    default: UserRole.NURSE,
-  })
+  @Column({ type: 'simple-enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
 
-  @ApiProperty()
-  @Column({ type: 'uuid', nullable: true }) // nullable for initial admin
-  hospitalId: string;
+  @Column({ default: true })
+  isActive: boolean;
+
+  @Column({ type: 'datetime', nullable: true })
+  lastLoginAt: Date;
+
+  @ManyToOne(() => Tenant, (tenant) => tenant.users,  {onDelete: 'CASCADE'})
+  tenant: Tenant
+
+  @ManyToOne(() => Department, (department) => department.users, {onDelete: 'SET NULL'})
+  department: Department
+
 
   @Column({ type: 'varchar', nullable: true, select: false })
   hashedRefreshToken?: string | null;

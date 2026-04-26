@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsEnum, IsUUID, Matches } from 'class-validator';
-import { ShiftType } from '../enums/shift-type.enum';
+
 
 export class CreateShiftDto {
   @ApiProperty({ example: 'Morning Shift A' })
@@ -21,9 +21,6 @@ export class CreateShiftDto {
   })
   endTime: string;
 
-  @ApiProperty({ enum: ShiftType })
-  @IsEnum(ShiftType)
-  shiftType: ShiftType;
 
   @ApiProperty()
   @IsUUID()
