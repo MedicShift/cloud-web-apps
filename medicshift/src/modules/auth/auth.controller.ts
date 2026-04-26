@@ -44,7 +44,7 @@ export class AuthController {
         dto.firstName,
         dto.lastName,
         dto.role,
-        dto.hospitalId,
+        dto.tenantId,
       ),
     );
   }

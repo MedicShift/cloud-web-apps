@@ -9,14 +9,14 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
   constructor(private readonly userRepository: UserRepository) {}
 
   async execute(command: CreateUserCommand): Promise<User> {
-    const { email, password, firstName, lastName, role, hospitalId } = command;
+    const { email, passwordHash, firstName, lastName, role, tenantId } = command;
     return this.userRepository.createUser({
       email,
-      password,
+      passwordHash,
       firstName,
       lastName,
       role: role as UserRole,
-      hospitalId,
+      tenantId,
     });
   }
 }

@@ -15,9 +15,8 @@ export class TenantRepository {
     return await this.ormRepository.save(tenant);
   }
 
-  async findAll(tenantId?: string): Promise<Tenant[]> {
-    const where = tenantId ? { tenantId } : {};
-    return await this.ormRepository.find({ where });
+  async findAll(): Promise<Tenant[]> {
+    return await this.ormRepository.find();
   }
 
 

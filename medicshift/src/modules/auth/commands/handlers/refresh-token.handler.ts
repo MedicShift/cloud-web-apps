@@ -43,7 +43,7 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand>
       email: userWithToken.email,
       sub: userWithToken.id,
       role: userWithToken.role,
-      hospitalId: userWithToken.hospitalId,
+      tenantId: userWithToken.tenantId,
     };
     const newAccessToken = this.jwtService.sign(accessPayload);
 

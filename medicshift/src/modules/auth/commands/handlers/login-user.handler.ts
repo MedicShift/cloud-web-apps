@@ -37,7 +37,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
     const pepper = this.configService.get<string>('security.passwordPepper');
     const pepperedPassword = `${pepper}${password}`;
     const isPasswordValid =
-      user.password && (await bcrypt.compare(pepperedPassword, user.password));
+      user.passwordHash && (await bcrypt.compare(pepperedPassword, user.passwordHash));
 
     if (!isPasswordValid) {
       // Increment failed attempts
@@ -78,7 +78,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
       email: user.email,
       sub: user.id,
       role: user.role,
-      hospitalId: user.hospitalId,
+      hospitalId: user.tenantId,
     };
     const accessToken = this.jwtService.sign(accessPayload);
 

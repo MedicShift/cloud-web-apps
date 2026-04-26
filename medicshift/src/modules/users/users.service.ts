@@ -10,7 +10,7 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async create(createUserDto: CreateDto): Promise<User> {
+  async create(createUserDto: any): Promise<User> {
     const user = this.usersRepository.create(createUserDto as import('typeorm').DeepPartial<User>);
     return await this.usersRepository.save(user);
   }

@@ -34,7 +34,7 @@ export class UsersController {
         dto.firstName,
         dto.lastName,
         dto.role,
-        dto.hospitalId,
+        dto.tenantId,
       ),
     );
   }

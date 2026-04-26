@@ -1,3 +1,6 @@
 export class CreateDepartmentCommand {
-  constructor(public readonly data: Record<string, any>) {}
+  constructor(
+    public readonly name: string,
+    public readonly hospitalId?: string,
+  ) { }
 }

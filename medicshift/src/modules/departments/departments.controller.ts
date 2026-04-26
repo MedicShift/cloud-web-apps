@@ -31,7 +31,7 @@ export class DepartmentsController {
   @Post()
   @ApiOperation({ summary: 'Create a new department' })
   create(@Body() dto: CreateDepartmentDto, @Req() req: any) {
-    return this.commandBus.execute(new CreateDepartmentCommand(dto, req.user.tenantId));
+    return this.commandBus.execute(new CreateDepartmentCommand(dto.name, req.user.tenantId));
   }
 
   @Get('all')
