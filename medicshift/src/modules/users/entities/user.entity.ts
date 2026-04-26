@@ -31,7 +31,7 @@ export class User extends BaseEntity {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   lastLoginAt: Date;
 
   @ManyToOne(() => Tenant, (tenant) => tenant.users,  {onDelete: 'CASCADE'})
