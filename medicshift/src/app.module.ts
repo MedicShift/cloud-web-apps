@@ -9,7 +9,7 @@ import { ShiftsModule } from './modules/shifts/shifts.module';
 import { SchedulesModule } from './modules/schedules/schedules.module';
 import { HealthModule } from './modules/health/health.module';
 import { AuditLogModule } from './common/audit/audit-log.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
@@ -44,7 +44,7 @@ import { LoggerModule } from 'nestjs-pino';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) =>
-        configService.get('database'),
+        configService.get('database') as TypeOrmModuleOptions,
     }),
 
     // Feature modules
