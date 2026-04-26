@@ -32,8 +32,6 @@ export class User extends BaseEntity {
   @Column({ type: 'uuid', nullable: true }) // nullable for initial admin
   hospitalId: string;
 
-  // --- Enterprise Security Fields ---
-
   @Column({ type: 'varchar', nullable: true, select: false })
   hashedRefreshToken?: string | null;
 

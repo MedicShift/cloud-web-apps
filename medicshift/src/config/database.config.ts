@@ -5,12 +5,14 @@ export default registerAs(
   'database',
   (): TypeOrmModuleOptions => ({
     type: 'postgres',
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432', 10),
-    username: process.env.DB_USER || 'medicshift_user',
-    password: process.env.DB_PASSWORD || 'medicshift_password',
-    database: process.env.DB_NAME || 'medicshift_db',
+    url: process.env.DATABASE_URL,
+    host: process.env.DATABASE_URL ? undefined : process.env.DB_HOST || 'localhost',
+    port: process.env.DATABASE_URL ? undefined : parseInt(process.env.DB_PORT || '5432', 10),
+    username: process.env.DATABASE_URL ? undefined : process.env.DB_USER || 'medicshift_user',
+    password: process.env.DATABASE_URL ? undefined : process.env.DB_PASSWORD || 'medicshift_password',
+    database: process.env.DATABASE_URL ? undefined : process.env.DB_NAME || 'medicshift_db',
+    ssl: process.env.DB_SSL === 'true' || process.env.DATABASE_URL?.includes('neon.tech') ? { rejectUnauthorized: false } : false,
     autoLoadEntities: true,
-    synchronize: process.env.NODE_ENV !== 'production', // Use migrations in production!
+    synchronize: false, // Migrations will handle schema updates
   }),
 );
