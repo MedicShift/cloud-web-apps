@@ -1,12 +1,7 @@
-import {
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  BaseEntity as TypeOrmBaseEntity,
-} from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { PrimaryGeneratedColumn, BaseEntity as TypeOrmBaseEntity, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 export abstract class BaseEntity extends TypeOrmBaseEntity {
+  
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174000',
     description: 'The unique UUID of the entity',
@@ -14,11 +9,9 @@ export abstract class BaseEntity extends TypeOrmBaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ApiProperty({ description: 'The creation timestamp' })
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'datetime' })
   createdAt: Date;
 
-  @ApiProperty({ description: 'The last update timestamp' })
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'datetime' })
   updatedAt: Date;
 }
