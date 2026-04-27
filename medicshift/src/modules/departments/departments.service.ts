@@ -10,14 +10,14 @@ export class DepartmentsService {
     private departmentsRepository: Repository<Department>,
   ) {}
 
-  async create(createDto: any, hospitalId: string): Promise<Department> {
-    console.log('hospital', hospitalId)
-    const department = this.departmentsRepository.create({...createDto, hospitalId} as import('typeorm').DeepPartial<Department>);
+  async create(createDto: any, tenantId: string): Promise<Department> {
+    console.log('hospital', tenantId)
+    const department = this.departmentsRepository.create({...createDto, tenantId} as import('typeorm').DeepPartial<Department>);
     return await this.departmentsRepository.save(department);
   }
 
-  async findAll(hospitalId?: string): Promise<Department[]> {
-    const query = hospitalId ? { hospitalId } : {};
+  async findAll(tenantId?: string): Promise<Department[]> {
+    const query = tenantId ? { tenantId } : {};
     return await this.departmentsRepository.find({ where: query });
   }
 

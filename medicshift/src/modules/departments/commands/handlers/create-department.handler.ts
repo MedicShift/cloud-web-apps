@@ -8,10 +8,10 @@ export class CreateDepartmentHandler implements ICommandHandler<CreateDepartment
   constructor(private readonly departmentRepository: DepartmentRepository) {}
 
   async execute(command: CreateDepartmentCommand): Promise<Department> {
-    const {name, hospitalId} = command;
+    const {name, tenantId} = command;
     return this.departmentRepository.createDepartment({
       name,
-      hospitalId
+      tenantId
     });
   }
 }

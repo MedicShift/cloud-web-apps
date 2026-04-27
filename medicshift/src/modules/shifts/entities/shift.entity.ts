@@ -15,10 +15,10 @@ export class Shift extends BaseEntity {
   endTime: string;
   
   @Column({ type: 'uuid' })
-  hospitalId: string;
+  tenantId: string;
 
   @ManyToOne(() => Tenant, (tenant) => tenant.shifts, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'hospitalId' })
+  @JoinColumn({ name: 'tenantId' })
   tenant: Tenant;
 
 }

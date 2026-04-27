@@ -19,8 +19,8 @@ export class SchedulesService {
     return await this.schedulesRepository.save(schedule);
   }
 
-  async findAll(hospitalId?: string): Promise<Schedule[]> {
-    const query = hospitalId ? { hospitalId } : {};
+  async findAll(tenantId?: string): Promise<Schedule[]> {
+    const query = tenantId ? { tenantId } : {};
     return await this.schedulesRepository.find({ where: query });
   }
 

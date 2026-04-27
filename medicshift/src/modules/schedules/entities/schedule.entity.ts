@@ -21,7 +21,7 @@ export class Schedule extends BaseEntity {
   status: ScheduleStatus;
 
   @Column({ type: 'uuid' })
-  hospitalId: string;  
+  tenantId: string;  
   
   @Column({ type: 'uuid' })
   departmentId: string;

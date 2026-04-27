@@ -24,5 +24,5 @@ export class CreateShiftDto {
 
   @ApiProperty()
   @IsUUID()
-  hospitalId: string;
+  tenantId: string;
 }

@@ -10,10 +10,10 @@ export class Department extends BaseEntity {
   name: string;
 
   @Column({ type: 'uuid' })
-  hospitalId: string;
+  tenantId: string;
 
   @ManyToOne(() => Tenant, (tenant) => tenant.departments, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'hospitalId' })
+  @JoinColumn({ name: 'tenantId' })
   tenant: Tenant
 
   @OneToMany(() => User, (user) => user.department)

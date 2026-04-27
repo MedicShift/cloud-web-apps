@@ -1,6 +1,6 @@
 export class CreateDepartmentCommand {
   constructor(
     public readonly name: string,
-    public readonly hospitalId?: string,
+    public readonly tenantId?: string,
   ) { }
 }

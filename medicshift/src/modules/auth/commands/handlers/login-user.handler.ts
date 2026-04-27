@@ -78,7 +78,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
       email: user.email,
       sub: user.id,
       role: user.role,
-      hospitalId: user.tenantId,
+      tenantId: user.tenantId,
     };
     const accessToken = this.jwtService.sign(accessPayload);
 

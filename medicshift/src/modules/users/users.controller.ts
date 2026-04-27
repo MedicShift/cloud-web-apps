@@ -42,8 +42,8 @@ export class UsersController {
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Get('all')
   @ApiOperation({ summary: 'Get all users (filter by hospital if manager)' })
-  findAll(@Query('hospitalId') hospitalId?: string) {
-    return this.queryBus.execute(new GetUsersQuery(hospitalId));
+  findAll(@Query('tenantId') tenantId?: string) {
+    return this.queryBus.execute(new GetUsersQuery(tenantId));
   }
 
   @Get(':id')

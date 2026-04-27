@@ -39,5 +39,5 @@ export class UpdateUserDto {
   @ApiPropertyOptional()
   @IsUUID()
   @IsOptional()
-  hospitalId?: string;
+  tenantId?: string;
 }

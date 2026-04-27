@@ -8,6 +8,6 @@ export class GetSchedulesHandler implements IQueryHandler<GetSchedulesQuery> {
   constructor(private readonly scheduleRepository: ScheduleRepository) {}
 
   async execute(query: GetSchedulesQuery): Promise<Schedule[]> {
-    return this.scheduleRepository.findAll(query.hospitalId);
+    return this.scheduleRepository.findAll(query.tenantId);
   }
 }
