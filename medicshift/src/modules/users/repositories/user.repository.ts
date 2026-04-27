@@ -15,8 +15,8 @@ export class UserRepository {
     return await this.ormRepository.save(user);
   }
 
-  async findAll(hospitalId?: string): Promise<User[]> {
-    const where = hospitalId ? { hospitalId } : {};
+  async findAll(tenantId?: string): Promise<User[]> {
+    const where = tenantId ? { tenantId } : {};
     return await this.ormRepository.find({ where });
   }
 
@@ -34,11 +34,11 @@ export class UserRepository {
       select: [
         'id',
         'email',
-        'password',
+        'passwordHash',
         'firstName',
         'lastName',
         'role',
-        'hospitalId',
+        'tenantId',
         'failedLoginAttempts',
         'lockedUntil',
         'hashedRefreshToken',

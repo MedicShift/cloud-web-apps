@@ -15,7 +15,7 @@ export class RegisterUserHandler implements ICommandHandler<RegisterUserCommand>
   ) {}
 
   async execute(command: RegisterUserCommand) {
-    const { email, password, firstName, lastName, role, hospitalId } = command;
+    const { email, password, firstName, lastName, role, tenantId } = command;
 
     // Check for existing user
     const existingUser = await this.userRepository.findByEmail(email);
@@ -30,17 +30,17 @@ export class RegisterUserHandler implements ICommandHandler<RegisterUserCommand>
 
     const user = await this.userRepository.createUser({
       email,
-      password: hashedPassword,
+      passwordHash: hashedPassword,
       firstName,
       lastName,
       role: role as any,
-      hospitalId,
+      tenantId
     });
 
     // Audit log
     this.auditLog.authRegister(email, user.id);
 
-    const { password: _pw, hashedRefreshToken: _rt, ...result } = user;
+    const { passwordHash: _pw, hashedRefreshToken: _rt, ...result } = user;
     return result;
   }
 }

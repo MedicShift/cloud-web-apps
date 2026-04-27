@@ -46,9 +46,9 @@ export class ShiftsController {
 
   @Get()
   @ApiOperation({ summary: 'List all shifts' })
-  @ApiQuery({ name: 'hospitalId', required: false, type: String })
-  findAll(@Query('hospitalId') hospitalId?: string) {
-    return this.queryBus.execute(new GetShiftsQuery(hospitalId));
+  @ApiQuery({ name: 'tenantId', required: false, type: String })
+  findAll(@Query('tenantId') tenantId?: string) {
+    return this.queryBus.execute(new GetShiftsQuery(tenantId));
   }
 
   @Get(':id')

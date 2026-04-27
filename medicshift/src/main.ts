@@ -36,7 +36,12 @@ async function bootstrap() {
   );
 
   // Enable CORS
-  app.enableCors();
+app.enableCors({
+  origin: 'http://localhost:4200', // Better than true
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  credentials: true,
+  allowedHeaders: 'Content-Type, Accept, Authorization', // Crucial for JWT
+});
 
   // Graceful shutdown hooks (for Docker/K8s SIGTERM handling)
   app.enableShutdownHooks();

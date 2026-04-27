@@ -1,14 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { UseGuards, Controller, Post, Body, Get, Query, Param, Patch, Delete } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -31,7 +21,7 @@ export class UsersController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) { }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Post()
@@ -44,16 +34,16 @@ export class UsersController {
         dto.firstName,
         dto.lastName,
         dto.role,
-        dto.hospitalId,
+        dto.tenantId,
       ),
     );
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
-  @Get()
+  @Get('all')
   @ApiOperation({ summary: 'Get all users (filter by hospital if manager)' })
-  findAll(@Query('hospitalId') hospitalId?: string) {
-    return this.queryBus.execute(new GetUsersQuery(hospitalId));
+  findAll(@Query('tenantId') tenantId?: string) {
+    return this.queryBus.execute(new GetUsersQuery(tenantId));
   }
 
   @Get(':id')

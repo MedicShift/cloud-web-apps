@@ -45,9 +45,9 @@ export class SchedulesController {
 
   @Get()
   @ApiOperation({ summary: 'List all schedules' })
-  @ApiQuery({ name: 'hospitalId', required: false, type: String })
-  findAll(@Query('hospitalId') hospitalId?: string) {
-    return this.queryBus.execute(new GetSchedulesQuery(hospitalId));
+  @ApiQuery({ name: 'tenantId', required: false, type: String })
+  findAll(@Query('tenantId') tenantId?: string) {
+    return this.queryBus.execute(new GetSchedulesQuery(tenantId));
   }
 
   @Get(':id')

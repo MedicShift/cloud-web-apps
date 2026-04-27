@@ -17,11 +17,12 @@ const CommandHandlers = [
   DeleteUserHandler,
 ];
 const QueryHandlers = [GetUserHandler, GetUsersHandler, GetUserByEmailHandler];
+import { UserSubscriber } from './subscribers/user.subscriber';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User]), CqrsModule],
   controllers: [UsersController],
-  providers: [UserRepository, ...CommandHandlers, ...QueryHandlers],
+  providers: [UserRepository, ...CommandHandlers, ...QueryHandlers, UserSubscriber],
   exports: [UserRepository, CqrsModule],
 })
 export class UsersModule {}

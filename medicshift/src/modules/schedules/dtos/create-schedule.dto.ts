@@ -12,7 +12,7 @@ export class CreateScheduleDto {
 
   @ApiProperty()
   @IsUUID()
-  hospitalId: string;
+  tenantId: string;
 
   @ApiProperty()
   @IsUUID()

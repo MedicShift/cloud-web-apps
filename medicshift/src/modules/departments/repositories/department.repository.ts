@@ -15,8 +15,8 @@ export class DepartmentRepository {
     return await this.ormRepository.save(department);
   }
 
-  async findAll(hospitalId?: string): Promise<Department[]> {
-    const where = hospitalId ? { hospitalId } : {};
+  async findAll(tenantId?: string): Promise<Department[]> {
+    const where = tenantId ? { tenantId } : {};
     return await this.ormRepository.find({ where });
   }
 

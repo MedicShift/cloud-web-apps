@@ -5,6 +5,6 @@ export class RegisterUserCommand {
     public readonly firstName: string,
     public readonly lastName: string,
     public readonly role?: string,
-    public readonly hospitalId?: string,
+    public readonly tenantId?: string,
   ) {}
 }

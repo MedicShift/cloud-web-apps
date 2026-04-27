@@ -2,15 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Schedule } from '../entities/schedule.entity';
-import { ScheduleEntry } from '../entities/schedule-entry.entity';
 
 @Injectable()
 export class ScheduleRepository {
   constructor(
     @InjectRepository(Schedule)
     private readonly ormRepository: Repository<Schedule>,
-    @InjectRepository(ScheduleEntry)
-    private readonly entriesRepository: Repository<ScheduleEntry>,
   ) {}
 
   async createSchedule(data: Partial<Schedule>): Promise<Schedule> {
@@ -18,8 +15,8 @@ export class ScheduleRepository {
     return await this.ormRepository.save(schedule);
   }
 
-  async findAll(hospitalId?: string): Promise<Schedule[]> {
-    const where = hospitalId ? { hospitalId } : {};
+  async findAll(tenantId?: string): Promise<Schedule[]> {
+    const where = tenantId ? { tenantId } : {};
     return await this.ormRepository.find({ where });
   }
 

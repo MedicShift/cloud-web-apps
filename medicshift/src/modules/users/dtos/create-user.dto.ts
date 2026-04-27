@@ -27,13 +27,13 @@ export class CreateUserDto {
   @IsString()
   lastName: string;
 
-  @ApiProperty({ enum: UserRole, default: UserRole.NURSE, required: false })
+  @ApiProperty({ enum: UserRole, default: UserRole.USER, required: false })
   @IsEnum(UserRole)
   @IsOptional()
   role?: UserRole;
 
   @ApiProperty({ required: false })
-  @IsUUID()
   @IsOptional()
-  hospitalId?: string;
+  @IsUUID()
+  tenantId?: string;
 }

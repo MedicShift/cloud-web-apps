@@ -1,3 +1,3 @@
 export class GetUsersQuery {
-  constructor(public readonly hospitalId?: string) {}
+  constructor(public readonly tenantId?: string) {}
 }

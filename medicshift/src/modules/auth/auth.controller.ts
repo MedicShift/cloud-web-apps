@@ -1,22 +1,9 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-  UseGuards,
-  Req,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Req, } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { RefreshTokenDto } from './dtos/refresh-token.dto';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, } from '@nestjs/swagger';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { RegisterUserCommand } from './commands/impl/register-user.command';
 import { LoginUserCommand } from './commands/impl/login-user.command';
@@ -30,7 +17,7 @@ import type { Request } from 'express';
 @Controller({ path: 'auth', version: '1' })
 @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute for auth endpoints
 export class AuthController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(private readonly commandBus: CommandBus) { }
 
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
@@ -44,7 +31,7 @@ export class AuthController {
         dto.firstName,
         dto.lastName,
         dto.role,
-        dto.hospitalId,
+        dto.tenantId,
       ),
     );
   }
