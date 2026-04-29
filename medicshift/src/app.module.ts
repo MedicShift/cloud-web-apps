@@ -15,6 +15,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { TenantsModule } from './modules/tenants/tenants.module';
 import { TenantMiddleware } from './middleware/tenant.middleware';
 import { UserSubscriber } from './modules/users/subscribers/user.subscriber';
+import { InviteModule } from './modules/invite/invites.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { UserSubscriber } from './modules/users/subscribers/user.subscriber';
     // Infrastructure modules
     HealthModule,
     AuditLogModule,
+    InviteModule,
   ],
   controllers: [],
   providers: [

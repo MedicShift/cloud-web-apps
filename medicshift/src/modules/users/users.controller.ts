@@ -5,9 +5,7 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from './enums/user-role.enum';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { CreateUserCommand } from './commands/impl/create-user.command';
 import { UpdateUserCommand } from './commands/impl/update-user.command';
 import { DeleteUserCommand } from './commands/impl/delete-user.command';
 import { GetUserQuery } from './queries/impl/get-user.query';
@@ -23,21 +21,21 @@ export class UsersController {
     private readonly queryBus: QueryBus,
   ) { }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
-  @Post()
-  @ApiOperation({ summary: 'Create a new user' })
-  create(@Body() dto: CreateUserDto) {
-    return this.commandBus.execute(
-      new CreateUserCommand(
-        dto.email,
-        dto.password,
-        dto.firstName,
-        dto.lastName,
-        dto.role,
-        dto.tenantId,
-      ),
-    );
-  }
+  // @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  // @Post()
+  // @ApiOperation({ summary: 'Create a new user' })
+  // create(@Body() dto: CreateUserDto) {
+  //   return this.commandBus.execute(
+  //     new CreateUserCommand(
+  //       dto.email,
+  //       dto.password,
+  //       dto.firstName,
+  //       dto.lastName,
+  //       dto.role,
+  //       dto.tenantId,
+  //     ),
+  //   );
+  // }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Get('all')

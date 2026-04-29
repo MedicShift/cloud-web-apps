@@ -7,6 +7,7 @@ import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { TenantsService } from './tenants.service';
 import { UseGuards, Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
 import { CreateTenantDto } from './dtos/create-tenant.dto';
+import { InviteService } from '../invite/invite.service';
 
 @ApiTags('Tenants')
 @ApiBearerAuth()
@@ -14,13 +15,18 @@ import { CreateTenantDto } from './dtos/create-tenant.dto';
 @Controller('tenants')
 
 export class TenantsController {
-  constructor(private readonly tenantsService: TenantsService) {}
+  constructor(private readonly tenantsService: TenantsService,
+    private readonly inviteService: InviteService
+  ) { }
 
   @Roles(UserRole.ADMIN)
   @Post()
   @ApiOperation({ summary: 'Create a new tenant' })
-  create(@Body() createTenantDto: CreateTenantDto) {
-    return this.tenantsService.create(createTenantDto);
+  async create(@Body() createTenantDto: CreateTenantDto) {
+    return this.tenantsService.create(createTenantDto)
+      .then((tenant) => {
+        this.inviteService.sendInvite(createTenantDto.adminEmail, tenant.id, UserRole.ADMIN)
+      });
   }
 
   @Roles(UserRole.ADMIN)

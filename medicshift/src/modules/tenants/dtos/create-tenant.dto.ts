@@ -18,10 +18,9 @@ export class CreateTenantDto {
   @IsOptional()
   phone?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
   @IsEmail()
-  @IsOptional()
-  email?: string;
+  adminEmail: string;
 
   @ApiProperty({ default: true, required: false })
   @IsBoolean()
