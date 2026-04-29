@@ -1,8 +1,9 @@
-import { UseGuards, Controller, Post, Body, Get, Query, Param, Patch, Delete } from '@nestjs/common';
+import { UseGuards, Controller, Get, Body, Param, Patch, Delete } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { UserRole } from './enums/user-role.enum';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -39,8 +40,8 @@ export class UsersController {
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Get('all')
-  @ApiOperation({ summary: 'Get all users (filter by hospital if manager)' })
-  findAll(@Query('tenantId') tenantId?: string) {
+  @ApiOperation({ summary: 'Get all users for the authenticated user\'s tenant' })
+  findAll(@CurrentUser('tenantId') tenantId: string) {
     return this.queryBus.execute(new GetUsersQuery(tenantId));
   }
 
