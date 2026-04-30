@@ -1,17 +1,18 @@
-import { Column, Entity, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
-import { ApiProperty } from '@nestjs/swagger';
 import { ScheduleStatus } from '../enums/schedule-status.enum';
-import { Department } from '../../departments/entities/department.entity';
 import { Tenant } from 'src/modules/tenants/entities/tenant.entity';
+import { IsUUID } from 'class-validator';
 
 @Entity('schedules')
 export class Schedule extends BaseEntity {
 
   @Column()
+  @IsUUID()
   userId: string;
 
   @Column()
+  @IsUUID()
   shiftId: string;
 
   @Column({ type: 'date' })
@@ -21,18 +22,12 @@ export class Schedule extends BaseEntity {
   status: ScheduleStatus;
 
   @Column({ type: 'uuid' })
-  tenantId: string;  
-  
-  @Column({ type: 'uuid' })
-  departmentId: string;
+  @IsUUID()
+  tenantId: string;
 
   @ManyToOne(() => Tenant, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'tenantId' })
   tenant: Tenant;
-
-  @ManyToOne(() => Department, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'departmentId' })
-  department: Department;
 
 
 }
