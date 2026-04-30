@@ -62,6 +62,9 @@ Once the application is running, you can explore and test the API via Swagger:
 
 - **Development**: In development mode, TypeORM is configured to `synchronize: true`. Tables are created automatically based on your entity definitions when the app starts.
 - **Production**: Synchronize is disabled for safety. Database changes should be managed via TypeORM migrations.
+npm run migration:generate -- src/database/migrations/InitialSchema
+npm run migration:run
+
 
 ---
 
