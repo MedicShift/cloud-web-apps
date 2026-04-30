@@ -1,15 +1,20 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TenantsService } from './tenants.service';
+import { CqrsModule } from '@nestjs/cqrs';
 import { TenantsController } from './tenants.controller';
 import { Tenant } from './entities/tenant.entity';
-import { AuthModule } from '../auth/auth.module';
-import { InviteModule } from '../invite/invites.module';
+import { TenantRepository } from './repositories/tenant.repository';
+import { CreateHospitalHandler } from './commands/handlers/create-tenant.handler';
+import { DeleteTenantHandler } from './commands/handlers/delete-tenant.handler';
+import { GetTenantsHandler } from './queries/handlers/get-tenants.handler';
+
+const CommandHandlers = [CreateHospitalHandler, DeleteTenantHandler];
+const QueryHandlers = [GetTenantsHandler];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Tenant]), AuthModule, InviteModule],
+  imports: [TypeOrmModule.forFeature([Tenant]), CqrsModule],
   controllers: [TenantsController],
-  providers: [TenantsService],
-  exports: [TenantsService],
+  providers: [TenantRepository, ...CommandHandlers, ...QueryHandlers],
+  exports: [TenantRepository],
 })
 export class TenantsModule {}
