@@ -28,10 +28,18 @@ import { InviteModule } from './modules/invite/invites.module';
           process.env.NODE_ENV !== 'production'
             ? {
                 target: 'pino-pretty',
-                options: { colorize: true, singleLine: true },
+                options: { colorize: true },
               }
             : undefined,
         level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
+        serializers: {
+          req(req) {
+            return { id: req.id, method: req.method, url: req.url };
+          },
+          res(res) {
+            return { statusCode: res.statusCode };
+          },
+        },
       },
     }),
 
