@@ -11,6 +11,7 @@ import { DeleteScheduleCommand } from './commands/impl/delete-schedule.command';
 import { TriggerScheduleGenerationCommand } from './commands/impl/trigger-schedule-generation.command';
 import { GetScheduleQuery } from './queries/impl/get-schedule.query';
 import { GetSchedulesQuery } from './queries/impl/get-schedules.query';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @ApiTags('Schedules')
 @ApiBearerAuth()
@@ -20,13 +21,16 @@ export class SchedulesController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) { }
+  ) {}
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Post()
   @ApiOperation({ summary: 'Create a new schedule parameter block' })
-  create(@Body() dto: CreateScheduleDto) {
-    return this.commandBus.execute(new CreateScheduleCommand(dto));
+  create(@Body() dto: CreateScheduleDto, @CurrentUser('tenantId') tenantId: string,
+  ) {
+    return this.commandBus.execute(
+      new CreateScheduleCommand({ ...dto, tenantId }),
+    );
   }
 
   @Get()

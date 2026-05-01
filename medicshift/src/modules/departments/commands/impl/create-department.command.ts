@@ -1,6 +1,3 @@
 export class CreateDepartmentCommand {
-  constructor(
-    public readonly name: string,
-    public readonly tenantId: string,
-  ) { }
+  constructor(public readonly data: Record<string, any>) {}
 }
