@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsEnum, IsUUID, Matches } from 'class-validator';
+import { IsString, IsUUID, Matches } from 'class-validator';
+import { Optional } from '@nestjs/common';
 
 
 export class CreateShiftDto {
@@ -21,6 +22,10 @@ export class CreateShiftDto {
   })
   endTime: string;
 
+  @ApiProperty({ nullable: true })
+  @Optional()
+  @IsUUID()
+  departmentId?: string;
 
   @ApiProperty()
   @IsUUID()
