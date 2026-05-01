@@ -13,8 +13,4 @@ export class CreateScheduleDto {
   @ApiProperty()
   @IsUUID()
   tenantId: string;
-
-  @ApiProperty()
-  @IsUUID()
-  departmentId: string;
 }
