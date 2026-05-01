@@ -11,4 +11,8 @@ export class CreateDepartmentDto {
   @IsOptional()
   description?: string;
 
+  @ApiProperty({ nullable: true, required: false })
+  @IsOptional()
+  @IsUUID()
+  departmentHeadId?: string;
 }
