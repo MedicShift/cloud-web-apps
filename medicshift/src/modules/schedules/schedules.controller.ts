@@ -1,30 +1,17 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, Query,} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateScheduleDto } from './dtos/create-schedule.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../users/enums/user-role.enum';
-import {
-  ApiTags,
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery} from '@nestjs/swagger';
 import { CreateScheduleCommand } from './commands/impl/create-schedule.command';
 import { DeleteScheduleCommand } from './commands/impl/delete-schedule.command';
 import { TriggerScheduleGenerationCommand } from './commands/impl/trigger-schedule-generation.command';
 import { GetScheduleQuery } from './queries/impl/get-schedule.query';
 import { GetSchedulesQuery } from './queries/impl/get-schedules.query';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @ApiTags('Schedules')
 @ApiBearerAuth()
@@ -39,8 +26,11 @@ export class SchedulesController {
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Post()
   @ApiOperation({ summary: 'Create a new schedule parameter block' })
-  create(@Body() dto: CreateScheduleDto) {
-    return this.commandBus.execute(new CreateScheduleCommand(dto));
+  create(@Body() dto: CreateScheduleDto, @CurrentUser('tenantId') tenantId: string,
+  ) {
+    return this.commandBus.execute(
+      new CreateScheduleCommand({ ...dto, tenantId }),
+    );
   }
 
   @Get()

@@ -12,7 +12,8 @@ export default registerAs(
     password: process.env.DATABASE_URL ? undefined : process.env.DB_PASSWORD || 'medicshift_password',
     database: process.env.DATABASE_URL ? undefined : process.env.DB_NAME || 'medicshift_db',
     ssl: process.env.DB_SSL === 'true' || process.env.DATABASE_URL?.includes('neon.tech') ? { rejectUnauthorized: false } : false,
+    connectTimeoutMS: 10000,
     autoLoadEntities: true,
-    synchronize: false, // Migrations will handle schema updates
+    synchronize: false,
   }),
 );

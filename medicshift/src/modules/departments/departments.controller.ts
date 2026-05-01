@@ -16,6 +16,7 @@ import { UpdateDepartmentCommand } from './commands/impl/update-department.comma
 import { DeleteDepartmentCommand } from './commands/impl/delete-department.command';
 import { GetDepartmentQuery } from './queries/impl/get-department.query';
 import { GetDepartmentsQuery } from './queries/impl/get-departments.query';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @ApiTags('Departments')
 @ApiBearerAuth()
@@ -30,15 +31,18 @@ export class DepartmentsController {
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Post()
   @ApiOperation({ summary: 'Create a new department' })
-  create(@Body() dto: CreateDepartmentDto, @Req() req: any) {
-    return this.commandBus.execute(new CreateDepartmentCommand(dto.name, req.user.tenantId));
+  create(@Body() dto: CreateDepartmentDto, @CurrentUser('tenantId') tenantId: string,
+  ) {
+    return this.commandBus.execute(
+      new CreateDepartmentCommand({ ...dto, tenantId }),
+    );
   }
 
   @Get('all')
   @ApiOperation({ summary: 'List all departments' })
   @ApiQuery({ name: 'tenant', required: false, type: String })
   findAll(@Req() req: any) {
-    console.log('req' , req)
+    console.log('req', req);
     return this.queryBus.execute(new GetDepartmentsQuery(req.user.tenantId));
   }
 

@@ -26,6 +26,7 @@ import { UpdateShiftCommand } from './commands/impl/update-shift.command';
 import { DeleteShiftCommand } from './commands/impl/delete-shift.command';
 import { GetShiftQuery } from './queries/impl/get-shift.query';
 import { GetShiftsQuery } from './queries/impl/get-shifts.query';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @ApiTags('Shifts')
 @ApiBearerAuth()
@@ -40,14 +41,16 @@ export class ShiftsController {
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Post()
   @ApiOperation({ summary: 'Create a new shift' })
-  create(@Body() dto: CreateShiftDto) {
-    return this.commandBus.execute(new CreateShiftCommand(dto));
+  create(@Body() dto: CreateShiftDto, @CurrentUser('tenantId') tenantId: string,) {
+    return this.commandBus.execute(
+      new CreateShiftCommand({ ...dto, tenantId }),
+    );
   }
 
   @Get()
   @ApiOperation({ summary: 'List all shifts' })
   @ApiQuery({ name: 'tenantId', required: false, type: String })
-  findAll(@Query('tenantId') tenantId?: string) {
+  findAll(@CurrentUser('tenantId') tenantId: string) {
     return this.queryBus.execute(new GetShiftsQuery(tenantId));
   }
 

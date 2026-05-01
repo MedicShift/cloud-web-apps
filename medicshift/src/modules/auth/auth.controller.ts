@@ -1,8 +1,10 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Req, } from '@nestjs/common';
+import { Controller, Post, Get, Body, HttpCode, HttpStatus, UseGuards, Req, UnauthorizedException, } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { RefreshTokenDto } from './dtos/refresh-token.dto';
+import { VerifyInviteDto } from './dtos/verify-invite.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, } from '@nestjs/swagger';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { RegisterUserCommand } from './commands/impl/register-user.command';
@@ -17,7 +19,10 @@ import type { Request } from 'express';
 @Controller({ path: 'auth', version: '1' })
 @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute for auth endpoints
 export class AuthController {
-  constructor(private readonly commandBus: CommandBus) { }
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly jwtService: JwtService,
+  ) { }
 
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
@@ -76,4 +81,20 @@ export class AuthController {
   logout(@CurrentUser() user: any) {
     return this.commandBus.execute(new LogoutCommand(user.id));
   }
+
+  @Post('verify-token')
+  @HttpCode(HttpStatus.OK)
+  @SkipThrottle()
+  @ApiOperation({ summary: 'Verify invite token from registration email' })
+  @ApiResponse({ status: 200, description: 'Token is valid — returns email, role, tenantId' })
+  @ApiResponse({ status: 401, description: 'Token is invalid or expired' })
+  verifyInvite(@Body() dto: VerifyInviteDto) {
+      const payload = this.jwtService.verify(dto.token);
+      return {
+        email: payload.email,
+        role: payload.role,
+        tenantId: payload.tenantId,
+      };
+  }
+
 }

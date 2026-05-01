@@ -15,6 +15,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { TenantsModule } from './modules/tenants/tenants.module';
 import { TenantMiddleware } from './middleware/tenant.middleware';
 import { UserSubscriber } from './modules/users/subscribers/user.subscriber';
+import { InviteModule } from './modules/invite/invites.module';
 
 @Module({
   imports: [
@@ -27,10 +28,18 @@ import { UserSubscriber } from './modules/users/subscribers/user.subscriber';
           process.env.NODE_ENV !== 'production'
             ? {
                 target: 'pino-pretty',
-                options: { colorize: true, singleLine: true },
+                options: { colorize: true },
               }
             : undefined,
         level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
+        serializers: {
+          req(req) {
+            return { id: req.id, method: req.method, url: req.url };
+          },
+          res(res) {
+            return { statusCode: res.statusCode };
+          },
+        },
       },
     }),
 
@@ -63,6 +72,7 @@ import { UserSubscriber } from './modules/users/subscribers/user.subscriber';
     // Infrastructure modules
     HealthModule,
     AuditLogModule,
+    InviteModule,
   ],
   controllers: [],
   providers: [
