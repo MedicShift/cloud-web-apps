@@ -4,6 +4,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { UserRepository } from '../../users/repositories/user.repository';
+import { JwtPayload } from '../../../common/interfaces/jwt-payload.interface';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
@@ -24,8 +25,9 @@ export class JwtRefreshStrategy extends PassportStrategy(
     });
   }
 
-  async validate(req: Request, payload: any) {
-    const refreshToken = req.body?.refresh_token;
+  async validate(req: Request, payload: JwtPayload) {
+    const body = req.body as Record<string, any>;
+    const refreshToken = body?.refresh_token as string;
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token is required');
     }

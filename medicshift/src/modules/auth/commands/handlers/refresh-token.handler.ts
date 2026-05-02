@@ -19,7 +19,6 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand>
   async execute(command: RefreshTokenCommand) {
     const { userId, refreshToken } = command;
 
-    const user = await this.userRepository.findByEmail('').catch(() => null);
     // Fetch user directly by ID for refresh
     const userById = await this.userRepository.findOneById(userId);
     // We need the hashedRefreshToken - re-fetch with select
@@ -56,7 +55,11 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand>
     );
     const newRefreshToken = this.jwtService.sign(
       { sub: userWithToken.id },
-      { secret: refreshTokenSecret, expiresIn: refreshTokenExpiration as any },
+      {
+        secret: refreshTokenSecret,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        expiresIn: refreshTokenExpiration as any,
+      },
     );
 
     // Store new hashed refresh token (rotation)

@@ -1,4 +1,12 @@
-import { UseGuards, Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
+import {
+  UseGuards,
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -11,6 +19,7 @@ import { CreateTenantCommand } from './commands/impl/create-tenant.command';
 import { DeleteTenantCommand } from './commands/impl/delete-tenant.command';
 import { GetTenantsQuery } from './queries/impl/get-tenants.query';
 import { SendInviteCommand } from '../invite/commands/impl/send-invite.command';
+import { Tenant } from './entities/tenant.entity';
 
 @ApiTags('Tenants')
 @ApiBearerAuth()
@@ -25,10 +34,20 @@ export class TenantsController {
   @Roles(UserRole.ADMIN)
   @Post()
   @ApiOperation({ summary: 'Create a new tenant' })
-  async create(@Body() createTenantDto: CreateTenantDto, @CurrentUser('id') userId: string) {
-    const tenant = await this.commandBus.execute(new CreateTenantCommand(createTenantDto));
+  async create(
+    @Body() createTenantDto: CreateTenantDto,
+    @CurrentUser('id') userId: string,
+  ): Promise<Tenant> {
+    const tenant: Tenant = await this.commandBus.execute(
+      new CreateTenantCommand(createTenantDto),
+    );
     await this.commandBus.execute(
-      new SendInviteCommand(createTenantDto.adminEmail, tenant.id, userId, UserRole.ADMIN),
+      new SendInviteCommand(
+        createTenantDto.adminEmail,
+        tenant.id,
+        userId,
+        UserRole.ADMIN,
+      ),
     );
     return tenant;
   }

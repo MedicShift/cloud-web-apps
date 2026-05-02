@@ -4,13 +4,13 @@ import { IsDateString, IsUUID } from 'class-validator';
 export class CreateScheduleDto {
   @ApiProperty()
   @IsUUID()
-  userId: string;
+  userId!: string;
 
   @ApiProperty()
   @IsUUID()
-  shiftId: string;
+  shiftId!: string;
 
   @ApiProperty({ example: '2026-05-01' })
   @IsDateString()
-  date: string;
+  date!: string;
 }

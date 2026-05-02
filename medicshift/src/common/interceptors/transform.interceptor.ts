@@ -13,6 +13,8 @@ export interface Response<T> {
   timestamp: string;
 }
 
+import { Response as ExpressResponse } from 'express';
+
 @Injectable()
 export class TransformInterceptor<T> implements NestInterceptor<
   T,
@@ -22,10 +24,11 @@ export class TransformInterceptor<T> implements NestInterceptor<
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<Response<T>> {
+    const response = context.switchToHttp().getResponse<ExpressResponse>();
     return next.handle().pipe(
-      map((data) => ({
+      map((data: T) => ({
         data,
-        statusCode: context.switchToHttp().getResponse().statusCode,
+        statusCode: response.statusCode,
         timestamp: new Date().toISOString(),
       })),
     );

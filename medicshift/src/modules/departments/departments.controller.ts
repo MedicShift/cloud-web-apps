@@ -1,4 +1,14 @@
-import { UseGuards, Controller, Post, Body, Get, Query, Param, Patch, Delete, Req } from '@nestjs/common';
+import {
+  UseGuards,
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Patch,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateDepartmentDto } from './dtos/create-department.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -17,6 +27,7 @@ import { DeleteDepartmentCommand } from './commands/impl/delete-department.comma
 import { GetDepartmentQuery } from './queries/impl/get-department.query';
 import { GetDepartmentsQuery } from './queries/impl/get-departments.query';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import type { RequestWithUser } from '../../common/interfaces/request-with-user.interface';
 
 @ApiTags('Departments')
 @ApiBearerAuth()
@@ -26,12 +37,14 @@ export class DepartmentsController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) { }
+  ) {}
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Post()
   @ApiOperation({ summary: 'Create a new department' })
-  create(@Body() dto: CreateDepartmentDto, @CurrentUser('tenantId') tenantId: string,
+  create(
+    @Body() dto: CreateDepartmentDto,
+    @CurrentUser('tenantId') tenantId: string,
   ) {
     return this.commandBus.execute(
       new CreateDepartmentCommand({ ...dto, tenantId }),
@@ -41,8 +54,7 @@ export class DepartmentsController {
   @Get('all')
   @ApiOperation({ summary: 'List all departments' })
   @ApiQuery({ name: 'tenant', required: false, type: String })
-  findAll(@Req() req: any) {
-    console.log('req', req);
+  findAll(@Req() req: RequestWithUser) {
     return this.queryBus.execute(new GetDepartmentsQuery(req.user.tenantId));
   }
 
@@ -55,7 +67,7 @@ export class DepartmentsController {
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a department' })
-  update(@Param('id') id: string, @Body() updateDto: any) {
+  update(@Param('id') id: string, @Body() updateDto: Record<string, any>) {
     return this.commandBus.execute(new UpdateDepartmentCommand(id, updateDto));
   }
 

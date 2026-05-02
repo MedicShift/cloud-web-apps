@@ -4,7 +4,7 @@ import { IsString, IsOptional, IsUUID } from 'class-validator';
 export class CreateDepartmentDto {
   @ApiProperty({ example: 'Emergency Room' })
   @IsString()
-  name: string;
+  name!: string;
 
   @ApiProperty({ required: false })
   @IsString()

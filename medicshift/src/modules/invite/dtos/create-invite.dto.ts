@@ -1,20 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsEmail, IsEnum, IsOptional, IsUUID } from 'class-validator';
+import {
+  IsDateString,
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  IsUUID,
+} from 'class-validator';
 import { UserRole } from 'src/modules/users/enums/user-role.enum';
 import { InviteStatus } from '../enums/invite-status';
 
 export class CreateInviteDto {
   @ApiProperty()
   @IsUUID()
-  tenantId: string;
+  tenantId!: string;
 
   @ApiProperty()
   @IsEmail()
-  email: string;
+  email!: string;
 
   @ApiProperty()
   @IsUUID()
-  invitedBy: string;
+  invitedBy!: string;
 
   @ApiProperty({ enum: UserRole, default: UserRole.USER, required: false })
   @IsEnum(UserRole)
@@ -26,13 +32,10 @@ export class CreateInviteDto {
 
   @ApiProperty({ example: '2026-05-31' })
   @IsDateString()
-  expiresAt: string;  
-  
+  expiresAt!: string;
+
   @ApiProperty({ example: '2026-05-31', required: false })
   @IsOptional()
   @IsDateString()
-  acceptedAt: string;
-
-
-
+  acceptedAt?: string;
 }

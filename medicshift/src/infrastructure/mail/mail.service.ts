@@ -5,7 +5,11 @@ import { Resend } from 'resend';
 export class MailService {
   private readonly resend = new Resend(process.env.RESEND_API_KEY);
 
-  async sendEmail({to, subject, html,}: {
+  async sendEmail({
+    to,
+    subject,
+    html,
+  }: {
     to: string;
     subject: string;
     html: string;
@@ -15,7 +19,7 @@ export class MailService {
       from: `MyApp <${process.env.EMAIL_FROM}>`,
       to: [to],
       subject,
-      html
+      html,
     });
 
     if (error) {

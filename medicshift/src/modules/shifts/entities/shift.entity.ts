@@ -5,28 +5,28 @@ import { Department } from 'src/modules/departments/entities/department.entity';
 
 @Entity('shifts')
 export class Shift extends BaseEntity {
-
   @Column()
-  name: string;
+  name!: string;
 
   @Column({ type: 'time' })
-  startTime: string;
+  startTime!: string;
 
   @Column({ type: 'time' })
-  endTime: string;
+  endTime!: string;
 
   @Column({ type: 'uuid' })
-  tenantId: string;
+  tenantId!: string;
 
   @Column({ type: 'uuid', nullable: true })
-  departmentId: string;
+  departmentId!: string;
 
   @ManyToOne(() => Tenant, (tenant) => tenant.shifts, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'tenantId' })
-  tenant: Tenant;
+  tenant!: Tenant;
 
-  @ManyToOne(() => Department, (department) => department.shifts, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Department, (department) => department.shifts, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'departmentId' })
-  department: Department;
-
+  department!: Department;
 }

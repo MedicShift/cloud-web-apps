@@ -12,20 +12,20 @@ import { UserRole } from '../enums/user-role.enum';
 export class CreateUserDto {
   @ApiProperty({ example: 'nurse@medicshift.com' })
   @IsEmail()
-  email: string;
+  email!: string;
 
   @ApiProperty({ example: 'securePass123' })
   @IsString()
   @MinLength(6)
-  password: string;
+  password!: string;
 
   @ApiProperty({ example: 'Jane' })
   @IsString()
-  firstName: string;
+  firstName!: string;
 
   @ApiProperty({ example: 'Doe' })
   @IsString()
-  lastName: string;
+  lastName!: string;
 
   @ApiProperty({ enum: UserRole, default: UserRole.USER, required: false })
   @IsEnum(UserRole)

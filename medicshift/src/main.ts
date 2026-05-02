@@ -36,12 +36,12 @@ async function bootstrap() {
   );
 
   // Enable CORS
-app.enableCors({
-  origin: 'http://localhost:4200', // Better than true
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-  credentials: true,
-  allowedHeaders: 'Content-Type, Accept, Authorization', // Crucial for JWT
-});
+  app.enableCors({
+    origin: 'http://localhost:4200', // Better than true
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    allowedHeaders: 'Content-Type, Accept, Authorization', // Crucial for JWT
+  });
 
   // Graceful shutdown hooks (for Docker/K8s SIGTERM handling)
   app.enableShutdownHooks();
@@ -92,4 +92,7 @@ app.enableCors({
     logger.log(`Swagger UI available at: http://localhost:${port}/api/v1/docs`);
   }
 }
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('Fatal error during bootstrap:', err);
+  process.exit(1);
+});

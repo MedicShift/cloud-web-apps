@@ -24,7 +24,9 @@ const CommandHandlers = [SendInviteHandler];
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('app.jwtSecret'),
         signOptions: {
-          expiresIn: configService.get<string>('app.jwtExpiration') as StringValue,
+          expiresIn: configService.get<string>(
+            'app.jwtExpiration',
+          ) as StringValue,
         },
       }),
     }),

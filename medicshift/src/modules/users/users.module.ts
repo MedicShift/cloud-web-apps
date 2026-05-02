@@ -22,7 +22,12 @@ import { UserSubscriber } from './subscribers/user.subscriber';
 @Module({
   imports: [TypeOrmModule.forFeature([User]), CqrsModule],
   controllers: [UsersController],
-  providers: [UserRepository, ...CommandHandlers, ...QueryHandlers, UserSubscriber],
+  providers: [
+    UserRepository,
+    ...CommandHandlers,
+    ...QueryHandlers,
+    UserSubscriber,
+  ],
   exports: [UserRepository, CqrsModule],
 })
 export class UsersModule {}

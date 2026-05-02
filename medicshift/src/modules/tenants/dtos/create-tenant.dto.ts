@@ -1,12 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional, IsEmail, IsBoolean, IsEnum } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsEmail,
+  IsBoolean,
+  IsEnum,
+} from 'class-validator';
 import { TenantPlan } from '../enums/tenants.enum';
 
 export class CreateTenantDto {
-
   @ApiProperty({ example: 'General Hospital' })
   @IsString()
-  name: string;
+  name!: string;
 
   @ApiProperty({ required: false })
   @IsString()
@@ -20,7 +25,7 @@ export class CreateTenantDto {
 
   @ApiProperty()
   @IsEmail()
-  adminEmail: string;
+  adminEmail!: string;
 
   @ApiProperty({ default: true, required: false })
   @IsBoolean()
@@ -28,6 +33,6 @@ export class CreateTenantDto {
   isActive?: boolean;
 
   @ApiProperty()
-  @IsEnum(TenantPlan) 
+  @IsEnum(TenantPlan)
   plan?: TenantPlan;
 }

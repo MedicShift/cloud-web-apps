@@ -1,11 +1,24 @@
-import { Controller, Post, Get, Body, HttpCode, HttpStatus, UseGuards, Req, UnauthorizedException, } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { RefreshTokenDto } from './dtos/refresh-token.dto';
 import { VerifyInviteDto } from './dtos/verify-invite.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { RegisterUserCommand } from './commands/impl/register-user.command';
 import { LoginUserCommand } from './commands/impl/login-user.command';
@@ -14,6 +27,8 @@ import { LogoutCommand } from './commands/impl/logout.command';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { Request } from 'express';
+import { User } from '../users/entities/user.entity';
+import { JwtPayload } from '../../common/interfaces/jwt-payload.interface';
 
 @ApiTags('Auth')
 @Controller({ path: 'auth', version: '1' })
@@ -22,7 +37,7 @@ export class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
@@ -65,7 +80,7 @@ export class AuthController {
     description: 'New access + refresh tokens issued',
   })
   @ApiResponse({ status: 401, description: 'Invalid refresh token' })
-  refresh(@Body() dto: RefreshTokenDto, @CurrentUser() user: any) {
+  refresh(@Body() dto: RefreshTokenDto, @CurrentUser() user: User) {
     return this.commandBus.execute(
       new RefreshTokenCommand(user.id, dto.refresh_token),
     );
@@ -78,7 +93,7 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Logout — invalidates refresh token' })
   @ApiResponse({ status: 200, description: 'Successfully logged out' })
-  logout(@CurrentUser() user: any) {
+  logout(@CurrentUser() user: User) {
     return this.commandBus.execute(new LogoutCommand(user.id));
   }
 
@@ -86,15 +101,17 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @SkipThrottle()
   @ApiOperation({ summary: 'Verify invite token from registration email' })
-  @ApiResponse({ status: 200, description: 'Token is valid — returns email, role, tenantId' })
+  @ApiResponse({
+    status: 200,
+    description: 'Token is valid — returns email, role, tenantId',
+  })
   @ApiResponse({ status: 401, description: 'Token is invalid or expired' })
   verifyInvite(@Body() dto: VerifyInviteDto) {
-      const payload = this.jwtService.verify(dto.token);
-      return {
-        email: payload.email,
-        role: payload.role,
-        tenantId: payload.tenantId,
-      };
+    const payload: JwtPayload = this.jwtService.verify(dto.token);
+    return {
+      email: payload.email,
+      role: payload.role,
+      tenantId: payload.tenantId,
+    };
   }
-
 }

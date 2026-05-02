@@ -7,34 +7,32 @@ import { User } from 'src/modules/users/entities/user.entity';
 
 @Entity('invites')
 export class Invite extends BaseEntity {
-
   @Column({ type: 'uuid' })
-  tenantId: string;
+  tenantId!: string;
 
   @Column()
-  email: string;
+  email!: string;
 
   @Column({ type: 'uuid' })
-  invitedBy: string;
+  invitedBy!: string;
 
   @Column({ type: 'simple-enum', enum: UserRole, default: UserRole.USER })
-  role: UserRole;
+  role!: UserRole;
 
   @Column({ type: 'simple-enum', enum: InviteStatus })
-  status: InviteStatus;
+  status!: InviteStatus;
 
   @Column({ type: 'timestamp' })
-  expiresAt: Date;
+  expiresAt!: Date;
 
   @Column({ type: 'timestamp', nullable: true })
-  acceptedAt: Date;
+  acceptedAt?: Date;
 
   @ManyToOne(() => Tenant, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'tenantId' })
-  tenant: Tenant;
+  tenant!: Tenant;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'invitedBy' })
-  invitedByUser: User;
-
+  invitedByUser!: User;
 }

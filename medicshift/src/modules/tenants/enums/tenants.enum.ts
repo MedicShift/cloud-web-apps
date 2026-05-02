@@ -1,6 +1,6 @@
 export enum TenantPlan {
-  STARTER    = 'starter',
-  PRO        = 'pro',
+  STARTER = 'starter',
+  PRO = 'pro',
   ENTERPRISE = 'enterprise',
 }
 

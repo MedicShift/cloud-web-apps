@@ -1,7 +1,4 @@
-export const inviteTemplate = (
-  inviterName: string,
-  inviteLink: string,
-) => `
+export const inviteTemplate = (inviterName: string, inviteLink: string) => `
   <div style="font-family: Arial; padding: 20px;">
     <h1>You have been invited</h1>
 

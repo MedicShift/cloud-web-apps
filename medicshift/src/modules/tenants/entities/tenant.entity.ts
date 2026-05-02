@@ -8,44 +8,47 @@ import { Shift } from 'src/modules/shifts/entities/shift.entity';
 
 @Entity('tenants')
 export class Tenant extends BaseEntity {
-
   @Column()
-  name: string;
+  name!: string;
 
-  @Column({ type: 'simple-enum', enum: TenantType, default: TenantType.HOSPITAL })
-  tenantType: TenantType;
+  @Column({
+    type: 'simple-enum',
+    enum: TenantType,
+    default: TenantType.HOSPITAL,
+  })
+  tenantType!: TenantType;
 
   @Column({ nullable: true })
-  adminEmail: string;
+  adminEmail!: string;
 
   @Column({ nullable: true })
-  address: string;
+  address!: string;
 
   @ApiProperty()
   @Column({ nullable: true })
-  phone: string;
+  phone!: string;
 
   @Column()
-  plan: TenantPlan;
+  plan!: TenantPlan;
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @Column({ nullable: true })
-  renewalDate: Date;
+  renewalDate!: Date;
 
   @Column({ default: 0 })
-  userCount: number
+  userCount!: number;
 
   @Column('int', { nullable: true })
-  openRequests: number;
+  openRequests!: number;
 
   @OneToMany(() => User, (user) => user.tenant)
-  users: User[]
+  users!: User[];
 
   @OneToMany(() => Department, (department) => department.tenant)
-  departments: Department[]  
-  
+  departments!: Department[];
+
   @OneToMany(() => Shift, (shift) => shift.tenant)
-  shifts: Shift[]
+  shifts!: Shift[];
 }

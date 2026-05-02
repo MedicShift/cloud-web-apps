@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { RegisterUserCommand } from '../impl/register-user.command';
 import { UserRepository } from '../../../users/repositories/user.repository';
 import { AuditLogService } from '../../../../common/audit/audit-log.service';
+import { UserRole } from '../../../users/enums/user-role.enum';
 
 @CommandHandler(RegisterUserCommand)
 export class RegisterUserHandler implements ICommandHandler<RegisterUserCommand> {
@@ -33,14 +34,16 @@ export class RegisterUserHandler implements ICommandHandler<RegisterUserCommand>
       passwordHash: hashedPassword,
       firstName,
       lastName,
-      role: role as any,
-      tenantId
+      role: role as UserRole,
+      tenantId,
     });
 
     // Audit log
     this.auditLog.authRegister(email, user.id);
 
-    const { passwordHash: _pw, hashedRefreshToken: _rt, ...result } = user;
+    const result = { ...user } as Record<string, any>;
+    delete result.passwordHash;
+    delete result.hashedRefreshToken;
     return result;
   }
 }

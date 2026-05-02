@@ -1,19 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, IsUUID } from 'class-validator';
 
-
 export class CreateShiftDto {
   @ApiProperty({ example: 'Morning Shift A' })
   @IsString()
-  name: string;
+  name!: string;
 
   @ApiProperty({ example: '08:00', description: 'Format HH:MM' })
   @IsString()
-  startTime: string;
+  startTime!: string;
 
   @ApiProperty({ example: '08:00', description: 'Format HH:MM' })
   @IsString()
-  endTime: string;
+  endTime!: string;
 
   @ApiProperty({ nullable: true, required: false })
   @IsOptional()

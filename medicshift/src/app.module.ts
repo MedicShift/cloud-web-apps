@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from './config/config.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -33,10 +38,10 @@ import { InviteModule } from './modules/invite/invites.module';
             : undefined,
         level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
         serializers: {
-          req(req) {
+          req(req: { id: string; method: string; url: string }) {
             return { id: req.id, method: req.method, url: req.url };
           },
-          res(res) {
+          res(res: { statusCode: number }) {
             return { statusCode: res.statusCode };
           },
         },
@@ -54,11 +59,10 @@ import { InviteModule } from './modules/invite/invites.module';
     // Database
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) =>
-        ({
-        ...configService.get('database') as TypeOrmModuleOptions,
+      useFactory: (configService: ConfigService) => ({
+        ...(configService.get('database') as TypeOrmModuleOptions),
         subscribers: [UserSubscriber],
-      })
+      }),
     }),
 
     // Feature modules
@@ -90,6 +94,6 @@ export class AppModule implements NestModule {
       .forRoutes(
         { path: 'hospital', method: RequestMethod.ALL },
         { path: 'department', method: RequestMethod.ALL },
-      )
+      );
   }
 }

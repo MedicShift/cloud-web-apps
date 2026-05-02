@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateShiftDto } from './dtos/create-shift.dto';
@@ -41,7 +40,10 @@ export class ShiftsController {
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Post()
   @ApiOperation({ summary: 'Create a new shift' })
-  create(@Body() dto: CreateShiftDto, @CurrentUser('tenantId') tenantId: string,) {
+  create(
+    @Body() dto: CreateShiftDto,
+    @CurrentUser('tenantId') tenantId: string,
+  ) {
     return this.commandBus.execute(
       new CreateShiftCommand({ ...dto, tenantId }),
     );
@@ -63,7 +65,7 @@ export class ShiftsController {
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a shift' })
-  update(@Param('id') id: string, @Body() updateDto: any) {
+  update(@Param('id') id: string, @Body() updateDto: Record<string, any>) {
     return this.commandBus.execute(new UpdateShiftCommand(id, updateDto));
   }
 

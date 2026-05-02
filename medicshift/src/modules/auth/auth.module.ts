@@ -27,9 +27,10 @@ const CommandHandlers = [
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('app.jwtSecret') as string,
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('app.jwtSecret'),
         signOptions: {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           expiresIn: configService.get<string>('app.jwtExpiration') as any,
         },
       }),

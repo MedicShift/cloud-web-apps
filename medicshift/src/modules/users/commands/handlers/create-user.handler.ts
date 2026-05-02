@@ -9,7 +9,8 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
   constructor(private readonly userRepository: UserRepository) {}
 
   async execute(command: CreateUserCommand): Promise<User> {
-    const { email, passwordHash, firstName, lastName, role, tenantId } = command;
+    const { email, passwordHash, firstName, lastName, role, tenantId } =
+      command;
     return this.userRepository.createUser({
       email,
       passwordHash,

@@ -37,7 +37,8 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
     const pepper = this.configService.get<string>('security.passwordPepper');
     const pepperedPassword = `${pepper}${password}`;
     const isPasswordValid =
-      user.passwordHash && (await bcrypt.compare(pepperedPassword, user.passwordHash));
+      user.passwordHash &&
+      (await bcrypt.compare(pepperedPassword, user.passwordHash));
 
     if (!isPasswordValid) {
       // Increment failed attempts
@@ -91,7 +92,11 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
     );
     const refreshToken = this.jwtService.sign(
       { sub: user.id },
-      { secret: refreshTokenSecret, expiresIn: refreshTokenExpiration as any },
+      {
+        secret: refreshTokenSecret,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        expiresIn: refreshTokenExpiration as any,
+      },
     );
 
     // Store hashed refresh token in DB
