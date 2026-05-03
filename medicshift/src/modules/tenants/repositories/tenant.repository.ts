@@ -31,4 +31,8 @@ export class TenantRepository {
     const tenant = await this.findById(id);
     await this.ormRepository.remove(tenant);
   }
+
+  async saveTenant(tenant: Tenant): Promise<Tenant> {
+    return await this.ormRepository.save(tenant);
+  }
 }
