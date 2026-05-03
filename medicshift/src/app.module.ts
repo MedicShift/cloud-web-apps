@@ -1,9 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from './config/config.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -18,7 +13,6 @@ import { ConfigService } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 import { TenantsModule } from './modules/tenants/tenants.module';
-import { TenantMiddleware } from './middleware/tenant.middleware';
 import { UserSubscriber } from './modules/users/subscribers/user.subscriber';
 import { InviteModule } from './modules/invite/invites.module';
 
@@ -87,13 +81,4 @@ import { InviteModule } from './modules/invite/invites.module';
     },
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(TenantMiddleware)
-      .forRoutes(
-        { path: 'hospital', method: RequestMethod.ALL },
-        { path: 'department', method: RequestMethod.ALL },
-      );
-  }
-}
+export class AppModule {}

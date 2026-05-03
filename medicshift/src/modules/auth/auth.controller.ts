@@ -52,6 +52,7 @@ export class AuthController {
         dto.lastName,
         dto.role,
         dto.tenantId,
+        dto.departmentId,
       ),
     );
   }
@@ -112,6 +113,7 @@ export class AuthController {
       email: payload.email,
       role: payload.role,
       tenantId: payload.tenantId,
+      departmentId: payload.departmentId,
     };
   }
 }

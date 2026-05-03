@@ -38,6 +38,11 @@ export class RegisterDto {
   @IsOptional()
   tenantId?: string;
 
+  @ApiProperty({ required: false })
+  @IsUUID()
+  @IsOptional()
+  departmentId?: string;
+
   @ApiProperty({ default: true, required: false })
   @IsBoolean()
   @IsOptional()

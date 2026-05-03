@@ -6,5 +6,6 @@ export class SendInviteCommand {
     public readonly tenantId: string,
     public readonly invitedBy: string,
     public readonly role?: UserRole,
+    public readonly departmentId?: string,
   ) {}
 }

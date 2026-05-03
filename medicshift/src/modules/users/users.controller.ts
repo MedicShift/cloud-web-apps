@@ -68,7 +68,7 @@ export class UsersController {
     return this.commandBus.execute(new UpdateUserCommand(id, dto));
   }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a user' })
   remove(@Param('id') id: string) {
