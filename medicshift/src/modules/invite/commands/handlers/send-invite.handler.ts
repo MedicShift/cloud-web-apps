@@ -17,7 +17,7 @@ export class SendInviteHandler implements ICommandHandler<SendInviteCommand> {
   ) {}
 
   async execute(command: SendInviteCommand): Promise<Invite> {
-    const { email, tenantId, invitedBy, role } = command;
+    const { email, tenantId, departmentId, invitedBy, role } = command;
 
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + 24);
@@ -32,7 +32,7 @@ export class SendInviteHandler implements ICommandHandler<SendInviteCommand> {
     });
 
     const emailTo = process.env.EMAIL_TO;
-    const inviteToken = this.jwtService.sign({ email, role, tenantId });
+    const inviteToken = this.jwtService.sign({ email, role, tenantId, departmentId});
     const inviteLink = `${process.env.FRONTEND_URL}?token=${inviteToken}`;
 
     if (!emailTo) {

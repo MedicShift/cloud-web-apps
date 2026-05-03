@@ -23,7 +23,7 @@ export class InviteController {
     @CurrentUser('id') invitedBy: string,
   ) {
     return this.commandBus.execute(
-      new SendInviteCommand(dto.email, tenantId, invitedBy, dto.role),
+      new SendInviteCommand(dto.email,tenantId, invitedBy, dto.role, dto.departmentId),
     );
   }
 }

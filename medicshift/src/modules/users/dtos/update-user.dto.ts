@@ -40,4 +40,9 @@ export class UpdateUserDto {
   @IsUUID()
   @IsOptional()
   tenantId?: string;
+
+  @ApiPropertyOptional({ required: false })
+  @IsUUID()
+  @IsOptional()
+  departmentId?: string;
 }
