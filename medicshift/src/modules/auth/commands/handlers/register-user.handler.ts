@@ -16,7 +16,15 @@ export class RegisterUserHandler implements ICommandHandler<RegisterUserCommand>
   ) {}
 
   async execute(command: RegisterUserCommand) {
-    const { email, password, firstName, lastName, role, tenantId, departmentId } = command;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      role,
+      tenantId,
+      departmentId,
+    } = command;
 
     // Check for existing user
     const existingUser = await this.userRepository.findByEmail(email);

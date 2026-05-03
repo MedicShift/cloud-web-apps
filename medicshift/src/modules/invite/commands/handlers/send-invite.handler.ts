@@ -32,7 +32,12 @@ export class SendInviteHandler implements ICommandHandler<SendInviteCommand> {
     });
 
     const emailTo = process.env.EMAIL_TO;
-    const inviteToken = this.jwtService.sign({ email, role, tenantId, departmentId});
+    const inviteToken = this.jwtService.sign({
+      email,
+      role,
+      tenantId,
+      departmentId,
+    });
     const inviteLink = `${process.env.FRONTEND_URL}?token=${inviteToken}`;
 
     if (!emailTo) {
