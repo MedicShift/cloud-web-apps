@@ -10,6 +10,7 @@ export class UpdateDepartmentHandler implements ICommandHandler<UpdateDepartment
   async execute(command: UpdateDepartmentCommand): Promise<Department> {
     return this.departmentRepository.updateDepartment(
       command.id,
+      command.tenantId,
       command.updateData,
     );
   }

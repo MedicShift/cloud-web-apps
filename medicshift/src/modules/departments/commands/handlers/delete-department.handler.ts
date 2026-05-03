@@ -7,6 +7,9 @@ export class DeleteDepartmentHandler implements ICommandHandler<DeleteDepartment
   constructor(private readonly departmentRepository: DepartmentRepository) {}
 
   async execute(command: DeleteDepartmentCommand): Promise<void> {
-    return this.departmentRepository.deleteDepartment(command.id);
+    return this.departmentRepository.deleteDepartment(
+      command.id,
+      command.tenantId,
+    );
   }
 }

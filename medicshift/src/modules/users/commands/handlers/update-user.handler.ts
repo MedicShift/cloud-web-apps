@@ -8,6 +8,10 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
   constructor(private readonly userRepository: UserRepository) {}
 
   async execute(command: UpdateUserCommand): Promise<User> {
-    return this.userRepository.updateUser(command.id, command.updateData);
+    return this.userRepository.updateUser(
+      command.id,
+      command.tenantId,
+      command.updateData,
+    );
   }
 }

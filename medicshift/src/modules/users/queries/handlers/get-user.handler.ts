@@ -8,6 +8,6 @@ export class GetUserHandler implements IQueryHandler<GetUserQuery> {
   constructor(private readonly userRepository: UserRepository) {}
 
   async execute(query: GetUserQuery): Promise<User> {
-    return this.userRepository.findOneById(query.id);
+    return this.userRepository.findOneById(query.id, query.tenantId);
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsWhere } from 'typeorm';
 import { Schedule } from '../entities/schedule.entity';
 
 @Injectable()
@@ -20,9 +20,13 @@ export class ScheduleRepository {
     return await this.ormRepository.find({ where });
   }
 
-  async findOneById(id: string): Promise<Schedule> {
+  async findOneById(id: string, tenantId?: string): Promise<Schedule> {
+    const where: FindOptionsWhere<Schedule> = {
+      id,
+    };
+    if (tenantId) where.tenantId = tenantId;
     const schedule = await this.ormRepository.findOne({
-      where: { id },
+      where,
       relations: ['entries', 'entries.user', 'entries.shift'],
     });
     if (!schedule) {
@@ -31,8 +35,8 @@ export class ScheduleRepository {
     return schedule;
   }
 
-  async deleteSchedule(id: string): Promise<void> {
-    const schedule = await this.findOneById(id);
+  async deleteSchedule(id: string, tenantId: string): Promise<void> {
+    const schedule = await this.findOneById(id, tenantId);
     await this.ormRepository.remove(schedule);
   }
 

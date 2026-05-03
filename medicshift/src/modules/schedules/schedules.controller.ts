@@ -6,7 +6,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateScheduleDto } from './dtos/create-schedule.dto';
@@ -52,27 +51,32 @@ export class SchedulesController {
   @Get()
   @ApiOperation({ summary: 'List all schedules' })
   @ApiQuery({ name: 'tenantId', required: false, type: String })
-  findAll(@Query('tenantId') tenantId?: string) {
+  findAll(@CurrentUser('tenantId') tenantId: string) {
     return this.queryBus.execute(new GetSchedulesQuery(tenantId));
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a schedule and its entries by ID' })
-  findOne(@Param('id') id: string) {
-    return this.queryBus.execute(new GetScheduleQuery(id));
+  findOne(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
+    return this.queryBus.execute(new GetScheduleQuery(id, tenantId));
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Post(':id/generate')
   @ApiOperation({ summary: 'Trigger OR-Tools to generate the schedule' })
-  triggerGeneration(@Param('id') id: string) {
-    return this.commandBus.execute(new TriggerScheduleGenerationCommand(id));
+  triggerGeneration(
+    @Param('id') id: string,
+    @CurrentUser('tenantId') tenantId: string,
+  ) {
+    return this.commandBus.execute(
+      new TriggerScheduleGenerationCommand(id, tenantId),
+    );
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a schedule' })
-  remove(@Param('id') id: string) {
-    return this.commandBus.execute(new DeleteScheduleCommand(id));
+  remove(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
+    return this.commandBus.execute(new DeleteScheduleCommand(id, tenantId));
   }
 }

@@ -20,8 +20,10 @@ export class DepartmentRepository {
     return await this.ormRepository.find({ where });
   }
 
-  async findOneById(id: string): Promise<Department> {
-    const department = await this.ormRepository.findOne({ where: { id } });
+  async findOneById(id: string, tenantId: string): Promise<Department> {
+    const department = await this.ormRepository.findOne({
+      where: { id, tenantId },
+    });
     if (!department) {
       throw new NotFoundException(`Department #${id} not found`);
     }
@@ -30,15 +32,16 @@ export class DepartmentRepository {
 
   async updateDepartment(
     id: string,
+    tenantId: string,
     updateData: Partial<Department>,
   ): Promise<Department> {
-    const department = await this.findOneById(id);
+    const department = await this.findOneById(id, tenantId);
     this.ormRepository.merge(department, updateData);
     return await this.ormRepository.save(department);
   }
 
-  async deleteDepartment(id: string): Promise<void> {
-    const department = await this.findOneById(id);
+  async deleteDepartment(id: string, tenantId: string): Promise<void> {
+    const department = await this.findOneById(id, tenantId);
     await this.ormRepository.remove(department);
   }
 }

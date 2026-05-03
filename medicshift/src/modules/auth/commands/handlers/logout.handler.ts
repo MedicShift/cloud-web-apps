@@ -12,7 +12,7 @@ export class LogoutHandler implements ICommandHandler<LogoutCommand> {
 
   async execute(command: LogoutCommand): Promise<void> {
     // Invalidate refresh token by nulling it in DB
-    await this.userRepository.updateUser(command.userId, {
+    await this.userRepository.updateUser(command.userId, command.tenantId, {
       hashedRefreshToken: null,
     });
     this.auditLog.authLogout(command.userId);

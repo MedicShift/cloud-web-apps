@@ -95,7 +95,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Logout — invalidates refresh token' })
   @ApiResponse({ status: 200, description: 'Successfully logged out' })
   logout(@CurrentUser() user: User) {
-    return this.commandBus.execute(new LogoutCommand(user.id));
+    return this.commandBus.execute(new LogoutCommand(user.id, user.tenantId));
   }
 
   @Post('verify-token')

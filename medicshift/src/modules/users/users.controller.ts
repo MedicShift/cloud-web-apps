@@ -57,21 +57,25 @@ export class UsersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID' })
-  findOne(@Param('id') id: string) {
-    return this.queryBus.execute(new GetUserQuery(id));
+  findOne(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
+    return this.queryBus.execute(new GetUserQuery(id, tenantId));
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a user' })
-  update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
-    return this.commandBus.execute(new UpdateUserCommand(id, dto));
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateUserDto,
+    @CurrentUser('tenantId') tenantId: string,
+  ) {
+    return this.commandBus.execute(new UpdateUserCommand(id, tenantId, dto));
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a user' })
-  remove(@Param('id') id: string) {
-    return this.commandBus.execute(new DeleteUserCommand(id));
+  remove(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
+    return this.commandBus.execute(new DeleteUserCommand(id, tenantId));
   }
 }

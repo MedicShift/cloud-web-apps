@@ -1,3 +1,6 @@
 export class LogoutCommand {
-  constructor(public readonly userId: string) {}
+  constructor(
+    public readonly userId: string,
+    public readonly tenantId: string,
+  ) {}
 }

@@ -58,21 +58,27 @@ export class ShiftsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a shift by ID' })
-  findOne(@Param('id') id: string) {
-    return this.queryBus.execute(new GetShiftQuery(id));
+  findOne(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
+    return this.queryBus.execute(new GetShiftQuery(id, tenantId));
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a shift' })
-  update(@Param('id') id: string, @Body() updateDto: Record<string, any>) {
-    return this.commandBus.execute(new UpdateShiftCommand(id, updateDto));
+  update(
+    @Param('id') id: string,
+    @Body() updateDto: Record<string, any>,
+    @CurrentUser('tenantId') tenantId: string,
+  ) {
+    return this.commandBus.execute(
+      new UpdateShiftCommand(id, tenantId, updateDto),
+    );
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a shift' })
-  remove(@Param('id') id: string) {
-    return this.commandBus.execute(new DeleteShiftCommand(id));
+  remove(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
+    return this.commandBus.execute(new DeleteShiftCommand(id, tenantId));
   }
 }
