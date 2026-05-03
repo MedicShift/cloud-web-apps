@@ -8,6 +8,6 @@ export class GetShiftHandler implements IQueryHandler<GetShiftQuery> {
   constructor(private readonly shiftRepository: ShiftRepository) {}
 
   async execute(query: GetShiftQuery): Promise<Shift> {
-    return this.shiftRepository.findOneById(query.id);
+    return this.shiftRepository.findOneById(query.id, query.tenantId);
   }
 }

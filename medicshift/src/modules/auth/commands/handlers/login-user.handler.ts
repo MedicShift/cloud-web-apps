@@ -58,7 +58,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
         this.auditLog.authLockout(email, ip);
       }
 
-      await this.userRepository.updateUser(user.id, updateData);
+      await this.userRepository.updateUser(user.id, user.tenantId, updateData);
       this.auditLog.authFailure(email, ip, {
         reason: 'invalid_password',
         failedAttempts,
@@ -68,7 +68,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
 
     // Reset failed attempts on successful login
     if (user.failedLoginAttempts > 0 || user.lockedUntil) {
-      await this.userRepository.updateUser(user.id, {
+      await this.userRepository.updateUser(user.id, user.tenantId, {
         failedLoginAttempts: 0,
         lockedUntil: null,
       });
@@ -101,7 +101,9 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
 
     // Store hashed refresh token in DB
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-    await this.userRepository.updateUser(user.id, { hashedRefreshToken });
+    await this.userRepository.updateUser(user.id, user.tenantId, {
+      hashedRefreshToken,
+    });
 
     this.auditLog.authSuccess(email, user.id, ip);
 

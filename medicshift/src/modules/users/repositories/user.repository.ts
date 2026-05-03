@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsWhere } from 'typeorm';
 import { User } from '../entities/user.entity';
 
 @Injectable()
@@ -20,8 +20,10 @@ export class UserRepository {
     return await this.ormRepository.find({ where });
   }
 
-  async findOneById(id: string): Promise<User> {
-    const user = await this.ormRepository.findOne({ where: { id } });
+  async findOneById(id: string, tenantId?: string): Promise<User> {
+    const where: FindOptionsWhere<User> = { id };
+    if (tenantId) where.tenantId = tenantId;
+    const user = await this.ormRepository.findOne({ where });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
@@ -46,14 +48,18 @@ export class UserRepository {
     });
   }
 
-  async updateUser(id: string, updateData: Partial<User>): Promise<User> {
-    const user = await this.findOneById(id);
+  async updateUser(
+    id: string,
+    tenantId: string,
+    updateData: Partial<User>,
+  ): Promise<User> {
+    const user = await this.findOneById(id, tenantId);
     this.ormRepository.merge(user, updateData);
     return await this.ormRepository.save(user);
   }
 
-  async deleteUser(id: string): Promise<void> {
-    const user = await this.findOneById(id);
+  async deleteUser(id: string, tenantId: string): Promise<void> {
+    const user = await this.findOneById(id, tenantId);
     await this.ormRepository.remove(user);
   }
 

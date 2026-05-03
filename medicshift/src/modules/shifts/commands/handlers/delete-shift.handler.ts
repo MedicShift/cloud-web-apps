@@ -7,6 +7,6 @@ export class DeleteShiftHandler implements ICommandHandler<DeleteShiftCommand> {
   constructor(private readonly shiftRepository: ShiftRepository) {}
 
   async execute(command: DeleteShiftCommand): Promise<void> {
-    return this.shiftRepository.deleteShift(command.id);
+    return this.shiftRepository.deleteShift(command.id, command.tenantId);
   }
 }

@@ -8,6 +8,6 @@ export class GetDepartmentHandler implements IQueryHandler<GetDepartmentQuery> {
   constructor(private readonly departmentRepository: DepartmentRepository) {}
 
   async execute(query: GetDepartmentQuery): Promise<Department> {
-    return this.departmentRepository.findOneById(query.id);
+    return this.departmentRepository.findOneById(query.id, query.tenantId);
   }
 }

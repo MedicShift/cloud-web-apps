@@ -1,3 +1,6 @@
 export class DeleteDepartmentCommand {
-  constructor(public readonly id: string) {}
+  constructor(
+    public readonly id: string,
+    public readonly tenantId: string,
+  ) {}
 }

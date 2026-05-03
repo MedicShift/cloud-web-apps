@@ -60,21 +60,27 @@ export class DepartmentsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a department by ID' })
-  findOne(@Param('id') id: string) {
-    return this.queryBus.execute(new GetDepartmentQuery(id));
+  findOne(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
+    return this.queryBus.execute(new GetDepartmentQuery(id, tenantId));
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a department' })
-  update(@Param('id') id: string, @Body() updateDto: Record<string, any>) {
-    return this.commandBus.execute(new UpdateDepartmentCommand(id, updateDto));
+  update(
+    @Param('id') id: string,
+    @Body() updateDto: Record<string, any>,
+    @CurrentUser('tenantId') tenantId: string,
+  ) {
+    return this.commandBus.execute(
+      new UpdateDepartmentCommand(id, tenantId, updateDto),
+    );
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a department' })
-  remove(@Param('id') id: string) {
-    return this.commandBus.execute(new DeleteDepartmentCommand(id));
+  remove(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
+    return this.commandBus.execute(new DeleteDepartmentCommand(id, tenantId));
   }
 }

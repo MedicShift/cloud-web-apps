@@ -6,9 +6,14 @@ import { Tenant } from './entities/tenant.entity';
 import { TenantRepository } from './repositories/tenant.repository';
 import { CreateHospitalHandler } from './commands/handlers/create-tenant.handler';
 import { DeleteTenantHandler } from './commands/handlers/delete-tenant.handler';
+import { UpdateTenantHandler } from './commands/handlers/update-tenant.handler';
 import { GetTenantsHandler } from './queries/handlers/get-tenants.handler';
 
-const CommandHandlers = [CreateHospitalHandler, DeleteTenantHandler];
+const CommandHandlers = [
+  CreateHospitalHandler,
+  DeleteTenantHandler,
+  UpdateTenantHandler,
+];
 const QueryHandlers = [GetTenantsHandler];
 
 @Module({

@@ -7,6 +7,6 @@ export class DeleteScheduleHandler implements ICommandHandler<DeleteScheduleComm
   constructor(private readonly scheduleRepository: ScheduleRepository) {}
 
   async execute(command: DeleteScheduleCommand): Promise<void> {
-    return this.scheduleRepository.deleteSchedule(command.id);
+    return this.scheduleRepository.deleteSchedule(command.id, command.tenantId);
   }
 }

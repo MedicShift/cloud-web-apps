@@ -12,7 +12,10 @@ export class TriggerScheduleGenerationHandler implements ICommandHandler<Trigger
   constructor(private readonly scheduleRepository: ScheduleRepository) {}
 
   async execute(command: TriggerScheduleGenerationCommand): Promise<Schedule> {
-    const schedule = await this.scheduleRepository.findOneById(command.id);
+    const schedule = await this.scheduleRepository.findOneById(
+      command.id,
+      command.tenantId,
+    );
     schedule.status = ScheduleStatus.GENERATING;
     await this.scheduleRepository.saveSchedule(schedule);
 

@@ -64,9 +64,13 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand>
 
     // Store new hashed refresh token (rotation)
     const hashedNewRefreshToken = await bcrypt.hash(newRefreshToken, 10);
-    await this.userRepository.updateUser(userWithToken.id, {
-      hashedRefreshToken: hashedNewRefreshToken,
-    });
+    await this.userRepository.updateUser(
+      userWithToken.id,
+      userWithToken.tenantId,
+      {
+        hashedRefreshToken: hashedNewRefreshToken,
+      },
+    );
 
     this.auditLog.authTokenRefresh(userWithToken.id);
 

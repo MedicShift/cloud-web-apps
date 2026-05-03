@@ -8,6 +8,10 @@ export class UpdateShiftHandler implements ICommandHandler<UpdateShiftCommand> {
   constructor(private readonly shiftRepository: ShiftRepository) {}
 
   async execute(command: UpdateShiftCommand): Promise<Shift> {
-    return this.shiftRepository.updateShift(command.id, command.updateData);
+    return this.shiftRepository.updateShift(
+      command.id,
+      command.tenantId,
+      command.updateData,
+    );
   }
 }
