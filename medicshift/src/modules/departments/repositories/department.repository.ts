@@ -23,6 +23,7 @@ export class DepartmentRepository {
   async findOneById(id: string, tenantId: string): Promise<Department> {
     const department = await this.ormRepository.findOne({
       where: { id, tenantId },
+      relations: ['users', 'shifts'],
     });
     if (!department) {
       throw new NotFoundException(`Department #${id} not found`);
