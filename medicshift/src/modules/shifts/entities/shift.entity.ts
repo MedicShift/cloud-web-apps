@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { Tenant } from 'src/modules/tenants/entities/tenant.entity';
 import { Department } from 'src/modules/departments/entities/department.entity';
+import { IsUUID } from 'class-validator';
 
 @Entity('shifts')
 export class Shift extends BaseEntity {
@@ -18,6 +19,7 @@ export class Shift extends BaseEntity {
   tenantId!: string;
 
   @Column({ type: 'uuid', nullable: true })
+  @IsUUID()
   departmentId!: string;
 
   @ManyToOne(() => Tenant, (tenant) => tenant.shifts, { onDelete: 'CASCADE' })

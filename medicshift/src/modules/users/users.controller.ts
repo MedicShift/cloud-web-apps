@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -30,29 +31,29 @@ export class UsersController {
     private readonly queryBus: QueryBus,
   ) {}
 
-  // @Roles(UserRole.ADMIN, UserRole.MANAGER)
-  // @Post()
-  // @ApiOperation({ summary: 'Create a new user' })
-  // create(@Body() dto: CreateUserDto) {
-  //   return this.commandBus.execute(
-  //     new CreateUserCommand(
-  //       dto.email,
-  //       dto.password,
-  //       dto.firstName,
-  //       dto.lastName,
-  //       dto.role,
-  //       dto.tenantId,
-  //     ),
-  //   );
-  // }
-
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
-  @Get('all')
+  @Get()
   @ApiOperation({
     summary: "Get all users for the authenticated user's tenant",
   })
-  findAll(@CurrentUser('tenantId') tenantId: string) {
-    return this.queryBus.execute(new GetUsersQuery(tenantId));
+  findAll(
+    @CurrentUser('tenantId') tenantId: string,
+    @CurrentUser('departmentId') userDeptId: string,
+    @CurrentUser('role') role: UserRole,
+    @Query('departmentId') departmentId?: string,
+    @Query('role') queryRole?: UserRole,
+  ) {
+    let finalDepartmentId: string | undefined;
+
+    if (role === UserRole.USER) {
+      finalDepartmentId = userDeptId;
+    }
+    else if (departmentId && departmentId !== 'all') {
+      finalDepartmentId = departmentId;
+    }
+
+    return this.queryBus.execute(
+      new GetUsersQuery(tenantId, finalDepartmentId, queryRole),
+    );
   }
 
   @Get(':id')

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Department } from '../entities/department.entity';
+import { Shift } from 'src/modules/shifts/entities/shift.entity';
 
 @Injectable()
 export class DepartmentRepository {
@@ -23,8 +24,25 @@ export class DepartmentRepository {
   async findOneById(id: string, tenantId: string): Promise<Department> {
     const department = await this.ormRepository.findOne({
       where: { id, tenantId },
-      relations: ['users', 'shifts'],
     });
+    if (!department) {
+      throw new NotFoundException(`Department #${id} not found`);
+    }
+    return department;
+  }
+
+  async findOneByIdForSchedule(id: string, tenantId: string): Promise<Department> {
+    const department = await this.ormRepository
+      .createQueryBuilder('department')
+      .leftJoinAndSelect('department.users', 'user')
+      .leftJoinAndMapMany(
+        'department.shifts',
+        Shift,
+        'shift',
+        'shift.tenantId = department.tenantId AND (shift.departmentId = department.id OR shift.departmentId IS NULL)',
+      )
+      .where('department.id = :id AND department.tenantId = :tenantId', { id, tenantId })
+      .getOne();
     if (!department) {
       throw new NotFoundException(`Department #${id} not found`);
     }

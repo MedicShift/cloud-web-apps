@@ -9,16 +9,24 @@ import { DeleteScheduleHandler } from './commands/handlers/delete-schedule.handl
 import { TriggerScheduleGenerationHandler } from './commands/handlers/trigger-schedule-generation.handler';
 import { GetScheduleHandler } from './queries/handlers/get-schedule.handler';
 import { GetSchedulesHandler } from './queries/handlers/get-schedules.handler';
+import { DepartmentsModule } from '../departments/departments.module';
+import { GetUserSchedulesHandler } from './queries/handlers/get-user-schedules.handler';
+import { GetDepartmentSchedulesHandler } from './queries/handlers/get-department-schedules.handler';
 
 const CommandHandlers = [
   CreateScheduleHandler,
   DeleteScheduleHandler,
   TriggerScheduleGenerationHandler,
 ];
-const QueryHandlers = [GetScheduleHandler, GetSchedulesHandler];
+const QueryHandlers = [
+  GetScheduleHandler,
+  GetSchedulesHandler,
+  GetUserSchedulesHandler,
+  GetDepartmentSchedulesHandler,
+];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Schedule]), CqrsModule],
+  imports: [TypeOrmModule.forFeature([Schedule]), CqrsModule, DepartmentsModule],
   controllers: [SchedulesController],
   providers: [ScheduleRepository, ...CommandHandlers, ...QueryHandlers],
   exports: [ScheduleRepository],

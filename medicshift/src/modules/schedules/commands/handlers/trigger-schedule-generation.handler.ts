@@ -1,49 +1,62 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { Logger, InternalServerErrorException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { TriggerScheduleGenerationCommand } from '../impl/trigger-schedule-generation.command';
 import { DepartmentRepository } from '../../../departments/repositories/department.repository';
-import { ShiftRepository } from '../../../shifts/repositories/shift.repository';
 import { ScheduleRepository } from '../../repositories/schedule.repository';
 
 @CommandHandler(TriggerScheduleGenerationCommand)
-class TriggerScheduleGenerationHandler implements ICommandHandler<TriggerScheduleGenerationCommand> {
+export class TriggerScheduleGenerationHandler implements ICommandHandler<TriggerScheduleGenerationCommand> {
+  private readonly logger = new Logger(TriggerScheduleGenerationHandler.name);
+
   constructor(
     private readonly departmentRepository: DepartmentRepository,
     private readonly schedulesRepository: ScheduleRepository,
-    private readonly shiftsRepository: ShiftRepository,
+    private readonly configService: ConfigService,
   ) {}
 
   async execute(command: TriggerScheduleGenerationCommand): Promise<any> {
-    const department = await this.departmentRepository.findOneById(
+    const department = await this.departmentRepository.findOneByIdForSchedule(
       command.departmentId,
       command.tenantId,
     );
-
-    const shifts = await this.shiftsRepository.findAll(command.tenantId);
 
     const payload = {
       departmentId: department.id,
       startDate: command.startDate,
       endDate: command.endDate,
-      shifts: shifts,
-      users: department.users.map((user) => ({
-        id: user.id,
-      })),
+      shifts: department.shifts,
+      users: department.users.map((user) => ({ id: user.id })),
     };
 
-    const response = await fetch('http://127.0.0.1:8000/schedules', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
+    const url = this.configService.getOrThrow<string>('SCHEDULER_URL');
+    this.logger.log(`Triggering schedule generation for department ${command.departmentId}`);
 
-    if (response.ok) {
-      const d = await response.json();
-      await this.schedulesRepository.saveSchedules(command.tenantId, d.days)
-      return d;
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    } catch (err) {
+      this.logger.error('Schedule service unreachable', err);
+      throw new InternalServerErrorException('Schedule service unreachable');
     }
 
-    return false;
+    if (!response.ok) {
+      const text = await response.text();
+      this.logger.error(`Schedule service returned ${response.status}: ${text}`);
+      throw new InternalServerErrorException(`Schedule service error: ${response.status}`);
+    }
+
+    const d = await response.json();
+    if (!d?.days) {
+      this.logger.error('Schedule service response missing days field', d);
+      throw new InternalServerErrorException('Invalid response from schedule service');
+    }
+
+    await this.schedulesRepository.saveSchedules(command.tenantId, d.days);
+    return d;
   }
 }
-
-export default TriggerScheduleGenerationHandler;
