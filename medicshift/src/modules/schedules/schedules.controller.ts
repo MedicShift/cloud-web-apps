@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Param,
+  Patch,
   Delete,
   UseGuards,
   Query,
@@ -22,6 +23,7 @@ import {
 } from '@nestjs/swagger';
 import { CreateScheduleCommand } from './commands/impl/create-schedule.command';
 import { DeleteScheduleCommand } from './commands/impl/delete-schedule.command';
+import { UpdateScheduleCommand } from './commands/impl/update-schedule.command';
 import { TriggerScheduleGenerationCommand } from './commands/impl/trigger-schedule-generation.command';
 import { GetScheduleQuery } from './queries/impl/get-schedule.query';
 import { GetSchedulesQuery } from './queries/impl/get-schedules.query';
@@ -102,6 +104,19 @@ export class SchedulesController {
         dto.startDate,
         dto.endDate,
       ),
+    );
+  }
+
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update a schedule' })
+  update(
+    @Param('id') id: string,
+    @Body() updateDto: Record<string, any>,
+    @CurrentUser('tenantId') tenantId: string,
+  ) {
+    return this.commandBus.execute(
+      new UpdateScheduleCommand(id, tenantId, updateDto),
     );
   }
 

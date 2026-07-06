@@ -35,6 +35,16 @@ export class ScheduleRepository {
     return schedule;
   }
 
+  async updateSchedule(
+    id: string,
+    tenantId: string,
+    updateData: Partial<Schedule>,
+  ): Promise<Schedule> {
+    const schedule = await this.findOneById(id, tenantId);
+    this.ormRepository.merge(schedule, updateData);
+    return await this.ormRepository.save(schedule);
+  }
+
   async deleteSchedule(id: string, tenantId: string): Promise<void> {
     const schedule = await this.findOneById(id, tenantId);
     await this.ormRepository.remove(schedule);
@@ -95,7 +105,8 @@ export class ScheduleRepository {
   ): Promise<Schedule[]> {
     const qb = this.ormRepository
       .createQueryBuilder('schedule')
-      .leftJoin('schedule.user', 'user')
+      .leftJoinAndSelect('schedule.user', 'user')
+      .leftJoinAndSelect('schedule.shift', 'shift')
       .where('user.departmentId = :departmentId', { departmentId })
       .andWhere('schedule.date BETWEEN :startDate AND :endDate', { startDate, endDate });
 

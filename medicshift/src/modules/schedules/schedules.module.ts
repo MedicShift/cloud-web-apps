@@ -6,6 +6,7 @@ import { Schedule } from './entities/schedule.entity';
 import { ScheduleRepository } from './repositories/schedule.repository';
 import { CreateScheduleHandler } from './commands/handlers/create-schedule.handler';
 import { DeleteScheduleHandler } from './commands/handlers/delete-schedule.handler';
+import { UpdateScheduleHandler } from './commands/handlers/update-schedule.handler';
 import { TriggerScheduleGenerationHandler } from './commands/handlers/trigger-schedule-generation.handler';
 import { GetScheduleHandler } from './queries/handlers/get-schedule.handler';
 import { GetSchedulesHandler } from './queries/handlers/get-schedules.handler';
@@ -15,6 +16,7 @@ import { GetDepartmentSchedulesHandler } from './queries/handlers/get-department
 
 const CommandHandlers = [
   CreateScheduleHandler,
+  UpdateScheduleHandler,
   DeleteScheduleHandler,
   TriggerScheduleGenerationHandler,
 ];
