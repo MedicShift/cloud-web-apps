@@ -37,7 +37,10 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: 'http://localhost:4200', // Better than true
+    origin: [
+      'http://localhost:4200', // Angular dashboard
+      'http://localhost:8081', // Expo web (Metro)
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
     allowedHeaders: 'Content-Type, Accept, Authorization', // Crucial for JWT
