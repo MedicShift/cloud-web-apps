@@ -4,7 +4,6 @@ import { ScheduleStatus } from '../enums/schedule-status.enum';
 import { Tenant } from 'src/modules/tenants/entities/tenant.entity';
 import { IsUUID } from 'class-validator';
 import { User } from '../../users/entities/user.entity';
-
 import { Shift } from '../../shifts/entities/shift.entity';
 
 @Entity('schedules')

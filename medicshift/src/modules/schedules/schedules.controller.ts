@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateScheduleDto } from './dtos/create-schedule.dto';
+import { UpdateScheduleDto } from './dtos/update-schedule.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -112,7 +113,7 @@ export class SchedulesController {
   @ApiOperation({ summary: 'Update a schedule' })
   update(
     @Param('id') id: string,
-    @Body() updateDto: Record<string, any>,
+    @Body() updateDto: UpdateScheduleDto,
     @CurrentUser('tenantId') tenantId: string,
   ) {
     return this.commandBus.execute(
