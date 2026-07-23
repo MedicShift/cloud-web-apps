@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere } from 'typeorm';
 import { Patient } from '../entities/patient.entity';
-import { Encounter } from '../../encounters/entities/encounter.entity';
 
 @Injectable()
 export class PatientRepository {
