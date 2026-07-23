@@ -22,6 +22,8 @@ import { UpdateEncounterCommand } from './commands/impl/update-encounter.command
 import { DeleteEncounterCommand } from './commands/impl/delete-encounter.command';
 import { GetEncounterQuery } from './queries/impl/get-encounter.query';
 import { GetEncountersQuery } from './queries/impl/get-encounters.query';
+import { GetDepartmentEncountersQuery } from './queries/impl/get-department-encounters.query';
+import { GetMyDepartmentEncountersQuery } from './queries/impl/get-my-department-encounters.query';
 
 @ApiTags('Encounters')
 @ApiBearerAuth()
@@ -58,6 +60,28 @@ export class EncountersController {
   @ApiOperation({ summary: 'List all encounters' })
   findAll(@CurrentUser('tenantId') tenantId: string) {
     return this.queryBus.execute(new GetEncountersQuery(tenantId));
+  }
+
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @Get('department/:id')
+  @ApiOperation({ summary: 'List encounters in department' })
+  findEncountersByDepartment(
+    @Param('id') id: string,
+    @CurrentUser('tenantId') tenantId: string,
+  ) {
+    return this.queryBus.execute(new GetDepartmentEncountersQuery(id, tenantId));
+  }
+
+  @Roles(UserRole.USER)
+  @Get('my-department')
+  @ApiOperation({ summary: 'List my department encounters' })
+  findMyDepartmentEncounters(
+    @CurrentUser('tenantId') tenantId: string,
+    @CurrentUser('departmentId') deptId: string,
+  ) {
+    return this.queryBus.execute(
+      new GetMyDepartmentEncountersQuery(deptId, tenantId),
+    );
   }
 
   @Get(':id')

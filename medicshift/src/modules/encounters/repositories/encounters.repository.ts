@@ -23,6 +23,19 @@ export class EncountersRepository {
     });
   }
 
+  async findByDepartmentId(
+    departmentId: string,
+    tenantId: string,
+  ): Promise<Encounter[]> {
+    if (!departmentId || !tenantId) {
+      return [];
+    }
+    return await this.ormRepository.find({
+      where: { departmentId, tenantId },
+      relations: ['patient', 'department'],
+    });
+  }
+
   async findOneById(id: string, tenantId?: string): Promise<Encounter> {
     const where: FindOptionsWhere<Encounter> = { id };
     if (tenantId) where.tenantId = tenantId;
