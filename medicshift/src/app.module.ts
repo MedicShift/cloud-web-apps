@@ -15,6 +15,8 @@ import { LoggerModule } from 'nestjs-pino';
 import { TenantsModule } from './modules/tenants/tenants.module';
 import { UserSubscriber } from './modules/users/subscribers/user.subscriber';
 import { InviteModule } from './modules/invite/invites.module';
+import { PatientsModule } from './modules/patients/patients.module';
+import { EncountersModule } from './modules/encounters/encounters.module';
 
 @Module({
   imports: [
@@ -66,6 +68,8 @@ import { InviteModule } from './modules/invite/invites.module';
     DepartmentsModule,
     ShiftsModule,
     SchedulesModule,
+    PatientsModule,
+    EncountersModule,
 
     // Infrastructure modules
     HealthModule,
