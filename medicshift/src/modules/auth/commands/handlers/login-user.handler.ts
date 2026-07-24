@@ -77,9 +77,10 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
     // Generate access token (short-lived)
     const accessPayload = {
       email: user.email,
-      sub: user.id,
+      userId: user.id,
       role: user.role,
       tenantId: user.tenantId,
+      departmentId: user.departmentId,
     };
     const accessToken = this.jwtService.sign(accessPayload);
 

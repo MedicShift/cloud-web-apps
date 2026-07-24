@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere } from 'typeorm';
 import { User } from '../entities/user.entity';
+import { UserRole } from '../enums/user-role.enum';
 
 @Injectable()
 export class UserRepository {
@@ -15,8 +16,23 @@ export class UserRepository {
     return await this.ormRepository.save(user);
   }
 
-  async findAll(tenantId?: string): Promise<User[]> {
-    const where = tenantId ? { tenantId } : {};
+  async findAll(
+    tenantId?: string,
+    departmentId?: string,
+    role?: UserRole,
+  ): Promise<User[]> {
+    const where: FindOptionsWhere<User> = {};
+    if (tenantId) {
+      where.tenantId = tenantId;
+    }
+
+    if (departmentId) {
+      where.departmentId = departmentId;
+    }
+
+    if (role) {
+      where.role = role;
+    }
     return await this.ormRepository.find({ where });
   }
 
@@ -41,6 +57,7 @@ export class UserRepository {
         'lastName',
         'role',
         'tenantId',
+        'departmentId',
         'failedLoginAttempts',
         'lockedUntil',
         'hashedRefreshToken',
