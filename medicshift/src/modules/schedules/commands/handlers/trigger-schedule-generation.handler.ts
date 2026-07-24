@@ -12,6 +12,8 @@ interface ScheduleGenerationResponse {
   days: GeneratedScheduleDays;
 }
 
+const SCHEDULER_REQUEST_TIMEOUT_MS = 30_000;
+
 @CommandHandler(TriggerScheduleGenerationCommand)
 export class TriggerScheduleGenerationHandler implements ICommandHandler<TriggerScheduleGenerationCommand> {
   private readonly logger = new Logger(TriggerScheduleGenerationHandler.name);
@@ -47,6 +49,7 @@ export class TriggerScheduleGenerationHandler implements ICommandHandler<Trigger
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(SCHEDULER_REQUEST_TIMEOUT_MS),
       });
     } catch (err) {
       this.logger.error('Schedule service unreachable', err);
@@ -63,7 +66,15 @@ export class TriggerScheduleGenerationHandler implements ICommandHandler<Trigger
       );
     }
 
-    const d = (await response.json()) as ScheduleGenerationResponse;
+    let d: ScheduleGenerationResponse;
+    try {
+      d = (await response.json()) as ScheduleGenerationResponse;
+    } catch (err) {
+      this.logger.error('Schedule service returned invalid JSON', err);
+      throw new InternalServerErrorException(
+        'Invalid response from schedule service',
+      );
+    }
     if (!d?.days) {
       this.logger.error('Schedule service response missing days field', d);
       throw new InternalServerErrorException(
