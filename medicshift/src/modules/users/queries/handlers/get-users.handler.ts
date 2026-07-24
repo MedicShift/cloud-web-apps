@@ -8,6 +8,10 @@ export class GetUsersHandler implements IQueryHandler<GetUsersQuery> {
   constructor(private readonly userRepository: UserRepository) {}
 
   async execute(query: GetUsersQuery): Promise<User[]> {
-    return this.userRepository.findAll(query.tenantId, query.departmentId, query.role);
+    return this.userRepository.findAll(
+      query.tenantId,
+      query.departmentId,
+      query.role,
+    );
   }
 }

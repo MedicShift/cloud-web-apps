@@ -16,8 +16,12 @@ export class UserRepository {
     return await this.ormRepository.save(user);
   }
 
-  async findAll(tenantId?: string, departmentId?: string, role?: UserRole): Promise<User[]> {
-    const where: any = {};
+  async findAll(
+    tenantId?: string,
+    departmentId?: string,
+    role?: UserRole,
+  ): Promise<User[]> {
+    const where: FindOptionsWhere<User> = {};
     if (tenantId) {
       where.tenantId = tenantId;
     }

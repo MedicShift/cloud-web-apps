@@ -28,7 +28,11 @@ const QueryHandlers = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Schedule]), CqrsModule, DepartmentsModule],
+  imports: [
+    TypeOrmModule.forFeature([Schedule]),
+    CqrsModule,
+    DepartmentsModule,
+  ],
   controllers: [SchedulesController],
   providers: [ScheduleRepository, ...CommandHandlers, ...QueryHandlers],
   exports: [ScheduleRepository],

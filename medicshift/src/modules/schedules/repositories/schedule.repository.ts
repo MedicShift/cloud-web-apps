@@ -1,8 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOptionsWhere } from 'typeorm';
+import { Repository, FindOptionsWhere, InsertResult } from 'typeorm';
 import { Schedule } from '../entities/schedule.entity';
 import { ScheduleStatus } from '../enums/schedule-status.enum';
+
+export interface GeneratedShiftAssignment {
+  userId: string;
+  shiftId: string;
+}
+
+export type GeneratedScheduleDays = Record<string, GeneratedShiftAssignment[]>;
 
 @Injectable()
 export class ScheduleRepository {
@@ -27,7 +34,7 @@ export class ScheduleRepository {
     };
     if (tenantId) where.tenantId = tenantId;
     const schedule = await this.ormRepository.findOne({
-      where
+      where,
     });
     if (!schedule) {
       throw new NotFoundException(`Schedule #${id} not found`);
@@ -50,16 +57,18 @@ export class ScheduleRepository {
     await this.ormRepository.remove(schedule);
   }
 
-  async saveSchedules(tenantId: string, res: any): Promise<any> {
-    const schedules = Object.entries(res).flatMap(
-      ([date, shifts]: [string, any[]]) =>
-        shifts.map((shift) => ({
-          userId: shift.userId,
-          shiftId: shift.shiftId,
-          date: new Date(date),
-          status: ScheduleStatus.DRAFT,
-          tenantId,
-        })),
+  async saveSchedules(
+    tenantId: string,
+    res: GeneratedScheduleDays,
+  ): Promise<InsertResult> {
+    const schedules = Object.entries(res).flatMap(([date, shifts]) =>
+      shifts.map((shift) => ({
+        userId: shift.userId,
+        shiftId: shift.shiftId,
+        date: new Date(date),
+        status: ScheduleStatus.DRAFT,
+        tenantId,
+      })),
     );
 
     return await this.ormRepository.manager
@@ -108,7 +117,10 @@ export class ScheduleRepository {
       .leftJoinAndSelect('schedule.user', 'user')
       .leftJoinAndSelect('schedule.shift', 'shift')
       .where('user.departmentId = :departmentId', { departmentId })
-      .andWhere('schedule.date BETWEEN :startDate AND :endDate', { startDate, endDate });
+      .andWhere('schedule.date BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
 
     if (tenantId) {
       qb.andWhere('schedule.tenantId = :tenantId', { tenantId });

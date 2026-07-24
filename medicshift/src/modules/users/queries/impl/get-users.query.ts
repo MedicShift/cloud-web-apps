@@ -4,5 +4,6 @@ export class GetUsersQuery {
   constructor(
     public readonly tenantId: string,
     public readonly departmentId?: string,
-    public readonly role?: UserRole){}
+    public readonly role?: UserRole,
+  ) {}
 }

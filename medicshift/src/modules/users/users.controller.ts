@@ -46,8 +46,7 @@ export class UsersController {
 
     if (role === UserRole.USER) {
       finalDepartmentId = userDeptId;
-    }
-    else if (departmentId && departmentId !== 'all') {
+    } else if (departmentId && departmentId !== 'all') {
       finalDepartmentId = departmentId;
     }
 

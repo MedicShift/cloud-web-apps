@@ -9,11 +9,15 @@ export class UpdateScheduleHandler implements ICommandHandler<UpdateScheduleComm
 
   async execute(command: UpdateScheduleCommand): Promise<Schedule> {
     const { userId, shiftId, date, status } = command.updateData;
-    return this.scheduleRepository.updateSchedule(command.id, command.tenantId, {
-      ...(userId && { userId }),
-      ...(shiftId && { shiftId }),
-      ...(date && { date: new Date(date) }),
-      ...(status && { status }),
-    });
+    return this.scheduleRepository.updateSchedule(
+      command.id,
+      command.tenantId,
+      {
+        ...(userId && { userId }),
+        ...(shiftId && { shiftId }),
+        ...(date && { date: new Date(date) }),
+        ...(status && { status }),
+      },
+    );
   }
 }

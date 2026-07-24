@@ -3,7 +3,14 @@ import { Logger, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TriggerScheduleGenerationCommand } from '../impl/trigger-schedule-generation.command';
 import { DepartmentRepository } from '../../../departments/repositories/department.repository';
-import { ScheduleRepository } from '../../repositories/schedule.repository';
+import {
+  ScheduleRepository,
+  GeneratedScheduleDays,
+} from '../../repositories/schedule.repository';
+
+interface ScheduleGenerationResponse {
+  days: GeneratedScheduleDays;
+}
 
 @CommandHandler(TriggerScheduleGenerationCommand)
 export class TriggerScheduleGenerationHandler implements ICommandHandler<TriggerScheduleGenerationCommand> {
@@ -30,7 +37,9 @@ export class TriggerScheduleGenerationHandler implements ICommandHandler<Trigger
     };
 
     const url = this.configService.getOrThrow<string>('SCHEDULER_URL');
-    this.logger.log(`Triggering schedule generation for department ${command.departmentId}`);
+    this.logger.log(
+      `Triggering schedule generation for department ${command.departmentId}`,
+    );
 
     let response: Response;
     try {
@@ -46,14 +55,20 @@ export class TriggerScheduleGenerationHandler implements ICommandHandler<Trigger
 
     if (!response.ok) {
       const text = await response.text();
-      this.logger.error(`Schedule service returned ${response.status}: ${text}`);
-      throw new InternalServerErrorException(`Schedule service error: ${response.status}`);
+      this.logger.error(
+        `Schedule service returned ${response.status}: ${text}`,
+      );
+      throw new InternalServerErrorException(
+        `Schedule service error: ${response.status}`,
+      );
     }
 
-    const d = await response.json();
+    const d = (await response.json()) as ScheduleGenerationResponse;
     if (!d?.days) {
       this.logger.error('Schedule service response missing days field', d);
-      throw new InternalServerErrorException('Invalid response from schedule service');
+      throw new InternalServerErrorException(
+        'Invalid response from schedule service',
+      );
     }
 
     await this.schedulesRepository.saveSchedules(command.tenantId, d.days);

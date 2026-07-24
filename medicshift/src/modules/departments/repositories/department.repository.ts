@@ -31,7 +31,10 @@ export class DepartmentRepository {
     return department;
   }
 
-  async findOneByIdForSchedule(id: string, tenantId: string): Promise<Department> {
+  async findOneByIdForSchedule(
+    id: string,
+    tenantId: string,
+  ): Promise<Department> {
     const department = await this.ormRepository
       .createQueryBuilder('department')
       .leftJoinAndSelect('department.users', 'user')
@@ -41,7 +44,10 @@ export class DepartmentRepository {
         'shift',
         'shift.tenantId = department.tenantId AND (shift.departmentId = department.id OR shift.departmentId IS NULL)',
       )
-      .where('department.id = :id AND department.tenantId = :tenantId', { id, tenantId })
+      .where('department.id = :id AND department.tenantId = :tenantId', {
+        id,
+        tenantId,
+      })
       .getOne();
     if (!department) {
       throw new NotFoundException(`Department #${id} not found`);
