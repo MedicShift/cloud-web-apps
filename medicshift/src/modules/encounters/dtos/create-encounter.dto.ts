@@ -28,7 +28,7 @@ export class CreateEncounterDto {
 
   @ApiProperty({
     enum: EncounterStatus,
-    default: EncounterStatus.ACTIVE,
+    default: EncounterStatus.ADMITTED,
     required: false,
   })
   @IsEnum(EncounterStatus)

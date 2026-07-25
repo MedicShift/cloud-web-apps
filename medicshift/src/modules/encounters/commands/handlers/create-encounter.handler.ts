@@ -25,7 +25,7 @@ export class CreateEncounterHandler implements ICommandHandler<CreateEncounterCo
       departmentId,
       encounterType,
       bedNumber,
-      status: status ?? EncounterStatus.ACTIVE,
+      status: status ?? EncounterStatus.ADMITTED,
       admittedAt: new Date(admittedAt),
       dischargedAt: dischargedAt ? new Date(dischargedAt) : null,
       tenantId,

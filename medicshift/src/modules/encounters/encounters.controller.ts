@@ -56,6 +56,7 @@ export class EncountersController {
     );
   }
 
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Get('all')
   @ApiOperation({ summary: 'List all encounters' })
   findAll(@CurrentUser('tenantId') tenantId: string) {
@@ -69,7 +70,9 @@ export class EncountersController {
     @Param('id') id: string,
     @CurrentUser('tenantId') tenantId: string,
   ) {
-    return this.queryBus.execute(new GetDepartmentEncountersQuery(id, tenantId));
+    return this.queryBus.execute(
+      new GetDepartmentEncountersQuery(id, tenantId),
+    );
   }
 
   @Roles(UserRole.USER)

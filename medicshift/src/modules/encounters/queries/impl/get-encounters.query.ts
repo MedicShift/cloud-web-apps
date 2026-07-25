@@ -1,3 +1,3 @@
 export class GetEncountersQuery {
-  constructor(public readonly tenantId?: string) {}
+  constructor(public readonly tenantId: string) {}
 }

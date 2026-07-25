@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere } from 'typeorm';
 import { Encounter } from '../entities/encounter.entity';
+import { EncounterStatus } from '../enums/encounters.status';
 
 @Injectable()
 export class EncountersRepository {
@@ -15,10 +16,12 @@ export class EncountersRepository {
     return await this.ormRepository.save(encounter);
   }
 
-  async findAll(tenantId?: string): Promise<Encounter[]> {
-    const where = tenantId ? { tenantId } : {};
+  async findAll(tenantId: string): Promise<Encounter[]> {
+    if (!tenantId) {
+      return [];
+    }
     return await this.ormRepository.find({
-      where,
+      where: { tenantId },
       relations: ['patient', 'department'],
     });
   }
@@ -31,7 +34,7 @@ export class EncountersRepository {
       return [];
     }
     return await this.ormRepository.find({
-      where: { departmentId, tenantId },
+      where: { departmentId, tenantId, status: EncounterStatus.ADMITTED },
       relations: ['patient', 'department'],
     });
   }
