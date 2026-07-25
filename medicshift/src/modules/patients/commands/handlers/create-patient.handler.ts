@@ -8,11 +8,10 @@ export class CreatePatientHandler implements ICommandHandler<CreatePatientComman
   constructor(private readonly patientRepository: PatientRepository) {}
 
   async execute(command: CreatePatientCommand): Promise<Patient> {
-    const { mrn, tenantId } =
-      command;
+    const { mrn, tenantId } = command;
     return this.patientRepository.createPatient({
       mrn,
-      tenantId
+      tenantId,
     });
   }
 }

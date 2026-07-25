@@ -18,7 +18,11 @@ export class Handover extends BaseEntity {
   @Column({ type: 'uuid', nullable: true })
   recipientId?: string | null;
 
-  @Column({ type: 'simple-enum', enum: HandoverStatus, default: HandoverStatus.DRAFT })
+  @Column({
+    type: 'simple-enum',
+    enum: HandoverStatus,
+    default: HandoverStatus.DRAFT,
+  })
   status!: HandoverStatus;
 
   @Column({ type: 'timestamp', nullable: true })

@@ -4,7 +4,8 @@ import {
   Param,
   Delete,
   Post,
-  Body, Get,
+  Body,
+  Get,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -16,7 +17,7 @@ import { UserRole } from '../users/enums/user-role.enum';
 import { DeletePatientCommand } from './commands/impl/delete-patient.command';
 import { CreatePatientDto } from './dtos/create-patient.dto';
 import { CreatePatientCommand } from './commands/impl/create-patient.command';
-  import { GetPatientsQuery } from './queries/impl/get-patients.query';
+import { GetPatientsQuery } from './queries/impl/get-patients.query';
 
 @ApiTags('Patients')
 @ApiBearerAuth()

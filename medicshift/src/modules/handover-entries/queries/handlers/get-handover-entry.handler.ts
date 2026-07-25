@@ -4,17 +4,12 @@ import { HandoverEntriesRepository } from '../../repositories/handover-entries.r
 import { HandoverEntry } from '../../entities/handover-entry.entity';
 
 @QueryHandler(GetHandoverEntryQuery)
-export class GetHandoverEntryHandler
-  implements IQueryHandler<GetHandoverEntryQuery>
-{
+export class GetHandoverEntryHandler implements IQueryHandler<GetHandoverEntryQuery> {
   constructor(
     private readonly handoverEntriesRepository: HandoverEntriesRepository,
   ) {}
 
   async execute(query: GetHandoverEntryQuery): Promise<HandoverEntry> {
-    return this.handoverEntriesRepository.findOneById(
-      query.id,
-      query.tenantId,
-    );
+    return this.handoverEntriesRepository.findOneById(query.id, query.tenantId);
   }
 }

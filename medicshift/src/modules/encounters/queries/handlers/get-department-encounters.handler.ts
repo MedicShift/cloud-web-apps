@@ -4,9 +4,7 @@ import { Encounter } from '../../entities/encounter.entity';
 import { GetDepartmentEncountersQuery } from '../impl/get-department-encounters.query';
 
 @QueryHandler(GetDepartmentEncountersQuery)
-export class GetDepartmentEncountersHandler
-  implements IQueryHandler<GetDepartmentEncountersQuery>
-{
+export class GetDepartmentEncountersHandler implements IQueryHandler<GetDepartmentEncountersQuery> {
   constructor(private readonly encountersRepository: EncountersRepository) {}
 
   async execute(query: GetDepartmentEncountersQuery): Promise<Encounter[]> {

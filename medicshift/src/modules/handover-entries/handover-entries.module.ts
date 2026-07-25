@@ -9,7 +9,10 @@ import { UpdateHandoverEntryHandler } from './commands/handlers/update-handover-
 import { GetHandoverEntryHandler } from './queries/handlers/get-handover-entry.handler';
 import { GetHandoverEntriesHandler } from './queries/handlers/get-handover-entries.handler';
 
-const CommandHandlers = [CreateHandoverEntryHandler, UpdateHandoverEntryHandler];
+const CommandHandlers = [
+  CreateHandoverEntryHandler,
+  UpdateHandoverEntryHandler,
+];
 const QueryHandlers = [GetHandoverEntryHandler, GetHandoverEntriesHandler];
 
 @Module({

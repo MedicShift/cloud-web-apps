@@ -4,9 +4,7 @@ import { HandoverEntriesRepository } from '../../repositories/handover-entries.r
 import { HandoverEntry } from '../../entities/handover-entry.entity';
 
 @QueryHandler(GetHandoverEntriesQuery)
-export class GetHandoverEntriesHandler
-  implements IQueryHandler<GetHandoverEntriesQuery>
-{
+export class GetHandoverEntriesHandler implements IQueryHandler<GetHandoverEntriesQuery> {
   constructor(
     private readonly handoverEntriesRepository: HandoverEntriesRepository,
   ) {}

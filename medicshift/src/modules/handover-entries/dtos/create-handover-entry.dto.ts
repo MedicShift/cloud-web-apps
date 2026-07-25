@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsUUID } from 'class-validator';
 
 export class CreateHandoverEntryDto {
-
   @ApiProperty()
   @IsUUID()
   handoverId!: string;
@@ -26,6 +25,4 @@ export class CreateHandoverEntryDto {
   @ApiProperty()
   @IsString()
   recommendation!: string;
-
-
 }
