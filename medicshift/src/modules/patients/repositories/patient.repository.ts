@@ -15,10 +15,12 @@ export class PatientRepository {
     return await this.ormRepository.save(patient);
   }
 
-  async findAll(tenantId?: string): Promise<Patient[]> {
-    const where = tenantId ? { tenantId } : {};
+  async findAll(tenantId: string): Promise<Patient[]> {
+    if (!tenantId) {
+      return [];
+    }
     return await this.ormRepository.find({
-      where
+      where: { tenantId },
     });
   }
 
@@ -27,7 +29,7 @@ export class PatientRepository {
     if (tenantId) where.tenantId = tenantId;
     const patient = await this.ormRepository.findOne({ where });
     if (!patient) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new NotFoundException(`Patient with ID ${id} not found`);
     }
     return patient;
   }

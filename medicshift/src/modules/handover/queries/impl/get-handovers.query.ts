@@ -1,3 +1,3 @@
-export class GetPatientsQuery {
+export class GetHandoversQuery {
   constructor(public readonly tenantId: string) {}
 }

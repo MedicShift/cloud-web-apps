@@ -17,6 +17,8 @@ import { UserSubscriber } from './modules/users/subscribers/user.subscriber';
 import { InviteModule } from './modules/invite/invites.module';
 import { PatientsModule } from './modules/patients/patients.module';
 import { EncountersModule } from './modules/encounters/encounters.module';
+import { HandoverModule } from './modules/handover/handover.module';
+import { HandoverEntriesModule } from './modules/handover-entries/handover-entries.module';
 
 @Module({
   imports: [
@@ -70,6 +72,8 @@ import { EncountersModule } from './modules/encounters/encounters.module';
     SchedulesModule,
     PatientsModule,
     EncountersModule,
+    HandoverModule,
+    HandoverEntriesModule,
 
     // Infrastructure modules
     HealthModule,
