@@ -1,0 +1,37 @@
+import { Column, Entity, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { BaseEntity } from '../../../common/entities/base.entity';
+import { Tenant } from 'src/modules/tenants/entities/tenant.entity';
+import { HandoverEntry } from 'src/modules/handover-entries/entities/handover-entry.entity';
+import { HandoverStatus } from '../enums/handover-status.enum';
+
+@Entity('handover')
+export class Handover extends BaseEntity {
+  @Column({ type: 'uuid' })
+  tenantId!: string;
+
+  @Column({ type: 'uuid' })
+  scheduleId!: string;
+
+  @Column({ type: 'uuid' })
+  authorId!: string;
+
+  @Column({ type: 'uuid', nullable: true })
+  recipientId?: string | null;
+
+  @Column({
+    type: 'simple-enum',
+    enum: HandoverStatus,
+    default: HandoverStatus.DRAFT,
+  })
+  status!: HandoverStatus;
+
+  @Column({ type: 'timestamp', nullable: true })
+  submittedAt!: Date | null;
+
+  @ManyToOne(() => Tenant, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'tenantId' })
+  tenant!: Tenant;
+
+  @OneToMany(() => HandoverEntry, (entry) => entry.handover)
+  entries!: HandoverEntry[];
+}

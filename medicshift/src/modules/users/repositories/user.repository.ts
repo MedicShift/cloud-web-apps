@@ -39,7 +39,10 @@ export class UserRepository {
   async findOneById(id: string, tenantId?: string): Promise<User> {
     const where: FindOptionsWhere<User> = { id };
     if (tenantId) where.tenantId = tenantId;
-    const user = await this.ormRepository.findOne({ where });
+    const user = await this.ormRepository.findOne({
+      where,
+      relations: ['department'],
+    });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
