@@ -7,7 +7,7 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
@@ -28,7 +28,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { Request } from 'express';
 import { User } from '../users/entities/user.entity';
-import { JwtPayload } from '../../common/interfaces/jwt-payload.interface';
+import { VerifyInviteQuery } from './queries/impl/verify-invite.query';
 
 @ApiTags('Auth')
 @Controller({ path: 'auth', version: '1' })
@@ -36,6 +36,7 @@ import { JwtPayload } from '../../common/interfaces/jwt-payload.interface';
 export class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -108,12 +109,6 @@ export class AuthController {
   })
   @ApiResponse({ status: 401, description: 'Token is invalid or expired' })
   verifyInvite(@Body() dto: VerifyInviteDto) {
-    const payload: JwtPayload = this.jwtService.verify(dto.token);
-    return {
-      email: payload.email,
-      role: payload.role,
-      tenantId: payload.tenantId,
-      departmentId: payload.departmentId,
-    };
+    return this.queryBus.execute(new VerifyInviteQuery(dto.token));
   }
 }
