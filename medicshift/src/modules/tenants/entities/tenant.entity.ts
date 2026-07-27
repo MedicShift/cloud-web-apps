@@ -5,6 +5,8 @@ import { TenantPlan, TenantType } from '../enums/tenants.enum';
 import { User } from 'src/modules/users/entities/user.entity';
 import { Department } from 'src/modules/departments/entities/department.entity';
 import { Shift } from 'src/modules/shifts/entities/shift.entity';
+import { Patient } from '../../patients/entities/patient.entity';
+import { Encounter } from 'src/modules/encounters/entities/encounter.entity';
 
 @Entity('tenants')
 export class Tenant extends BaseEntity {
@@ -46,9 +48,15 @@ export class Tenant extends BaseEntity {
   @OneToMany(() => User, (user) => user.tenant)
   users!: User[];
 
+  @OneToMany(() => Patient, (patient) => patient.tenant)
+  patient!: Patient[];
+
   @OneToMany(() => Department, (department) => department.tenant)
   departments!: Department[];
 
   @OneToMany(() => Shift, (shift) => shift.tenant)
   shifts!: Shift[];
+
+  @OneToMany(() => Encounter, (encounter) => encounter.tenant)
+  encounters!: Encounter[];
 }

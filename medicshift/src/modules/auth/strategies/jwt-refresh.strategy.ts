@@ -32,7 +32,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
       throw new UnauthorizedException('Refresh token is required');
     }
 
-    const user = await this.userRepository.findOneById(payload.sub);
+    const user = await this.userRepository.findOneById(payload.userId);
     if (!user) {
       throw new UnauthorizedException();
     }
