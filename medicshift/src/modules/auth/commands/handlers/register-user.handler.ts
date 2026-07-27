@@ -6,6 +6,8 @@ import { RegisterUserCommand } from '../impl/register-user.command';
 import { UserRepository } from '../../../users/repositories/user.repository';
 import { AuditLogService } from '../../../../common/audit/audit-log.service';
 import { UserRole } from '../../../users/enums/user-role.enum';
+import { InviteRepository } from '../../../invite/repositories/invite.repository';
+import { InviteStatus } from '../../../invite/enums/invite-status';
 
 @CommandHandler(RegisterUserCommand)
 export class RegisterUserHandler implements ICommandHandler<RegisterUserCommand> {
@@ -13,6 +15,7 @@ export class RegisterUserHandler implements ICommandHandler<RegisterUserCommand>
     private readonly userRepository: UserRepository,
     private readonly configService: ConfigService,
     private readonly auditLog: AuditLogService,
+    private readonly inviteRepository: InviteRepository,
   ) {}
 
   async execute(command: RegisterUserCommand) {
@@ -49,6 +52,14 @@ export class RegisterUserHandler implements ICommandHandler<RegisterUserCommand>
 
     // Audit log
     this.auditLog.authRegister(email, user.id);
+
+    // Update invite status if registered via invite
+    const pendingInvite = await this.inviteRepository.findPendingByEmail(email);
+    if (pendingInvite) {
+      pendingInvite.status = InviteStatus.ACCEPTED;
+      pendingInvite.acceptedAt = new Date();
+      await this.inviteRepository.save(pendingInvite);
+    }
 
     const result = { ...user } as Record<string, any>;
     delete result.passwordHash;

@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserRole } from 'src/modules/users/enums/user-role.enum';
 import { InviteStatus } from '../../enums/invite-status';
 import { Invite } from '../../entities/invite.entity';
+import { NotFoundException } from '@nestjs/common';
 
 @CommandHandler(SendInviteCommand)
 export class SendInviteHandler implements ICommandHandler<SendInviteCommand> {
@@ -38,10 +39,10 @@ export class SendInviteHandler implements ICommandHandler<SendInviteCommand> {
       tenantId,
       departmentId,
     });
-    const inviteLink = `${process.env.FRONTEND_URL}?token=${inviteToken}`;
+    const inviteLink = `${process.env.FRONTEND_URL}/auth/register?token=${inviteToken}`;
 
     if (!emailTo) {
-      throw new Error('EMAIL_TO is not defined');
+      throw new NotFoundException('EMAIL_TO is not defined');
     }
 
     await this.mailService.sendEmail({

@@ -10,18 +10,21 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { RegisterUserHandler } from './commands/handlers/register-user.handler';
 import { LoginUserHandler } from './commands/handlers/login-user.handler';
 import { RefreshTokenHandler } from './commands/handlers/refresh-token.handler';
-import { LogoutHandler } from './commands/handlers/logout.handler';
+import { InviteModule } from '../invite/invites.module';
+import { VerifyInviteHandler } from './queries/handlers/verify-invite.handler';
 
 const CommandHandlers = [
   RegisterUserHandler,
   LoginUserHandler,
   RefreshTokenHandler,
-  LogoutHandler,
 ];
+
+const QueryHandlers = [VerifyInviteHandler];
 
 @Module({
   imports: [
     UsersModule,
+    InviteModule,
     PassportModule,
     CqrsModule,
     JwtModule.registerAsync({
@@ -37,6 +40,11 @@ const CommandHandlers = [
     }),
   ],
   controllers: [AuthController],
-  providers: [JwtStrategy, JwtRefreshStrategy, ...CommandHandlers],
+  providers: [
+    JwtStrategy,
+    JwtRefreshStrategy,
+    ...CommandHandlers,
+    ...QueryHandlers,
+  ],
 })
 export class AuthModule {}
