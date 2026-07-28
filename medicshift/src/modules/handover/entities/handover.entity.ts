@@ -1,7 +1,15 @@
-import { Column, Entity, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { Tenant } from 'src/modules/tenants/entities/tenant.entity';
 import { HandoverEntry } from 'src/modules/handover-entries/entities/handover-entry.entity';
+import { Schedule } from 'src/modules/schedules/entities/schedule.entity';
 import { HandoverStatus } from '../enums/handover-status.enum';
 
 @Entity('handover')
@@ -34,6 +42,10 @@ export class Handover extends BaseEntity {
   @ManyToOne(() => Tenant, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'tenantId' })
   tenant!: Tenant;
+
+  @OneToOne(() => Schedule, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'scheduleId' })
+  schedule!: Schedule;
 
   @OneToMany(() => HandoverEntry, (entry) => entry.handover)
   entries!: HandoverEntry[];
