@@ -28,6 +28,9 @@ export class Handover extends BaseEntity {
   @Column({ type: 'timestamp', nullable: true })
   submittedAt!: Date | null;
 
+  @Column({ type: 'timestamp', nullable: true })
+  acknowledgedAt!: Date | null;
+
   @ManyToOne(() => Tenant, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'tenantId' })
   tenant!: Tenant;

@@ -92,4 +92,8 @@ export class HandoverRepository {
     }
     return handover;
   }
+
+  async save(handover: Handover): Promise<Handover> {
+    return this.ormRepository.save(handover);
+  }
 }

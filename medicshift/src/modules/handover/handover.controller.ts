@@ -10,6 +10,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { GetHandoversQuery } from './queries/impl/get-handovers.query';
 import { GetHandoverQuery } from './queries/impl/get-handover.query';
 import { UpsertHandoverCommand } from './commands/impl/upsert-handover.command';
+import { AcceptHandoverCommand } from './commands/impl/accept-handover.command';
 import { GetHandoverEntriesQuery } from '../handover-entries/queries/impl/get-handover-entries.query';
 import { GetMyHandoverQuery } from './queries/impl/get-my-handover.query';
 
@@ -44,6 +45,23 @@ export class HandoverController {
         dto.status,
         dto.submittedAt,
       ),
+    );
+  }
+
+  @Roles(UserRole.USER, UserRole.MANAGER)
+  @Post(':id/accept')
+  @ApiOperation({
+    summary: 'Accept a handover',
+    description:
+      'Marks a submitted handover as accepted by its assigned recipient, recording acknowledgedAt.',
+  })
+  accept(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+    @CurrentUser('tenantId') tenantId: string,
+  ) {
+    return this.commandBus.execute(
+      new AcceptHandoverCommand(id, tenantId, userId),
     );
   }
 
