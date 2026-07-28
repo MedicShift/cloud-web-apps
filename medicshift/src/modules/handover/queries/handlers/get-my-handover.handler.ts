@@ -8,6 +8,6 @@ export class GetMyHandoverHandler implements IQueryHandler<GetMyHandoverQuery> {
   constructor(private readonly handoverRepository: HandoverRepository) {}
 
   async execute(query: GetMyHandoverQuery): Promise<Handover[]> {
-    return this.handoverRepository.findMine(query.userId, query.tenantId);
+    return this.handoverRepository.findMine(query.userId, query.tenantId, query.startDate, query.endDate);
   }
 }

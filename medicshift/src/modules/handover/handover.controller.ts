@@ -6,7 +6,15 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { UserRole } from '../users/enums/user-role.enum';
 import { UpsertHandoverDto } from './dtos/upsert-handover.dto';
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { GetHandoversQuery } from './queries/impl/get-handovers.query';
 import { GetHandoverQuery } from './queries/impl/get-handover.query';
 import { UpsertHandoverCommand } from './commands/impl/upsert-handover.command';
@@ -29,7 +37,7 @@ export class HandoverController {
   @ApiOperation({
     summary: 'Create or update a handover',
     description:
-      'Upserts by (tenantId, scheduleId, authorId). If a handover already exists for that schedule and author, it is updated in place (including re-submitting/signing a draft) instead of creating a duplicate.',
+      'Upserts by (tenantId, scheduleId) — one handover per schedule. If a handover already exists for that schedule, it is updated in place (including reassigning the author or re-submitting/signing a draft) instead of creating a duplicate.',
   })
   upsert(
     @Body() dto: UpsertHandoverDto,
@@ -73,12 +81,20 @@ export class HandoverController {
   }
 
   @Get('mine')
-  @ApiOperation({ summary: 'List my handovers' })
+  @ApiOperation({
+    summary: 'List my handovers',
+    description:
+      'Optionally filter by the date of the schedule each handover was created for, using startDate/endDate (YYYY-MM-DD).',
+  })
   findMyHandovers(
     @CurrentUser('id') userId: string,
     @CurrentUser('tenantId') tenantId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
   ) {
-    return this.queryBus.execute(new GetMyHandoverQuery(userId, tenantId));
+    return this.queryBus.execute(
+      new GetMyHandoverQuery(userId, tenantId, startDate, endDate),
+    );
   }
 
   @Get(':id')
