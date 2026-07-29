@@ -1,10 +1,10 @@
 import { Request } from 'express';
-import { UserRole } from '../../modules/users/enums/user-role.enum';
 
 export interface JwtPayload {
   userId: string;
   email: string;
-  role: UserRole;
+  permissions: string[];
+  roleId?: string;
   tenantId?: string;
   departmentId?: string;
   iat?: number;

@@ -1,13 +1,14 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SendInviteCommand } from '../impl/send-invite.command';
 import { InviteRepository } from '../../repositories/invite.repository';
-import { MailService } from 'src/infrastructure/mail/mail.service';
-import { inviteTemplate } from 'src/infrastructure/mail/templates/invite.template';
+import { MailService } from '../../../../infrastructure/mail/mail.service';
+import { inviteTemplate } from '../../../../infrastructure/mail/templates/invite.template';
 import { JwtService } from '@nestjs/jwt';
-import { UserRole } from 'src/modules/users/enums/user-role.enum';
+
 import { InviteStatus } from '../../enums/invite-status';
 import { Invite } from '../../entities/invite.entity';
 import { NotFoundException } from '@nestjs/common';
+import { RoleRepository } from '../../../roles/repositories/role.repository';
 
 @CommandHandler(SendInviteCommand)
 export class SendInviteHandler implements ICommandHandler<SendInviteCommand> {
@@ -15,10 +16,24 @@ export class SendInviteHandler implements ICommandHandler<SendInviteCommand> {
     private readonly inviteRepository: InviteRepository,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
+    private readonly roleRepository: RoleRepository,
   ) {}
 
   async execute(command: SendInviteCommand): Promise<Invite> {
-    const { email, tenantId, departmentId, invitedBy, role } = command;
+    const { email, tenantId, departmentId, invitedBy, roleId, roleName } =
+      command;
+
+    let resolvedRoleId = roleId;
+    if (!resolvedRoleId) {
+      const nameToSearch = roleName || 'User';
+      const defaultRole = await this.roleRepository.findByNameAndTenant(
+        nameToSearch,
+        tenantId,
+      );
+      if (!defaultRole)
+        throw new NotFoundException(`Role ${nameToSearch} not found`);
+      resolvedRoleId = defaultRole.id;
+    }
 
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + 24);
@@ -27,7 +42,7 @@ export class SendInviteHandler implements ICommandHandler<SendInviteCommand> {
       email,
       tenantId,
       invitedBy,
-      role: role ?? UserRole.USER,
+      roleId: resolvedRoleId,
       status: InviteStatus.PENDING,
       expiresAt,
     });
@@ -35,7 +50,7 @@ export class SendInviteHandler implements ICommandHandler<SendInviteCommand> {
     const emailTo = process.env.EMAIL_TO;
     const inviteToken = this.jwtService.sign({
       email,
-      role,
+      roleId: resolvedRoleId,
       tenantId,
       departmentId,
     });

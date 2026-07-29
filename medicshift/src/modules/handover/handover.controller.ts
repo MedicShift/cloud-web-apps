@@ -1,10 +1,10 @@
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
+import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
+import { Permission } from '../auth/enums/permission.enum';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { UserRole } from '../users/enums/user-role.enum';
 import { UpsertHandoverDto } from './dtos/upsert-handover.dto';
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { GetHandoversQuery } from './queries/impl/get-handovers.query';
@@ -15,7 +15,7 @@ import { GetMyHandoverQuery } from './queries/impl/get-my-handover.query';
 
 @ApiTags('Handovers')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 @Controller({ path: 'handover', version: '1' })
 export class HandoverController {
   constructor(
@@ -23,7 +23,7 @@ export class HandoverController {
     private readonly queryBus: QueryBus,
   ) {}
 
-  @Roles(UserRole.USER, UserRole.MANAGER)
+  @RequirePermissions(Permission.HANDOVERS_CREATE)
   @Post()
   @ApiOperation({
     summary: 'Create or update a handover',
@@ -47,13 +47,14 @@ export class HandoverController {
     );
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.HANDOVERS_READ)
   @Get('all')
   @ApiOperation({ summary: 'List all handovers' })
   findAll(@CurrentUser('tenantId') tenantId: string) {
     return this.queryBus.execute(new GetHandoversQuery(tenantId));
   }
 
+  @RequirePermissions(Permission.HANDOVERS_READ)
   @Get('mine')
   @ApiOperation({ summary: 'List my handovers' })
   findMyHandovers(
@@ -63,12 +64,14 @@ export class HandoverController {
     return this.queryBus.execute(new GetMyHandoverQuery(userId, tenantId));
   }
 
+  @RequirePermissions(Permission.HANDOVERS_READ)
   @Get(':id')
   @ApiOperation({ summary: 'Get an handover by ID' })
   findOne(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
     return this.queryBus.execute(new GetHandoverQuery(id, tenantId));
   }
 
+  @RequirePermissions(Permission.HANDOVERS_READ)
   @Get(':id/entries')
   @ApiOperation({ summary: 'List entries for a handover' })
   findEntries(

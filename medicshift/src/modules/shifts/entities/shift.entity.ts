@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
-import { Tenant } from 'src/modules/tenants/entities/tenant.entity';
-import { Department } from 'src/modules/departments/entities/department.entity';
+import { Tenant } from '../../tenants/entities/tenant.entity';
+import { Department } from '../../departments/entities/department.entity';
 import { IsUUID } from 'class-validator';
 
 @Entity('shifts')

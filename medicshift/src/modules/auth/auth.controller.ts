@@ -51,7 +51,7 @@ export class AuthController {
         dto.password,
         dto.firstName,
         dto.lastName,
-        dto.role,
+        dto.roleId,
         dto.tenantId,
         dto.departmentId,
       ),

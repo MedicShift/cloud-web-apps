@@ -10,11 +10,11 @@ import {
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
+import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
+import { Permission } from '../auth/enums/permission.enum';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { UserRole } from '../users/enums/user-role.enum';
 import { CreateEncounterDto } from './dtos/create-encounter.dto';
 import { UpdateEncounterDto } from './dtos/update-encounter.dto';
 import { CreateEncounterCommand } from './commands/impl/create-encounter.command';
@@ -27,7 +27,7 @@ import { GetMyDepartmentEncountersQuery } from './queries/impl/get-my-department
 
 @ApiTags('Encounters')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 @Controller({ path: 'encounters', version: '1' })
 export class EncountersController {
   constructor(
@@ -35,7 +35,7 @@ export class EncountersController {
     private readonly queryBus: QueryBus,
   ) {}
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.ENCOUNTERS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Admit a patient / create an encounter' })
   create(
@@ -56,14 +56,14 @@ export class EncountersController {
     );
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.ENCOUNTERS_READ)
   @Get('all')
   @ApiOperation({ summary: 'List all encounters' })
   findAll(@CurrentUser('tenantId') tenantId: string) {
     return this.queryBus.execute(new GetEncountersQuery(tenantId));
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.ENCOUNTERS_READ)
   @Get('department/:id')
   @ApiOperation({ summary: 'List encounters in department' })
   findEncountersByDepartment(
@@ -75,7 +75,7 @@ export class EncountersController {
     );
   }
 
-  @Roles(UserRole.USER)
+  @RequirePermissions(Permission.ENCOUNTERS_READ)
   @Get('my-department')
   @ApiOperation({ summary: 'List my department encounters' })
   findMyDepartmentEncounters(
@@ -87,13 +87,14 @@ export class EncountersController {
     );
   }
 
+  @RequirePermissions(Permission.ENCOUNTERS_READ)
   @Get(':id')
   @ApiOperation({ summary: 'Get an encounter by ID' })
   findOne(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
     return this.queryBus.execute(new GetEncounterQuery(id, tenantId));
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.ENCOUNTERS_UPDATE)
   @Put(':id')
   @ApiOperation({ summary: 'Update an encounter' })
   update(
@@ -116,7 +117,7 @@ export class EncountersController {
     );
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.ENCOUNTERS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an encounter' })
   remove(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {

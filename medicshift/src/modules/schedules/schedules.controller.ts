@@ -13,9 +13,9 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateScheduleDto } from './dtos/create-schedule.dto';
 import { UpdateScheduleDto } from './dtos/update-schedule.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { UserRole } from '../users/enums/user-role.enum';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
+import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
+import { Permission } from '../auth/enums/permission.enum';
 import {
   ApiTags,
   ApiBearerAuth,
@@ -35,7 +35,7 @@ import { GetDepartmentSchedulesQuery } from './queries/impl/get-department-sched
 
 @ApiTags('Schedules')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 @Controller({ path: 'schedules', version: '1' })
 export class SchedulesController {
   constructor(
@@ -43,7 +43,7 @@ export class SchedulesController {
     private readonly queryBus: QueryBus,
   ) {}
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.SCHEDULES_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create a new schedule parameter block' })
   create(
@@ -55,6 +55,7 @@ export class SchedulesController {
     );
   }
 
+  @RequirePermissions(Permission.SCHEDULES_READ)
   @Get()
   @ApiOperation({ summary: 'List all schedules' })
   @ApiQuery({ name: 'tenantId', required: false, type: String })
@@ -62,7 +63,7 @@ export class SchedulesController {
     return this.queryBus.execute(new GetSchedulesQuery(tenantId));
   }
 
-  @Roles(UserRole.USER, UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.SCHEDULES_READ)
   @Get('user')
   @ApiOperation({ summary: 'Get users schedule entries in date range' })
   findUserSchedules(
@@ -85,13 +86,14 @@ export class SchedulesController {
     );
   }
 
+  @RequirePermissions(Permission.SCHEDULES_READ)
   @Get(':id')
   @ApiOperation({ summary: 'Get a schedule and its entries by ID' })
   findOne(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
     return this.queryBus.execute(new GetScheduleQuery(id, tenantId));
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.SCHEDULES_CREATE)
   @Post('generate')
   @ApiOperation({ summary: 'Trigger OR-Tools to generate the schedule' })
   triggerGeneration(
@@ -108,7 +110,7 @@ export class SchedulesController {
     );
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.SCHEDULES_UPDATE)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a schedule' })
   update(
@@ -121,14 +123,14 @@ export class SchedulesController {
     );
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.SCHEDULES_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a schedule' })
   remove(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
     return this.commandBus.execute(new DeleteScheduleCommand(id, tenantId));
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.SCHEDULES_READ)
   @Get('department/:id')
   @ApiOperation({
     summary: 'Get a schedule of users in that department in date range',

@@ -1,9 +1,9 @@
 import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
-import { Tenant } from 'src/modules/tenants/entities/tenant.entity';
-import { UserRole } from 'src/modules/users/enums/user-role.enum';
+import { Tenant } from '../../tenants/entities/tenant.entity';
+import { Role } from '../../roles/entities/role.entity';
 import { InviteStatus } from '../enums/invite-status';
-import { User } from 'src/modules/users/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('invites')
 export class Invite extends BaseEntity {
@@ -16,8 +16,12 @@ export class Invite extends BaseEntity {
   @Column({ type: 'uuid' })
   invitedBy!: string;
 
-  @Column({ type: 'simple-enum', enum: UserRole, default: UserRole.USER })
-  role!: UserRole;
+  @Column({ type: 'uuid' })
+  roleId!: string;
+
+  @ManyToOne(() => Role, (role) => role.invites, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'roleId' })
+  role!: Role;
 
   @Column({ type: 'simple-enum', enum: InviteStatus })
   status!: InviteStatus;

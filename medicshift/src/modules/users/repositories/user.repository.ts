@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere } from 'typeorm';
 import { User } from '../entities/user.entity';
-import { UserRole } from '../enums/user-role.enum';
 
 @Injectable()
 export class UserRepository {
@@ -19,7 +18,7 @@ export class UserRepository {
   async findAll(
     tenantId?: string,
     departmentId?: string,
-    role?: UserRole,
+    roleId?: string,
   ): Promise<User[]> {
     const where: FindOptionsWhere<User> = {};
     if (tenantId) {
@@ -30,8 +29,8 @@ export class UserRepository {
       where.departmentId = departmentId;
     }
 
-    if (role) {
-      where.role = role;
+    if (roleId) {
+      where.roleId = roleId;
     }
     return await this.ormRepository.find({ where });
   }
@@ -41,7 +40,7 @@ export class UserRepository {
     if (tenantId) where.tenantId = tenantId;
     const user = await this.ormRepository.findOne({
       where,
-      relations: ['department'],
+      relations: ['department', 'role'],
     });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
@@ -58,13 +57,14 @@ export class UserRepository {
         'passwordHash',
         'firstName',
         'lastName',
-        'role',
+        'roleId',
         'tenantId',
         'departmentId',
         'failedLoginAttempts',
         'lockedUntil',
         'hashedRefreshToken',
       ],
+      relations: ['role'],
     });
   }
 
