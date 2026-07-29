@@ -6,7 +6,6 @@ import {
   IsOptional,
   IsUUID,
 } from 'class-validator';
-import { UserRole } from 'src/modules/users/enums/user-role.enum';
 import { InviteStatus } from '../enums/invite-status';
 
 export class CreateInviteDto {
@@ -22,9 +21,10 @@ export class CreateInviteDto {
   @IsUUID()
   invitedBy!: string;
 
-  @ApiProperty({ enum: UserRole, default: UserRole.USER, required: false })
-  @IsEnum(UserRole)
-  role?: UserRole;
+  @ApiProperty({ required: false })
+  @IsUUID()
+  @IsOptional()
+  roleId?: string;
 
   @ApiProperty({ enum: InviteStatus })
   @IsEnum(InviteStatus)

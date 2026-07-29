@@ -12,9 +12,9 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateDepartmentDto } from './dtos/create-department.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { UserRole } from '../users/enums/user-role.enum';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
+import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
+import { Permission } from '../auth/enums/permission.enum';
 import {
   ApiTags,
   ApiBearerAuth,
@@ -31,7 +31,7 @@ import type { RequestWithUser } from '../../common/interfaces/request-with-user.
 
 @ApiTags('Departments')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 @Controller({ path: 'departments', version: '1' })
 export class DepartmentsController {
   constructor(
@@ -39,7 +39,7 @@ export class DepartmentsController {
     private readonly queryBus: QueryBus,
   ) {}
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.DEPARTMENTS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create a new department' })
   create(
@@ -51,6 +51,7 @@ export class DepartmentsController {
     );
   }
 
+  @RequirePermissions(Permission.DEPARTMENTS_READ)
   @Get('all')
   @ApiOperation({ summary: 'List all departments' })
   @ApiQuery({ name: 'tenant', required: false, type: String })
@@ -58,13 +59,14 @@ export class DepartmentsController {
     return this.queryBus.execute(new GetDepartmentsQuery(req.user.tenantId));
   }
 
+  @RequirePermissions(Permission.DEPARTMENTS_READ)
   @Get(':id')
   @ApiOperation({ summary: 'Get a department by ID' })
   findOne(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
     return this.queryBus.execute(new GetDepartmentQuery(id, tenantId));
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.DEPARTMENTS_UPDATE)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a department' })
   update(
@@ -77,7 +79,7 @@ export class DepartmentsController {
     );
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.DEPARTMENTS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a department' })
   remove(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {

@@ -10,6 +10,7 @@ import { Invite } from './entities/invite.entity';
 import { InviteRepository } from './repositories/invite.repository';
 import { SendInviteHandler } from './commands/handlers/send-invite.handler';
 import { MailModule } from '../../infrastructure/mail/mail.module';
+import { RolesModule } from '../roles/roles.module';
 
 const CommandHandlers = [SendInviteHandler];
 
@@ -18,6 +19,7 @@ const CommandHandlers = [SendInviteHandler];
     TypeOrmModule.forFeature([Invite]),
     CqrsModule,
     MailModule,
+    RolesModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

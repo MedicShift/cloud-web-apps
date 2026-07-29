@@ -11,7 +11,7 @@ export class GetUsersHandler implements IQueryHandler<GetUsersQuery> {
     return this.userRepository.findAll(
       query.tenantId,
       query.departmentId,
-      query.role,
+      query.roleId,
     );
   }
 }

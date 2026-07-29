@@ -3,11 +3,9 @@ import {
   IsString,
   IsEmail,
   MinLength,
-  IsEnum,
   IsOptional,
   IsUUID,
 } from 'class-validator';
-import { UserRole } from '../enums/user-role.enum';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'nurse@medicshift.com' })
@@ -27,10 +25,10 @@ export class CreateUserDto {
   @IsString()
   lastName!: string;
 
-  @ApiProperty({ enum: UserRole, default: UserRole.USER, required: false })
-  @IsEnum(UserRole)
+  @ApiProperty({ required: false })
+  @IsUUID()
   @IsOptional()
-  role?: UserRole;
+  roleId?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()

@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { RegisterUserCommand } from '../impl/register-user.command';
 import { UserRepository } from '../../../users/repositories/user.repository';
 import { AuditLogService } from '../../../../common/audit/audit-log.service';
-import { UserRole } from '../../../users/enums/user-role.enum';
+
 import { InviteRepository } from '../../../invite/repositories/invite.repository';
 import { InviteStatus } from '../../../invite/enums/invite-status';
 
@@ -24,7 +24,7 @@ export class RegisterUserHandler implements ICommandHandler<RegisterUserCommand>
       password,
       firstName,
       lastName,
-      role,
+      roleId,
       tenantId,
       departmentId,
     } = command;
@@ -45,7 +45,7 @@ export class RegisterUserHandler implements ICommandHandler<RegisterUserCommand>
       passwordHash: hashedPassword,
       firstName,
       lastName,
-      role: role as UserRole,
+      roleId,
       tenantId,
       departmentId,
     });

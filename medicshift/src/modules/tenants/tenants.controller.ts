@@ -11,11 +11,11 @@ import {
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { UserRole } from '../users/enums/user-role.enum';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
+import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
+import { Permission } from '../auth/enums/permission.enum';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { CreateTenantDto } from './dtos/create-tenant.dto';
 import { CreateTenantCommand } from './commands/impl/create-tenant.command';
 import { DeleteTenantCommand } from './commands/impl/delete-tenant.command';
@@ -28,7 +28,7 @@ import { User } from '../users/entities/user.entity';
 
 @ApiTags('Tenants')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 @Controller('tenants')
 export class TenantsController {
   constructor(
@@ -36,7 +36,7 @@ export class TenantsController {
     private readonly queryBus: QueryBus,
   ) {}
 
-  @Roles(UserRole.ADMIN)
+  @RequirePermissions(Permission.TENANTS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create a new tenant' })
   async create(
@@ -51,27 +51,28 @@ export class TenantsController {
         createTenantDto.adminEmail,
         tenant.id,
         userId,
-        UserRole.ADMIN,
+        undefined, // roleId string
+        'Hospital Admin', // roleName string
       ),
     );
     return tenant;
   }
 
-  @Roles(UserRole.ADMIN)
+  @RequirePermissions(Permission.TENANTS_READ)
   @Get('all')
   @ApiOperation({ summary: 'List all tenants' })
   findAll() {
     return this.queryBus.execute(new GetTenantsQuery());
   }
 
-  @Roles(UserRole.ADMIN)
+  @RequirePermissions(Permission.TENANTS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a tenant' })
   remove(@Param('id') id: string) {
     return this.commandBus.execute(new DeleteTenantCommand(id));
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.TENANTS_UPDATE)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a tenant' })
   async update(
@@ -79,11 +80,11 @@ export class TenantsController {
     @Body() updateTenantDto: UpdateTenantDto,
     @CurrentUser() user: User,
   ): Promise<Tenant> {
-    if (user.role === UserRole.MANAGER && user.tenantId !== id) {
+    if (user.tenantId && user.tenantId !== id) {
       throw new ForbiddenException('Managers can only update their own tenant');
     }
 
-    if (user.role === UserRole.MANAGER) {
+    if (user.tenantId) {
       if (
         updateTenantDto.plan !== undefined ||
         updateTenantDto.isActive !== undefined

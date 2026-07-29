@@ -4,7 +4,7 @@ export class CreateUserCommand {
     public readonly passwordHash: string,
     public readonly firstName: string,
     public readonly lastName: string,
-    public readonly role?: string,
+    public readonly roleId?: string,
     public readonly tenantId?: string,
   ) {}
 }

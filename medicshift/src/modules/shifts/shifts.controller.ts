@@ -11,9 +11,9 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateShiftDto } from './dtos/create-shift.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { UserRole } from '../users/enums/user-role.enum';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
+import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
+import { Permission } from '../auth/enums/permission.enum';
 import {
   ApiTags,
   ApiBearerAuth,
@@ -29,7 +29,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @ApiTags('Shifts')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 @Controller({ path: 'shifts', version: '1' })
 export class ShiftsController {
   constructor(
@@ -37,7 +37,7 @@ export class ShiftsController {
     private readonly queryBus: QueryBus,
   ) {}
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.SHIFTS_CREATE)
   @Post()
   @ApiOperation({ summary: 'Create a new shift' })
   create(
@@ -49,6 +49,7 @@ export class ShiftsController {
     );
   }
 
+  @RequirePermissions(Permission.SHIFTS_READ)
   @Get()
   @ApiOperation({ summary: 'List all shifts' })
   @ApiQuery({ name: 'tenantId', required: false, type: String })
@@ -56,13 +57,14 @@ export class ShiftsController {
     return this.queryBus.execute(new GetShiftsQuery(tenantId));
   }
 
+  @RequirePermissions(Permission.SHIFTS_READ)
   @Get(':id')
   @ApiOperation({ summary: 'Get a shift by ID' })
   findOne(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
     return this.queryBus.execute(new GetShiftQuery(id, tenantId));
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.SHIFTS_UPDATE)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a shift' })
   update(
@@ -75,7 +77,7 @@ export class ShiftsController {
     );
   }
 
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @RequirePermissions(Permission.SHIFTS_DELETE)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a shift' })
   remove(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {

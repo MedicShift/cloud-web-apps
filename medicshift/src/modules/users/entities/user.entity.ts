@@ -1,8 +1,8 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
-import { UserRole } from '../enums/user-role.enum';
-import { Tenant } from 'src/modules/tenants/entities/tenant.entity';
-import { Department } from 'src/modules/departments/entities/department.entity';
+import { Role } from '../../roles/entities/role.entity';
+import { Tenant } from '../../tenants/entities/tenant.entity';
+import { Department } from '../../departments/entities/department.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -24,8 +24,11 @@ export class User extends BaseEntity {
   @Column({ select: false }) // Don't return password by default
   passwordHash?: string;
 
-  @Column({ type: 'simple-enum', enum: UserRole, default: UserRole.USER })
-  role!: UserRole;
+  @Column({ type: 'uuid', nullable: true })
+  roleId!: string;
+
+  @ManyToOne(() => Role, (role: Role) => role.users, { onDelete: 'SET NULL' })
+  role!: Role;
 
   @Column({ default: true })
   isActive!: boolean;

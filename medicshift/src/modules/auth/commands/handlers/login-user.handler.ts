@@ -78,7 +78,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
     const accessPayload = {
       email: user.email,
       userId: user.id,
-      role: user.role,
+      permissions: user.role?.permissions || [],
       tenantId: user.tenantId,
       departmentId: user.departmentId,
     };
@@ -114,7 +114,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
       user: {
         id: user.id,
         email: user.email,
-        role: user.role,
+        role: user.role?.name,
         firstName: user.firstName,
         lastName: user.lastName,
       },

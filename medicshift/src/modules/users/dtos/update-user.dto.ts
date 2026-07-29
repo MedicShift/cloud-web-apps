@@ -3,11 +3,9 @@ import {
   IsString,
   IsEmail,
   MinLength,
-  IsEnum,
   IsOptional,
   IsUUID,
 } from 'class-validator';
-import { UserRole } from '../enums/user-role.enum';
 
 export class UpdateUserDto {
   @ApiPropertyOptional({ example: 'nurse@medicshift.com' })
@@ -31,10 +29,10 @@ export class UpdateUserDto {
   @IsOptional()
   lastName?: string;
 
-  @ApiPropertyOptional({ enum: UserRole })
-  @IsEnum(UserRole)
+  @ApiPropertyOptional()
+  @IsUUID()
   @IsOptional()
-  role?: UserRole;
+  roleId?: string;
 
   @ApiPropertyOptional()
   @IsUUID()

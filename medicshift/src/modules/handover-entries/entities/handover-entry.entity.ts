@@ -1,8 +1,8 @@
 import { Column, Entity, ManyToOne, JoinColumn, Unique } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
-import { Handover } from 'src/modules/handover/entities/handover.entity';
-import { Tenant } from 'src/modules/tenants/entities/tenant.entity';
-import { Encounter } from 'src/modules/encounters/entities/encounter.entity';
+import { Handover } from '../../handover/entities/handover.entity';
+import { Tenant } from '../../tenants/entities/tenant.entity';
+import { Encounter } from '../../encounters/entities/encounter.entity';
 
 @Entity('handover_entries')
 @Unique(['handoverId', 'encounterId'])

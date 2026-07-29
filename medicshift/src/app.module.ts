@@ -19,6 +19,7 @@ import { PatientsModule } from './modules/patients/patients.module';
 import { EncountersModule } from './modules/encounters/encounters.module';
 import { HandoverModule } from './modules/handover/handover.module';
 import { HandoverEntriesModule } from './modules/handover-entries/handover-entries.module';
+import { RolesModule } from './modules/roles/roles.module';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { HandoverEntriesModule } from './modules/handover-entries/handover-entri
     EncountersModule,
     HandoverModule,
     HandoverEntriesModule,
+    RolesModule,
 
     // Infrastructure modules
     HealthModule,
