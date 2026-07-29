@@ -1,9 +1,9 @@
 import { Column, Entity, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
-import { Tenant } from 'src/modules/tenants/entities/tenant.entity';
-import { User } from 'src/modules/users/entities/user.entity';
-import { Shift } from 'src/modules/shifts/entities/shift.entity';
-import { Encounter } from 'src/modules/encounters/entities/encounter.entity';
+import { Tenant } from '../../tenants/entities/tenant.entity';
+import { User } from '../../users/entities/user.entity';
+import { Shift } from '../../shifts/entities/shift.entity';
+import { Encounter } from '../../encounters/entities/encounter.entity';
 
 @Entity('departments')
 export class Department extends BaseEntity {

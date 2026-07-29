@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Department } from '../entities/department.entity';
-import { Shift } from 'src/modules/shifts/entities/shift.entity';
+import { Shift } from '../../shifts/entities/shift.entity';
 
 @Injectable()
 export class DepartmentRepository {

@@ -2,11 +2,11 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { TenantPlan, TenantType } from '../enums/tenants.enum';
-import { User } from 'src/modules/users/entities/user.entity';
-import { Department } from 'src/modules/departments/entities/department.entity';
-import { Shift } from 'src/modules/shifts/entities/shift.entity';
+import { User } from '../../users/entities/user.entity';
+import { Department } from '../../departments/entities/department.entity';
+import { Shift } from '../../shifts/entities/shift.entity';
 import { Patient } from '../../patients/entities/patient.entity';
-import { Encounter } from 'src/modules/encounters/entities/encounter.entity';
+import { Encounter } from '../../encounters/entities/encounter.entity';
 
 @Entity('tenants')
 export class Tenant extends BaseEntity {

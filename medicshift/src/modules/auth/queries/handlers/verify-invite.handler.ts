@@ -26,7 +26,7 @@ export class VerifyInviteHandler implements IQueryHandler<VerifyInviteQuery> {
 
       return {
         email: payload.email,
-        role: payload.role,
+        roleId: payload.roleId,
         tenantId: payload.tenantId,
         departmentId: payload.departmentId,
       };

@@ -1,8 +1,8 @@
 import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
-import { Tenant } from 'src/modules/tenants/entities/tenant.entity';
-import { Patient } from 'src/modules/patients/entities/patient.entity';
-import { Department } from 'src/modules/departments/entities/department.entity';
+import { Tenant } from '../../tenants/entities/tenant.entity';
+import { Patient } from '../../patients/entities/patient.entity';
+import { Department } from '../../departments/entities/department.entity';
 import { EncounterType } from '../enums/encounters.encounterType';
 import { EncounterStatus } from '../enums/encounters.status';
 

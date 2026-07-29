@@ -3,12 +3,10 @@ import {
   IsEmail,
   IsString,
   MinLength,
-  IsEnum,
   IsOptional,
   IsUUID,
   IsBoolean,
 } from 'class-validator';
-import { UserRole } from '../../users/enums/user-role.enum';
 
 export class RegisterDto {
   @ApiProperty({ example: 'admin@medicshift.com' })
@@ -28,10 +26,10 @@ export class RegisterDto {
   @IsString()
   lastName!: string;
 
-  @ApiProperty({ enum: UserRole, default: UserRole.USER })
-  @IsEnum(UserRole)
+  @ApiProperty({ required: false })
+  @IsUUID()
   @IsOptional()
-  role?: UserRole;
+  roleId?: string;
 
   @ApiProperty({ required: false })
   @IsUUID()
