@@ -50,4 +50,10 @@ export enum Permission {
   HANDOVERS_CREATE = 'handovers:create',
   HANDOVERS_UPDATE = 'handovers:update',
   HANDOVERS_DELETE = 'handovers:delete',
+
+  // Carelog Management
+  CARELOG_READ = 'carelog:read',
+  CARELOG_CREATE = 'carelog:create',
+  CARELOG_UPDATE = 'carelog:update',
+  CARELOG_DELETE = 'carelog:delete',
 }

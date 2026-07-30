@@ -27,8 +27,9 @@ export class UpsertHandoverHandler implements ICommandHandler<UpsertHandoverComm
     }
 
     return this.handoverRepository.upsertHandoverWithEntries(
-      { tenantId, scheduleId, authorId },
+      { tenantId, scheduleId },
       {
+        authorId,
         recipientId,
         status,
         submittedAt: submittedAt ? new Date(submittedAt) : null,

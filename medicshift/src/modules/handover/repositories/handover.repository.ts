@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOptionsWhere } from 'typeorm';
+import { Repository, FindOptionsWhere, Between } from 'typeorm';
 import { Handover } from '../entities/handover.entity';
 import { HandoverEntry } from '../../handover-entries/entities/handover-entry.entity';
 
@@ -12,7 +12,7 @@ export class HandoverRepository {
   ) {}
 
   async upsertHandoverWithEntries(
-    key: { tenantId: string; scheduleId: string; authorId: string },
+    key: { tenantId: string; scheduleId: string },
     handoverData: Partial<Handover>,
     entriesData: Partial<HandoverEntry>[],
   ): Promise<Handover> {
@@ -73,11 +73,61 @@ export class HandoverRepository {
     });
   }
 
-  async findMine(userId: string, tenantId: string): Promise<Handover[]> {
+  async findMine(
+    userId: string,
+    tenantId: string,
+    startDate: string,
+    endDate: string,
+  ): Promise<Handover[]> {
+    return this.findByParty('authorId', userId, tenantId, startDate, endDate);
+  }
+
+  async findIncoming(
+    userId: string,
+    tenantId: string,
+    startDate: string,
+    endDate: string,
+  ): Promise<Handover[]> {
+    return this.findByParty(
+      'recipientId',
+      userId,
+      tenantId,
+      startDate,
+      endDate,
+    );
+  }
+
+  private async findByParty(
+    field: 'authorId' | 'recipientId',
+    userId: string,
+    tenantId: string,
+    startDate: string,
+    endDate: string,
+  ): Promise<Handover[]> {
+    const where: FindOptionsWhere<Handover> = { [field]: userId, tenantId };
+    if (startDate && endDate) {
+      where.schedule = {
+        date: Between(new Date(startDate), new Date(endDate)),
+      };
+    }
+
     return this.ormRepository.find({
-      where: { authorId: userId, tenantId },
-      relations: { entries: { encounter: { patient: true } } },
+      where,
+      relations: { schedule: true, entries: { encounter: { patient: true } } },
       order: { createdAt: 'DESC' },
+    });
+  }
+
+  async findByScheduleId(
+    scheduleId: string,
+    tenantId: string,
+  ): Promise<Handover | null> {
+    return this.ormRepository.findOne({
+      where: { scheduleId, tenantId },
+      relations: {
+        schedule: true,
+        entries: { encounter: { patient: true } },
+      },
     });
   }
 
@@ -91,5 +141,9 @@ export class HandoverRepository {
       throw new NotFoundException(`Handover #${id} not found`);
     }
     return handover;
+  }
+
+  async save(handover: Handover): Promise<Handover> {
+    return this.ormRepository.save(handover);
   }
 }

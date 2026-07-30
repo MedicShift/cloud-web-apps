@@ -1,4 +1,4 @@
-export class GetMyHandoverQuery {
+export class GetIncomingHandoversQuery {
   constructor(
     public readonly userId: string,
     public readonly tenantId: string,
