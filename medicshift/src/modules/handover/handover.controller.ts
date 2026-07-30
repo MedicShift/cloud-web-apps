@@ -6,12 +6,14 @@ import { Permission } from '../auth/enums/permission.enum';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { UpsertHandoverDto } from './dtos/upsert-handover.dto';
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { GetHandoversQuery } from './queries/impl/get-handovers.query';
-import { GetHandoverQuery } from './queries/impl/get-handover.query';
 import { UpsertHandoverCommand } from './commands/impl/upsert-handover.command';
-import { GetHandoverEntriesQuery } from '../handover-entries/queries/impl/get-handover-entries.query';
+import { AcceptHandoverCommand } from './commands/impl/accept-handover.command';
 import { GetMyHandoverQuery } from './queries/impl/get-my-handover.query';
+import { GetIncomingHandoversQuery } from './queries/impl/get-incoming-handovers.query';
+import { GetHandoverByScheduleQuery } from './queries/impl/get-handover-by-schedule.query';
+import { GetHandoverEntriesQuery } from '../handover-entries/queries/impl/get-handover-entries.query';
 
 @ApiTags('Handovers')
 @ApiBearerAuth()
@@ -28,17 +30,18 @@ export class HandoverController {
   @ApiOperation({
     summary: 'Create or update a handover',
     description:
-      'Upserts by (tenantId, scheduleId) — one handover per schedule. If a handover already exists for that schedule, it is updated in place (including reassigning the author or re-submitting/signing a draft) instead of creating a duplicate.',
+      'Upserts by (tenantId, scheduleId) — one handover per schedule, authored by the caller. If a handover already exists for that schedule, it is updated in place (including re-submitting/signing a draft) instead of creating a duplicate.',
   })
   upsert(
     @Body() dto: UpsertHandoverDto,
+    @CurrentUser('id') authorId: string,
     @CurrentUser('tenantId') tenantId: string,
   ) {
     return this.commandBus.execute(
       new UpsertHandoverCommand(
         tenantId,
         dto.scheduleId,
-        dto.authorId,
+        authorId,
         dto.entries,
         dto.recipientId,
         dto.status,
@@ -47,7 +50,6 @@ export class HandoverController {
     );
   }
 
-  @Roles(UserRole.USER, UserRole.MANAGER)
   @Post(':id/accept')
   @ApiOperation({
     summary: 'Accept a handover',
@@ -90,10 +92,32 @@ export class HandoverController {
   }
 
   @RequirePermissions(Permission.HANDOVERS_READ)
-  @Get(':id')
-  @ApiOperation({ summary: 'Get an handover by ID' })
-  findOne(@Param('id') id: string, @CurrentUser('tenantId') tenantId: string) {
-    return this.queryBus.execute(new GetHandoverQuery(id, tenantId));
+  @Get('incoming')
+  @ApiOperation({
+    summary: 'List handovers assigned to me as recipient',
+    description:
+      'Optionally filter by the date of the schedule each handover was created for, using startDate/endDate (YYYY-MM-DD).',
+  })
+  findIncomingHandovers(
+    @CurrentUser('id') userId: string,
+    @CurrentUser('tenantId') tenantId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.queryBus.execute(
+      new GetIncomingHandoversQuery(userId, tenantId, startDate, endDate),
+    );
+  }
+
+  @Get('schedule/:id')
+  @ApiOperation({ summary: 'Get the handover for a given schedule' })
+  findByScheduleId(
+    @Param('id') scheduleId: string,
+    @CurrentUser('tenantId') tenantId: string,
+  ) {
+    return this.queryBus.execute(
+      new GetHandoverByScheduleQuery(scheduleId, tenantId),
+    );
   }
 
   @RequirePermissions(Permission.HANDOVERS_READ)

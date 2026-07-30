@@ -3,6 +3,7 @@ import { BaseEntity } from '../../../common/entities/base.entity';
 import { Tenant } from '../../tenants/entities/tenant.entity';
 import { HandoverEntry } from '../../handover-entries/entities/handover-entry.entity';
 import { HandoverStatus } from '../enums/handover-status.enum';
+import { Schedule } from '../../schedules/entities/schedule.entity';
 
 @Entity('handover')
 export class Handover extends BaseEntity {

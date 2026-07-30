@@ -8,6 +8,8 @@ import { UpsertHandoverHandler } from './commands/handlers/upsert-handover.handl
 import { AcceptHandoverHandler } from './commands/handlers/accept-handover.handler';
 import { GetHandoverHandler } from './queries/handlers/get-handover.handler';
 import { GetHandoversHandler } from './queries/handlers/get-handovers.handler';
+import { GetIncomingHandoversHandler } from './queries/handlers/get-incoming-handovers.handler';
+import { GetHandoverByScheduleHandler } from './queries/handlers/get-handover-by-schedule.handler';
 import { GetMyHandoverHandler } from './queries/handlers/get-my-handover.handler';
 
 const CommandHandlers = [UpsertHandoverHandler, AcceptHandoverHandler];
@@ -15,6 +17,8 @@ const QueryHandlers = [
   GetHandoverHandler,
   GetHandoversHandler,
   GetMyHandoverHandler,
+  GetIncomingHandoversHandler,
+  GetHandoverByScheduleHandler,
 ];
 
 @Module({
