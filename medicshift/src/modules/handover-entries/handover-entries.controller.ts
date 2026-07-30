@@ -1,11 +1,8 @@
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../../common/guards/permissions.guard';
-import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
-import { Permission } from '../auth/enums/permission.enum';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { Body, Controller, UseGuards } from '@nestjs/common';
 
 @ApiTags('Handover Entries')
 @ApiBearerAuth()
@@ -16,6 +13,4 @@ export class HandoverEntriesController {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
-
-
 }

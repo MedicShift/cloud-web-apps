@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class HandoverScheduleOneToOne1785238000000
-  implements MigrationInterface
-{
+export class HandoverScheduleOneToOne1785238000000 implements MigrationInterface {
   name = 'HandoverScheduleOneToOne1785238000000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

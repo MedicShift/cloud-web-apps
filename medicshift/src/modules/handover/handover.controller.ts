@@ -6,7 +6,15 @@ import { Permission } from '../auth/enums/permission.enum';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { UpsertHandoverDto } from './dtos/upsert-handover.dto';
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { GetHandoversQuery } from './queries/impl/get-handovers.query';
 import { UpsertHandoverCommand } from './commands/impl/upsert-handover.command';
 import { AcceptHandoverCommand } from './commands/impl/accept-handover.command';

@@ -6,8 +6,7 @@ import { HandoverEntriesController } from './handover-entries.controller';
 import { HandoverEntry } from './entities/handover-entry.entity';
 import { GetHandoverEntriesHandler } from './queries/handlers/get-handover-entries.handler';
 
-const CommandHandlers = [
-];
+const CommandHandlers = [];
 const QueryHandlers = [GetHandoverEntriesHandler];
 
 @Module({

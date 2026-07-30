@@ -4,9 +4,7 @@ import { Handover } from '../../entities/handover.entity';
 import { GetIncomingHandoversQuery } from '../impl/get-incoming-handovers.query';
 
 @QueryHandler(GetIncomingHandoversQuery)
-export class GetIncomingHandoversHandler
-  implements IQueryHandler<GetIncomingHandoversQuery>
-{
+export class GetIncomingHandoversHandler implements IQueryHandler<GetIncomingHandoversQuery> {
   constructor(private readonly handoverRepository: HandoverRepository) {}
 
   async execute(query: GetIncomingHandoversQuery): Promise<Handover[]> {

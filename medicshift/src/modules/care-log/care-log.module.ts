@@ -9,9 +9,7 @@ import { UpdateCareLogHandler } from './commands/handlers/update-care-log.handle
 import { GetCareLogsHandler } from './queries/handlers/get-care-logs.handler';
 
 const CommandHandlers = [CreateCareLogHandler, UpdateCareLogHandler];
-const QueryHandlers = [
-  GetCareLogsHandler,
-];
+const QueryHandlers = [GetCareLogsHandler];
 
 @Module({
   imports: [TypeOrmModule.forFeature([CareLog]), CqrsModule],
