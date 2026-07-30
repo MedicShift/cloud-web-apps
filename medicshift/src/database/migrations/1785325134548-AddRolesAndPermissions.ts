@@ -8,9 +8,6 @@ export class AddRolesAndPermissions1785325134548 implements MigrationInterface {
       `ALTER TABLE "handover_entries" DROP CONSTRAINT "FK_handover_entries_encounterId"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "handover" DROP CONSTRAINT "UQ_handover_tenant_schedule_author"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "invites" RENAME COLUMN "role" TO "roleId"`,
     );
     await queryRunner.query(
@@ -70,9 +67,6 @@ export class AddRolesAndPermissions1785325134548 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "invites" RENAME COLUMN "roleId" TO "role"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "handover" ADD CONSTRAINT "UQ_handover_tenant_schedule_author" UNIQUE ("tenantId", "scheduleId", "authorId")`,
     );
     await queryRunner.query(
       `ALTER TABLE "handover_entries" ADD CONSTRAINT "FK_handover_entries_encounterId" FOREIGN KEY ("encounterId") REFERENCES "encounter"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
