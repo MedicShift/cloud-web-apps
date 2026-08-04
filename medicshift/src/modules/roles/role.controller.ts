@@ -1,4 +1,13 @@
-import { UseGuards, Controller, Param, Delete, Post, Body, Get, Put, } from '@nestjs/common';
+import {
+  UseGuards,
+  Controller,
+  Param,
+  Delete,
+  Post,
+  Body,
+  Get,
+  Put,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../../common/guards/permissions.guard';

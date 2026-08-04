@@ -9,7 +9,6 @@ import { GetRolesHandler } from './queries/handlers/get-roles.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 import { UpdateRolePermissionsHandler } from './commands/handlers/update-role-permission-handler';
 
-
 const CommandHandlers = [
   CreateRoleHandler,
   DeleteRoleHandler,

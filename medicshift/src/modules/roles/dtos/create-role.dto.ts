@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsArray, IsEnum, ArrayNotEmpty, } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsArray,
+  IsEnum,
+  ArrayNotEmpty,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Permission } from '../../auth/enums/permission.enum';
 

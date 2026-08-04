@@ -9,7 +9,7 @@ export class UpdateRolePermissionsHandler implements ICommandHandler<UpdateRoleP
   constructor(private readonly roleRepository: RoleRepository) {}
 
   async execute(command: UpdateRolePermissionsCommand): Promise<Role> {
-    const { roleId, permissions, tenantId} = command;
+    const { roleId, permissions, tenantId } = command;
 
     const role = await this.roleRepository.findOneById(roleId, tenantId);
 
