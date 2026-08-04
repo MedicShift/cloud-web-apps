@@ -56,4 +56,10 @@ export enum Permission {
   CARELOG_CREATE = 'carelog:create',
   CARELOG_UPDATE = 'carelog:update',
   CARELOG_DELETE = 'carelog:delete',
+
+  //Role Management
+  ROLE_READ = 'role:read',
+  ROLE_CREATE = 'role:create',
+  ROLE_DELETE = 'role:delete',
+  ROLE_PERMISSION_UPDATE = 'roles:update',
 }
