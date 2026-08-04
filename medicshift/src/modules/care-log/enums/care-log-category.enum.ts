@@ -4,4 +4,5 @@ export enum CareLogCategory {
   ORDERS = 'ORDERS',
   COMFORT = 'COMFORT',
   IV = 'IV',
+  MEDICATION = 'MEDICATION',
 }
