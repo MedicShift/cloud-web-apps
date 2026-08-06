@@ -113,7 +113,7 @@ export class HandoverRepository {
 
     return this.ormRepository.find({
       where,
-      relations: { schedule: true, entries: { encounter: { patient: true } } },
+      relations: { author: true, schedule: true, entries: { encounter: { patient: true } } },
       order: { createdAt: 'DESC' },
     });
   }

@@ -11,6 +11,7 @@ import { Tenant } from '../../tenants/entities/tenant.entity';
 import { HandoverEntry } from '../../handover-entries/entities/handover-entry.entity';
 import { HandoverStatus } from '../enums/handover-status.enum';
 import { Schedule } from '../../schedules/entities/schedule.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('handover')
 export class Handover extends BaseEntity {
@@ -42,6 +43,14 @@ export class Handover extends BaseEntity {
   @ManyToOne(() => Tenant, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'tenantId' })
   tenant!: Tenant;
+
+  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({ name: 'authorId' })
+  author!: User;
+
+  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({ name: 'recipientId' })
+  recipient?: User | null;
 
   @OneToOne(() => Schedule, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'scheduleId' })
